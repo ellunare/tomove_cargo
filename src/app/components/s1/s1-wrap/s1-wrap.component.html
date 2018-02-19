@@ -11,3 +11,5 @@
 <button (click)="showRoute()">MOVE</button>
 
 <s1-map *ngIf="_renderMap"></s1-map>
+
+<button *ngIf="_renderMap" (click)="showRoute()" class="close">CLOSE</button>

@@ -1,0 +1,51 @@
+@import '../../../styles.sass'
+
+$sw_height: 30px 
+$sw_width: $sw_height * 2 
+$sw_gap: $sw_height / 3
+$sw_radius: $sw_height / 1
+$sw_bord: 2px
+
+$sw_bg_on: $color_green
+$sw_bg_off: $color_gold
+$sw_tg_on: white
+$sw_tg_off: $color_gold
+
+$sw_trans: all .6s
+
+.switch
+	width: $sw_width
+	height: $sw_height
+	position: relative
+	display: inline-block
+	& div
+		position: absolute
+		top: 0
+		left: 0
+		bottom: 0
+		right: 0
+		// CHOSE
+		// background-color: $sw_bg_off
+		border: solid $sw_bord $sw_bg_off
+		// // //
+		border-radius: $sw_radius
+		cursor: pointer
+		transition: $sw_trans
+		&:before
+			content: ''
+			position: absolute
+			top: $sw_gap / 2 - $sw_bord
+			left: $sw_gap / 2 - $sw_bord
+			width: $sw_height - $sw_gap
+			height: $sw_height - $sw_gap
+			background-color: $sw_tg_off
+			border-radius: $sw_radius / 1.3
+			transition: $sw_trans
+	& input
+		display: none
+		&:checked + div
+			background-color: $sw_bg_on
+			border-color: $sw_bg_on
+			&:before
+				transform: translateX($sw_width - $sw_height)
+				background-color: $sw_tg_on

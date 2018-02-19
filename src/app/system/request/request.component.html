@@ -1,0 +1,46 @@
+<span>REQUEST</span>
+<hr>
+<form>
+  <div class="types">
+    <label class="blue" *ngFor="let p of place_types">
+      <input type="radio" name="toggle" [(ngModel)]="place" (change)="onAppartmentSelect()" value={{p.type}}>
+      <span>{{p.type}}</span>
+    </label>
+  </div>
+
+  <div>
+    <div class="adress">
+      <p>Start</p>
+      <input type="text" placeholder="Search for origin" autocorrect="off" autocapitalize="off" spellcheck="off" #search_O>
+      <select name="" #floor_O (change)="floorChange($event, 'O')">
+        <option *ngFor="let f of floors" value="{{f}}">{{f}}</option>
+      </select>
+      <br>
+      <span>Lift</span>
+      <label class="switch">
+        <input type="checkbox">
+        <div></div>
+      </label>
+      <span>Packing</span>
+      <label class="switch">
+        <input type="checkbox">
+        <div></div>
+      </label>
+    </div>
+
+    <div class="adress">
+      <p>Finish</p>
+      <input type="text" placeholder="Search for destination" autocorrect="off" autocapitalize="off" spellcheck="off" #search_D>
+      <select name="" #floor_D (change)="floorChange($event, 'D')">
+        <option *ngFor="let f of floors" value="{{f}}">{{f}}</option>
+      </select>
+    </div>
+
+    <br>
+    <br>
+
+  </div>
+
+</form>
+
+<button (click)="console()">Console</button>

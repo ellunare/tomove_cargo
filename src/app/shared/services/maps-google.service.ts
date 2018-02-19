@@ -69,11 +69,11 @@ export class MapsGoogleService {
           destinations: [__d],
           travelMode: this._type.toUpperCase(),
         },
-        (responce, status) => {
+        (response, status) => {
           if (status == 'OK') {
             let data = {
-              distance: responce.rows[0].elements[0].distance.value / 1000,
-              time: responce.rows[0].elements[0].duration.value / 60
+              distance: response.rows[0].elements[0].distance.value / 1000,
+              time: response.rows[0].elements[0].duration.value / 60
             }
             this._distance = data.distance;
             this._time = data.time;

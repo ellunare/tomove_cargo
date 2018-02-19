@@ -5,7 +5,7 @@ import {
   ElementRef
 } from '@angular/core';
 
-import { MapsGoogleService } from '../../../-services/maps-google.service';
+import { MapsGoogleService } from '../../../shared/services/maps-google.service';
 
 @Component({
   selector: 's1-wrap',
