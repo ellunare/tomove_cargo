@@ -1,0 +1,46 @@
+
+$day_w: 60px
+
+a.active
+	background-color: gray
+
+#calendar-container
+	width: 462px
+
+
+
+.selected
+	background: peru
+	opacity: 0.6
+
+
+
+.reserved
+	color: blueviolet
+
+
+.calendar
+	&-days
+		display: flex
+		flex-wrap: wrap
+		width: calc(#{$day_w} * 7)
+	&-day
+		width: $day_w
+		height: $day_w
+		background: #669999
+		border: 1px solid #c2c2c2
+		line-height: $day_w
+		text-align: center
+		cursor: pointer
+		&--name
+			cursor: default
+			background-color: orange
+			color: #fff
+
+.inactive
+	cursor: default
+	opacity: 0.2
+
+.today
+	background-color: blue
+	color: #fff

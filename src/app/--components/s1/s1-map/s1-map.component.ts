@@ -13,7 +13,8 @@ import { MapsGoogleService } from '../../../shared/services/maps-google.service'
   styleUrls: ['./s1-map.component.sass']
 })
 
-export class S1MapComponent implements OnInit {
+// export 
+class S1MapComponent implements OnInit {
 
   @ViewChild('map') public map: ElementRef;
 

@@ -1,46 +1,122 @@
 <span>REQUEST</span>
 <hr>
 <form>
-  <div class="types">
-    <label class="blue" *ngFor="let p of place_types">
-      <input type="radio" name="toggle" [(ngModel)]="place" (change)="onAppartmentSelect()" value={{p.type}}>
-      <span>{{p.type}}</span>
-    </label>
-  </div>
+	<div class="types">
+		<label class="blue" *ngFor="let p of PLACES">
+			<input type="radio" 
+				name="toggle" 
+				[(ngModel)]="place" 
+				(change)="onAppartmentSelect()" 
+				value={{p.type}}>
+			<span>{{p.type}}</span>
+		</label>
+	</div>
 
-  <div>
-    <div class="adress">
-      <p>Start</p>
-      <input type="text" placeholder="Search for origin" autocorrect="off" autocapitalize="off" spellcheck="off" #search_O>
-      <select name="" #floor_O (change)="floorChange($event, 'O')">
-        <option *ngFor="let f of floors" value="{{f}}">{{f}}</option>
-      </select>
-      <br>
-      <span>Lift</span>
-      <label class="switch">
-        <input type="checkbox">
-        <div></div>
-      </label>
-      <span>Packing</span>
-      <label class="switch">
-        <input type="checkbox">
-        <div></div>
-      </label>
-    </div>
+	<div>
+		<div class="adress">
+			<p>Start</p>
+			<input type="text" 
+				placeholder="Search for origin" 
+				autocorrect="off" 
+				autocapitalize="off" 
+				spellcheck="off" 
+				#search_O>
+			<select name="" #floor_O (change)="floorChange($event, 'O')">
+				<option 
+					*ngFor="let f of floors" 
+					value="{{f}}"
+					[attr.selected]="f===1 ? true : null">
+					{{f}}
+				</option>
+			</select>
+			<br>
+			<span>Lift</span>
+			<label class="switch">
+				<input type="checkbox" #lift_O (change)="liftCheck($event, 'O')">
+				<div></div>
+			</label>
+			<span>Packing</span>
+			<label class="switch">
+				<input type="checkbox">
+				<div></div>
+			</label>
+		</div>
 
-    <div class="adress">
-      <p>Finish</p>
-      <input type="text" placeholder="Search for destination" autocorrect="off" autocapitalize="off" spellcheck="off" #search_D>
-      <select name="" #floor_D (change)="floorChange($event, 'D')">
-        <option *ngFor="let f of floors" value="{{f}}">{{f}}</option>
-      </select>
-    </div>
+		<div class="adress">
+			<p>Finish</p>
+			<input type="text" 
+				placeholder="Search for destination" 
+				autocorrect="off" 
+				autocapitalize="off" 
+				spellcheck="off" 
+				#search_D>
+			<select name="" #floor_D (change)="floorChange($event, 'D')">
+				<option 
+					*ngFor="let f of floors" 
+					value="{{f}}"
+					[attr.selected]="f===1 ? true : null">
+					{{f}}
+				</option>
+			</select>
+			<br>
+			<span>Lift</span>
+			<label class="switch">
+				<input type="checkbox">
+				<div></div>
+			</label>
+		</div>
 
-    <br>
-    <br>
+		<br>
+		<br>
 
-  </div>
+	</div>
+<date-picker></date-picker>
+	<!-- <time-picker></time-picker> -->
 
 </form>
 
 <button (click)="console()">Console</button>
+
+<hr>
+	<div>
+		<p>{{rooms[current_room - 1].id}} - {{rooms[current_room - 1].name}}</p>
+		<ul>
+			<li *ngFor="let r of rooms[current_room - 1].items">{{r.name}}</li>
+		</ul>
+	</div>
+
+	<br>
+	<button (click)="roomPage('prev')">PREV</button>
+	<button (click)="roomPage('next')">NEXT</button>
+	
+<hr>
+
+<span>TOTAL PRICE - {{total_price}}</span>
+<ul>
+	<li *ngFor="let i of roomItemList">{{i.name}} - {{i.price}}</li>
+</ul>
+
+<div class="furniture">
+	<div 
+		class="furniture-type" 
+		*ngFor="let t of FURNITURE" 
+		attr.data-id="{{t.id}}" 
+		(click)="selectItemType($event)">
+
+		<img src="../../../assets/f/{{t.id}}/icon.gif">
+	</div>
+</div>
+
+<div class="modal-bg" *ngIf="showItems">
+	<div class="furniture-select">
+		<div 
+			class="furniture-select__item" 
+			*ngFor="let f of FURNITURE[f_typeId - 1].types" 
+			attr.data-id="{{f.id}}"
+			(click)="onItemSelected($event)">
+
+			<img src="../../../assets/f/{{f_typeId}}/i/{{f.id}}.gif">
+		</div>
+	</div>
+</div>
+

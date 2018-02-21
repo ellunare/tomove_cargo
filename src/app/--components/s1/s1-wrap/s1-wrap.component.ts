@@ -13,7 +13,8 @@ import { MapsGoogleService } from '../../../shared/services/maps-google.service'
   styleUrls: ['./s1-wrap.component.sass']
 })
 
-export class S1WrapComponent implements OnInit {
+// export 
+class S1WrapComponent implements OnInit {
 
   o_lat: number;
   o_lng: number;

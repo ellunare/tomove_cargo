@@ -1,5 +1,43 @@
 @import '../../../styles.sass'
 
+.modal-bg
+	position: absolute
+	left: 0
+	top: 0
+	width: 100%
+	height: 100%
+	background-color: gold
+	z-index: 20
+	display: flex
+	justify-content: center
+	align-items: center
+	// align-content: center
+
+.furniture
+	width: 50%
+	// height: 250px
+	background-color: red
+	display: flex
+	flex-wrap: wrap
+	&-type
+		width: 33.3%
+		cursor: pointer
+		img
+			width: 100%
+	&-select
+		width: 40%
+		// height: 250px
+		background-color: green
+		display: flex
+		flex-wrap: wrap
+		&__item
+			width: 33.3%
+			cursor: pointer
+			img
+				width: 100%
+
+
+// SWITCH
 $sw_height: 30px 
 $sw_width: $sw_height * 2 
 $sw_gap: $sw_height / 3

@@ -1,0 +1,23 @@
+<div class="modal-bg" (click)="exit($event)">
+  <div class="time">
+    <div class="hours  overflow">
+      <p>Hours</p>
+      <ul>
+        <li class="cell"
+          *ngFor="let h of hours"
+          (click)="selectTime($event, 'H')"
+          [class.selected]="h==select_hour">{{h}}</li>
+      </ul>
+    </div>
+    <div class="spacer"></div>
+    <div class="minutes  overflow">
+      <p>Minutes</p>
+      <ul>
+        <li class="cell"
+          *ngFor="let m of minutes"
+          (click)="selectTime($event, 'M')"
+          [class.selected]="m==select_minute">{{m}}</li>
+      </ul>
+    </div>
+  </div>
+</div>
