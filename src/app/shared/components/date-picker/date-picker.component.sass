@@ -1,15 +1,24 @@
+@import '../../../../styles.sass'
+
+$n_w: 13rem
+$n_h: 3rem
+$n_bor: 0.3rem
 .null
 	display: inline-block
-	background-color: #d8cb27
-	height: 3rem
-	width: 15rem
+	width: $n_w
+	height: $n_h
+	border: $n_bor solid $color_gold
+	border-radius: 0.5rem
+	line-height: $n_h - 2 * $n_bor
 	text-align: center
-	color: #fff
-	line-height: 3rem
+	color: #000
 	cursor: pointer
 
 $c_w: 40rem
 $day_w: $c_w / 7
+
+$cl_bor: 0.2rem
+$cl_size: 5rem
 
 .calendar
 	background-color: transparentize(#000, 0.1)
@@ -22,7 +31,7 @@ $day_w: $c_w / 7
 	justify-content: center
 	align-items: center
 	&-wrap
-		background-color: green
+		// background-color: green
 		width: 400px
 		text-align: center
 	&-date
@@ -31,7 +40,7 @@ $day_w: $c_w / 7
 		line-height: 4rem
 		color: #fff
 	&-table
-		background-color: #3cc483
+		// background-color: #3cc483
 		width: 100%
 		height: $day_w * 7 + 0.2rem
 		// border: 1px solid gold
@@ -42,16 +51,17 @@ $day_w: $c_w / 7
 	&-day
 		width: $day_w
 		height: $day_w
-		background: #669999
-		border: 1px solid gold
+		background: $color_bg_top_right
+		// border: 1px solid gold
 		line-height: $day_w
+		color: #fff
 		text-align: center
 		cursor: pointer
 		&:hover
-			background-color: grey
+			background-color: $color_bg_bottom_left
 		&--name
 			cursor: default
-			background-color: orange
+			background-color: $color_green
 			color: #fff
 	&-btns
 		width: 100%
@@ -61,19 +71,22 @@ $day_w: $c_w / 7
 			display: inline-block
 			width: 10rem
 			height: 5rem
-			background-color: red
+			// background-color: red
+			border-radius: 0.5rem
+			border: 0.2rem solid $color_gold
 			color: #fff
 			cursor: pointer
 			line-height: 5rem
+			border-radius: 0.5rem
 		.close
-			width: 5rem
-			height: 5rem
-			background-color: #3a3a3a
-			color: #fff
-			line-height: 5rem
-			border-radius: 200px
+			width: $cl_size
+			height: $cl_size
+			background-color: transparentize(#000, 1)
+			color: $color_gold
+			line-height: $cl_size - $cl_bor * 2
+			border-radius: $cl_size
 			outline: none
-			border: none
+			border: $cl_bor solid $color_gold
 			cursor: pointer
 
 .inactive
@@ -81,12 +94,12 @@ $day_w: $c_w / 7
 	opacity: 0.2
 
 .today
-	background-color: blue
-	color: #fff
+	background-color: $color_bg_bottom_left
+	color: $color_gold
 
 .selected
-	background: orange
-	opacity: 0.6
+	background: $color_gold
+	color: #fff
 
 .hidden
 	opacity: 0

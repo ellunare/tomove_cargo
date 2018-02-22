@@ -19,10 +19,10 @@ export class TimePickerComponent implements OnInit {
 
 	@Output() outTimePicked = new EventEmitter();
 
-	select_hour;
-	select_minute;
+	select_H;
+	select_M;
 
-	show_time = false; // false
+	show_time = false;
 	show_H = false;
 	show_M = false;
 
@@ -35,6 +35,7 @@ export class TimePickerComponent implements OnInit {
 		this.initTime();
 	}
 
+	// Создаем диапазон выбора часов и минут
 	initTime() {
 		const h_start = 0;
 		const h_end = 23;
@@ -43,7 +44,7 @@ export class TimePickerComponent implements OnInit {
 		const m_end = 60;
 		const m_step = 10;
 
-		for (let i = h_start; i <= 23; i++) {
+		for (let i = h_start; i <= h_end; i++) {
 			this.hours.push(i);
 		}
 
@@ -52,40 +53,43 @@ export class TimePickerComponent implements OnInit {
 		}
 	}
 
+	// Вывод на табло
 	showTime() {
-		if (this.select_hour && this.select_minute) {
-			return this.select_hour + ' : ' + this.select_minute;
+		if (this.timeValid()) {
+			return this.select_H + ' : ' + this.select_M;
 		}
 		return 'HH:MM';
 	}
 
+	// Вывод в ячейку parent
 	getTimeValue(flag) {
 		if (flag === 'H') {
-			if (this.select_hour) {
-				return this.select_hour;
+			if (this.select_H != undefined) {
+				return this.select_H;
 			}
 			return 'HH';
 		}
 		if (flag === 'M') {
-			if (this.select_minute) {
-				return this.select_minute;
+			if (this.select_M != undefined) {
+				return this.select_M;
 			}
 			return 'MM';
 		}
 	}
 
+	// Клик по ячейке
 	selectTime(e, type) {
 		const num = +e.target.innerText
 
 		if (type === 'H') {
-			this.select_hour = num;
+			this.select_H = num;
 			setTimeout(() => {
 				this.showElement('H');
 				this.closeAfterSelect();
 			}, 200)
 		}
 		if (type === 'M') {
-			this.select_minute = num;
+			this.select_M = num;
 			setTimeout(() => {
 				this.showElement('M');
 				this.closeAfterSelect();
@@ -95,28 +99,14 @@ export class TimePickerComponent implements OnInit {
 
 	// Закрываем автоматически после выбора
 	closeAfterSelect() {
-		// если выбрали и часы и минуты
-		if (this.select_hour && this.select_minute) {
-			// если изменены оба поля
+		// если выбраны и часы и минуты
+		if (this.timeValid()) {
+			// и если изменены оба поля
 			if (!this.first_run_H && !this.first_run_M) {
 				this.showTimeBlock();
 			}
 		}
 	}
-
-
-	// hideTimeBlock(flag) {
-	//   if (flag === 'close') {
-	//     console.log('just close');
-	//     this.showTimeBlock();
-	//   }
-	//   if (flag === 'emit') {
-	//     console.log('emit time selected');
-	//     // let _date = this.selected_day.format('L');
-	//     // this.outOnDateSelect.emit(_date);
-	//     this.showTimeBlock();
-	//   }
-	// }
 
 	showTimeBlock() {
 		this.show_time = !this.show_time;
@@ -127,33 +117,37 @@ export class TimePickerComponent implements OnInit {
 		}
 		// При закрытии
 		else {
-			if (this.select_hour && this.select_minute) {
+			// если выбраны и часы и минуты
+			if (this.timeValid()) {
 				let _time = {
-					h: this.select_hour,
-					m: this.select_minute
+					h: this.select_H,
+					m: this.select_M
 				}
+				// Отдаем НАВЕРХ
 				this.outTimePicked.emit(_time);
 			}
 		}
 	}
 
+	//  Открытие окна выбора часов или минут
 	showElement(type) {
 		if (type === 'H') {
 			this.show_H = !this.show_H;
-			// Если закрыли значит выбрали
+			// Окно открывалось? -> при закрытии меняем флаг
 			if (!this.show_H) {
 				this.first_run_H = false;
 			}
 		}
 		if (type === 'M') {
 			this.show_M = !this.show_M;
-			// Если закрыли значит выбрали
+			// Окно открывалось? -> при закрытии меняем флаг
 			if (!this.show_M) {
 				this.first_run_M = false;
 			}
 		}
 	}
 
+	// Клик по черному фону
 	modalClick(e, cl_name, toclose) {
 		e.stopPropagation();
 		if (e.target.classList.contains(cl_name)) {
@@ -167,6 +161,10 @@ export class TimePickerComponent implements OnInit {
 				this.showElement('M');
 			}
 		}
+	}
+
+	timeValid() {
+		return this.select_H != undefined && this.select_M != undefined;
 	}
 
 }
