@@ -1,41 +1,80 @@
+.null
+	display: inline-block
+	background-color: #d8cb27
+	height: 3rem
+	width: 15rem
+	text-align: center
+	color: #fff
+	line-height: 3rem
+	cursor: pointer
 
-$day_w: 60px
-
-a.active
-	background-color: gray
-
-#calendar-container
-	width: 462px
-
-
-
-.selected
-	background: peru
-	opacity: 0.6
-
-
-
-.reserved
-	color: blueviolet
-
+$c_w: 40rem
+$day_w: $c_w / 7
 
 .calendar
+	background-color: transparentize(#000, 0.1)
+	width: 100%
+	height: 100%
+	position: absolute
+	left: 0
+	top: 0
+	display: flex
+	justify-content: center
+	align-items: center
+	&-wrap
+		background-color: green
+		width: 400px
+		text-align: center
+	&-date
+		width: 100%
+		height: 4rem
+		line-height: 4rem
+		color: #fff
+	&-table
+		background-color: #3cc483
+		width: 100%
+		height: $day_w * 7 + 0.2rem
+		// border: 1px solid gold
 	&-days
 		display: flex
 		flex-wrap: wrap
-		width: calc(#{$day_w} * 7)
+		width: 100%
 	&-day
 		width: $day_w
 		height: $day_w
 		background: #669999
-		border: 1px solid #c2c2c2
+		border: 1px solid gold
 		line-height: $day_w
 		text-align: center
 		cursor: pointer
+		&:hover
+			background-color: grey
 		&--name
 			cursor: default
 			background-color: orange
 			color: #fff
+	&-btns
+		width: 100%
+		display: flex
+		justify-content: space-between
+		.btn
+			display: inline-block
+			width: 10rem
+			height: 5rem
+			background-color: red
+			color: #fff
+			cursor: pointer
+			line-height: 5rem
+		.close
+			width: 5rem
+			height: 5rem
+			background-color: #3a3a3a
+			color: #fff
+			line-height: 5rem
+			border-radius: 200px
+			outline: none
+			border: none
+			cursor: pointer
 
 .inactive
 	cursor: default
@@ -44,3 +83,10 @@ a.active
 .today
 	background-color: blue
 	color: #fff
+
+.selected
+	background: orange
+	opacity: 0.6
+
+.hidden
+	opacity: 0

@@ -1,46 +1,100 @@
-\:host
+.null
+	display: inline-block
+	background-color: #d8cb27
+	height: 3rem
+	width: 10rem
+	text-align: center
+	color: #fff
+	line-height: 3rem
+	cursor: pointer
+
+.time-block
 	position: absolute
+	width: 100%
+	height: 100%
 	top: 0
 	left: 0
-	width: 100%
-	height: 100%
-
-.modal-bg
-	width: 100%
-	height: 100%
-	background-color: transparentize(#000, 0.5)
+	background-color: transparentize(#000, 0.1)
 	display: flex
 	justify-content: center
 	align-items: center
 
-.time
-	width: 350px
-	// height: 300px
-	background-color: red
-	// overflow: auto
+.time-wrap
+	width: 22rem
+	// background-color: red
+
+.time-select
+	width: 100%
 	display: flex
 
+.cell-parent
+	width: calc((100% - 2rem) / 2)
+	height: 5rem
+	background-color: gold
+	text-align: center
+	line-height: 5rem
+	color: #fff
+	cursor: pointer
+
+.spacer
+	width: 2rem
+
+.time
+	&-btns
+		width: 100%
+		text-align: center
+		.close
+			width: 5rem
+			height: 5rem
+			background-color: #3a3a3a
+			color: #fff
+			line-height: 5rem
+			border-radius: 200px
+			outline: none
+			border: none
+			cursor: pointer
+
+.element
+	position: absolute
+	width: 100%
+	height: 100%
+	top: 0
+	left: 0
+	background-color: transparentize(#000, 0.3)
+	display: flex
+	justify-content: center
+	align-items: center
+	&-wrap
+		text-align: center
+		// background-color: red
+
 .hours
-	width: 200px
+	width: 26rem
 
 .minutes
-	width: 100px
+	width: 20rem
+
+.box
+	display: flex
+	flex-wrap: wrap
+	justify-content: space-between
 
 .cell
 	display: inline-block
-	width: 100px
-	height: 50px
+	width: 6rem
+	height: 5rem
 	background-color: blue
 	color: #fff
-	line-height: 50px
+	line-height: 5rem
 	text-align: center
-	margin-bottom: 5px
+	margin-bottom: 0.5rem
+	cursor: pointer
+
+.dark
+	background-color: #181148
 
 .selected
 	background-color: gold
 
 .overflow
 	overflow-y: auto
-
-.spacer
-	width: 50px

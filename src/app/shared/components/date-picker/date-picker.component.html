@@ -1,42 +1,58 @@
-<div>
-	<div id='calendar-container'>
+<div class="null"
+	(click)="showCalendar()">
+	<p>{{showDate()}}</p>
+</div>
 
-		<div>
-			<form [formGroup]='dateForm'>
-				<input type="text" 
-					name='dateFrom' 
-					formControlName='dateFrom' 
-					placeholder='From Date'>
-				<input type="text" 
-					placeholder='To Date' 
-					name='dateTo' 
-					formControlName='dateTo'>
-				<button (click)='reserve()'>Reserve</button>
-			</form>
-		</div>
+<div class="calendar" *ngIf="show_calendar" (click)="modalClick($event)">
 
-		<div *ngIf='isReserved' class='reserved'>
-			{{isReserved}}
-		</div>
+	<!-- <div>
+		<form [formGroup]='dateForm'>
+			<input type="text" 
+				name='dateFrom' 
+				formControlName='dateFrom' 
+				placeholder='From Date'>
+			<input type="text" 
+				placeholder='To Date' 
+				name='dateTo' 
+				formControlName='dateTo'>
+			<button (click)='reserve()'>Reserve</button>
+		</form>
+	</div> -->
+<!-- 
+	<div *ngIf='isReserved' class='reserved'>
+		{{isReserved}}
+	</div> -->
 
-		<div>
-			<div (click)='previousMonth()'>PREV</div>
-			<div>{{date.format('MMMM ')}} {{date.format('YYYY ')}}</div>
-			<div (click)='nextMonth()'>NEXT</div>
-		</div>
-
-		<div class='calendar-days'>
-			<div *ngFor="let day of dayNames" 
+	<div class="calendar-wrap">
+		
+		<p class="calendar-date">{{date.format('MMMM ')}} {{date.format('YYYY ')}}</p>
+		
+		<div class="calendar-table">
+			<div class='calendar-days'>
+				<div *ngFor="let day of dayNames" 
 				class='calendar-day  calendar-day--name'>{{day}}</div>
-		</div>
-
-		<div class='calendar-days'>
-			<div *ngFor="let day of daysArr"
+			</div>
+			
+			<div class='calendar-days'>
+				<div *ngFor="let day of daysArr"
 				class='calendar-day' 
-				(click)='selectedDate(day)' 
-				[ngClass]="{'inactive ': !day, 'selected': isSelected(day), 'today': todayCheck(day)}">
-			{{day?.date()}}</div>
+				(click)="selectDay($event, day)" 
+				[ngClass]="{
+					'inactive ': !day, 
+					'today': todayCheck(day),
+					'selected': isSelected(day) 
+				}">
+				{{day?.date()}}</div>
+			</div>
 		</div>
 
+		<div class="calendar-btns">
+			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">PREV</div>
+			<button class="close" (click)="hideCalendar('close')">✕</button>
+			<div class="btn" (click)="monthPager('next')">NEXT</div>
+		</div>
+		
+		
 	</div>
+
 </div>

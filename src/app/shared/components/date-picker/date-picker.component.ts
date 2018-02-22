@@ -1,15 +1,17 @@
 import {
 	Component,
 	OnInit,
-	ViewEncapsulation
+	ViewEncapsulation,
+	Output,
+	EventEmitter
 } from '@angular/core';
 
-import {
-	FormBuilder,
-	FormControl,
-	FormGroup,
-	Validators
-} from '@angular/forms';
+// import {
+// 	FormBuilder,
+// 	FormControl,
+// 	FormGroup,
+// 	Validators
+// } from '@angular/forms';
 
 import * as moment from 'moment';
 
@@ -22,26 +24,40 @@ export class DatePickerComponent implements OnInit {
 
 	dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-	public date = moment();
-	public dateForm: FormGroup;
-
-	public isReserved = null;
-
+	public date;
+	prevMonthDate;
 	public daysArr;
+	public selected_day;
 
-	constructor(private fb: FormBuilder) {
-		this.initDateRange();
+	show_calendar = false;
+
+	@Output() outOnDateSelect = new EventEmitter();
+
+	// public isReserved = null;
+	// public dateForm: FormGroup;
+
+	constructor(/*private fb: FormBuilder*/) {
+		// this.initDateRange();
 	}
 
-	public initDateRange() {
-		return (this.dateForm = this.fb.group({
-			dateFrom: [null, Validators.required],
-			dateTo: [null, Validators.required]
-		}));
-	}
+	// public initDateRange() {
+	// 	return (this.dateForm = this.fb.group({
+	// 		dateFrom: [null, Validators.required],
+	// 		dateTo: [null, Validators.required]
+	// 	}));
+	// }
 
 	public ngOnInit() {
+		this.date = moment();
+		this.prevMonthDate = this.date.clone()
 		this.daysArr = this.createCalendar(this.date);
+	}
+
+	showDate() {
+		if (this.selected_day) {
+			return this.selected_day.format('L');
+		}
+		return 'MM/DD/YYYY';
 	}
 
 	public createCalendar(month) {
@@ -62,14 +78,23 @@ export class DatePickerComponent implements OnInit {
 		return days;
 	}
 
-	public nextMonth() {
-		this.date.add(1, 'M');
+	public monthPager(dir) {
+		if (dir == 'next') {
+			this.date.add(1, 'M');
+		}
+		if (dir == 'prev') {
+			if (this.checkPrev()) {
+				this.date.subtract(1, 'M');
+			}
+		}
 		this.daysArr = this.createCalendar(this.date);
 	}
 
-	public previousMonth() {
-		this.date.subtract(1, 'M');
-		this.daysArr = this.createCalendar(this.date);
+	checkPrev() {
+		if (this.prevMonthDate.isSame(this.date)) {
+			return false;
+		}
+		return true;
 	}
 
 	public todayCheck(day) {
@@ -79,41 +104,93 @@ export class DatePickerComponent implements OnInit {
 		return moment().format('L') === day.format('L');
 	}
 
-	public reserve() {
-		if (!this.dateForm.valid) {
-			return;
-		}
-		let dateFromMoment = this.dateForm.value.dateFrom;
-		let dateToMoment = this.dateForm.value.dateTo;
-		this.isReserved = `Reserved from ${dateFromMoment} to ${dateToMoment}`;
-	}
+	// public reserve() {
+	// 	if (!this.dateForm.valid) {
+	// 		return;
+	// 	}
+	// 	let dateFromMoment = this.dateForm.value.dateFrom;
+	// 	let dateToMoment = this.dateForm.value.dateTo;
+	// 	this.isReserved = `Reserved from ${dateFromMoment} to ${dateToMoment}`;
+	// }
 
 	public isSelected(day) {
 		if (!day) {
 			return false;
 		}
-		let dateFromMoment = moment(this.dateForm.value.dateFrom, 'MM/DD/YYYY');
-		let dateToMoment = moment(this.dateForm.value.dateTo, 'MM/DD/YYYY');
-		if (this.dateForm.valid) {
-			return (
-				dateFromMoment.isSameOrBefore(day) && dateToMoment.isSameOrAfter(day)
-			);
+		else {
+			if (this.selected_day) {
+
+				if (this.selected_day.format('L') == day.format('L')) {
+					return true;
+				}
+
+			}
 		}
-		if (this.dateForm.get('dateFrom').valid) {
-			return dateFromMoment.isSame(day);
+
+		// let dateFromMoment = moment(this.dateForm.value.dateFrom, 'MM/DD/YYYY');
+		// let dateToMoment = moment(this.dateForm.value.dateTo, 'MM/DD/YYYY');
+		// if (this.dateForm.valid) {
+		// 	return (
+		// 		dateFromMoment.isSameOrBefore(day) && dateToMoment.isSameOrAfter(day)
+		// 	);
+		// }
+		// if (this.dateForm.get('dateFrom').valid) {
+		// 	return dateFromMoment.isSame(day);
+		// }
+	}
+
+	public selectDay(e, day) {
+		if(day != null) {
+			this.selected_day = day;
+			setTimeout(() => {
+				this.hideCalendar('emit');
+			}, 200)
+		}
+
+		// this.selected_day = day["_d"];
+		// let dayFormatted = day.format('MM/DD/YYYY');
+
+		// console.log(this.selected_day);
+		// console.log(day["_d"]);
+		// console.log();
+
+		// if (this.dateForm.valid) {
+		// 	this.dateForm.setValue({ dateFrom: null, dateTo: null });
+		// 	return;
+		// }
+		// if (!this.dateForm.get('dateFrom').value) {
+		// 	this.dateForm.get('dateFrom').patchValue(dayFormatted);
+		// } else {
+		// 	this.dateForm.get('dateTo').patchValue(dayFormatted);
+		// }
+	}
+
+	hideCalendar(flag) {
+		if (flag === 'close') {
+			console.log('just close');
+			this.showCalendar();
+		}
+		if (flag === 'emit') {
+			console.log('emit date selected');
+			// let _date = this.selected_day.format('L');
+			let _date = {
+				m: this.selected_day.month(),
+				d: this.selected_day.date(),
+				y: this.selected_day.year()
+			}
+			this.outOnDateSelect.emit(_date);
+			this.showCalendar();
 		}
 	}
 
-	public selectedDate(day) {
-		let dayFormatted = day.format('MM/DD/YYYY');
-		if (this.dateForm.valid) {
-			this.dateForm.setValue({ dateFrom: null, dateTo: null });
-			return;
-		}
-		if (!this.dateForm.get('dateFrom').value) {
-			this.dateForm.get('dateFrom').patchValue(dayFormatted);
-		} else {
-			this.dateForm.get('dateTo').patchValue(dayFormatted);
-		}
+	showCalendar() {
+		this.show_calendar = !this.show_calendar;
 	}
+
+	modalClick(e) {
+    if (e.target.classList.contains('calendar')) {
+      this.showCalendar();
+    }
+  }
+
 }

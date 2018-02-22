@@ -46,6 +46,32 @@ table
 a
 	text-decoration: none
 
+// Fonts
+
+@font-face
+  font-family: 'Lato'
+  src: url("/assets/fonts/LR.ttf")
+  font-style: normal
+  font-weight: 400
+
+@font-face
+  font-family: 'Lato'
+  src: url("/assets/fonts/LL.ttf")
+  font-style: normal
+  font-weight: 300
+
+@font-face
+  font-family: 'Lato'
+  src: url("/assets/fonts/LLI.ttf")
+  font-style: italic
+  font-weight: 300
+
+@font-face
+  font-family: 'Lato'
+  src: url("/assets/fonts/LB.ttf")
+  font-style: normal
+  font-weight: 700
+
 // Vars
 
 $main-font: 'Lato'
@@ -63,3 +89,11 @@ $color_blue: #0a45f9
 // Services
 $color_2_TR: #246cbc
 $color_2_BL: #7a24bc
+
+// Setup
+html
+	font-size: 10px
+	font-family: $main-font
+
+body
+	font-size: 1.6rem

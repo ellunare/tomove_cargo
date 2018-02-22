@@ -1,23 +1,69 @@
-<div class="modal-bg" (click)="exit($event)">
-  <div class="time">
-    <div class="hours  overflow">
-      <p>Hours</p>
-      <ul>
-        <li class="cell"
-          *ngFor="let h of hours"
-          (click)="selectTime($event, 'H')"
-          [class.selected]="h==select_hour">{{h}}</li>
-      </ul>
-    </div>
-    <div class="spacer"></div>
-    <div class="minutes  overflow">
-      <p>Minutes</p>
-      <ul>
-        <li class="cell"
-          *ngFor="let m of minutes"
-          (click)="selectTime($event, 'M')"
-          [class.selected]="m==select_minute">{{m}}</li>
-      </ul>
-    </div>
-  </div>
+<div class="null"
+	(click)="showTimeBlock()">
+	<p>{{showTime()}}</p>
+</div>
+
+<div class="time-block" *ngIf="show_time" (click)="modalClick($event, 'time-block', 'B')">
+
+	<div class="time-wrap" *ngIf="!show_H && !show_M">
+		
+		<div class="time-select">
+
+			<div class="cell-parent" (click)="showElement('H')">
+				<p>{{getTimeValue('H')}}</p>
+			</div>
+			
+			<div class="spacer"></div>
+			
+			<div class="cell-parent" (click)="showElement('M')">
+				<p>{{getTimeValue('M')}}</p>
+			</div>
+			
+	</div>
+
+	<br>
+		
+	<div class="time-btns">
+		<button class="close" (click)="hideTimeBlock('close')">✕</button>
+	</div>
+		
+	</div>
+
+	<div class="element" *ngIf="show_H" (click)="modalClick($event, 'element', 'H')">
+		<div class="element-wrap">
+			<p>Hours</p>
+			<div class="hours">
+				<ul class="box">
+					<li class="cell"
+					*ngFor="let h of hours"
+					(click)="selectTime($event, 'H')"
+					[class.dark]="h < 8 || h > 15"
+					[class.selected]="h==select_hour">{{h}}</li>
+				</ul>
+			</div>
+			<br>
+			<div class="time-btns">
+				<button class="close" (click)="showElement('H')">✕</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="element" *ngIf="show_M" (click)="modalClick($event, 'element', 'M')">
+		<div class="element-wrap">
+			<p>Minutes</p>
+			<div class="minutes">
+				<ul class="box">
+					<li class="cell"
+					*ngFor="let m of minutes"
+					(click)="selectTime($event, 'M')"
+					[class.selected]="m==select_minute">{{m}}</li>
+				</ul>
+			</div>
+			<br>
+			<div class="time-btns">
+				<button class="close" (click)="showElement('M')">✕</button>
+			</div>
+		</div>
+	</div>
+	
 </div>

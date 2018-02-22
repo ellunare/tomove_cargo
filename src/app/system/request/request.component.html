@@ -70,8 +70,11 @@
 		<br>
 
 	</div>
-<date-picker></date-picker>
-	<!-- <time-picker></time-picker> -->
+
+	<div>
+		<date-picker (outOnDateSelect)="evDateSelected($event)"></date-picker>
+		<time-picker (outTimePicked)="evTimeSelected($event)"></time-picker>
+	</div>
 
 </form>
 
