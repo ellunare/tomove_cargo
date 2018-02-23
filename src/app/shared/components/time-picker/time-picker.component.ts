@@ -37,6 +37,9 @@ export class TimePickerComponent implements OnInit {
 
 	// Создаем диапазон выбора часов и минут
 	initTime() {
+		const z = '0';
+		const n = '';
+
 		const h_start = 0;
 		const h_end = 23;
 
@@ -45,11 +48,25 @@ export class TimePickerComponent implements OnInit {
 		const m_step = 10;
 
 		for (let i = h_start; i <= h_end; i++) {
-			this.hours.push(i);
+			let add;
+			if (i < 10) {
+				add = z;
+			}
+			else {
+				add = n;
+			}
+			this.hours.push(`${add}${i}`);
 		}
 
 		for (let i = m_start; i < m_end; i += m_step) {
-			this.minutes.push(i);
+			let add;
+			if (i < 10) {
+				add = z;
+			}
+			else {
+				add = n;
+			}
+			this.minutes.push(`${add}${i}`);
 		}
 	}
 
@@ -79,7 +96,7 @@ export class TimePickerComponent implements OnInit {
 
 	// Клик по ячейке
 	selectTime(e, type) {
-		const num = +e.target.innerText
+		const num = e.target.innerText
 
 		if (type === 'H') {
 			this.select_H = num;
@@ -123,7 +140,7 @@ export class TimePickerComponent implements OnInit {
 					h: this.select_H,
 					m: this.select_M
 				}
-				// Отдаем НАВЕРХ
+				// Отдаем НАВЕРХ (strings)
 				this.outTimePicked.emit(_time);
 			}
 		}

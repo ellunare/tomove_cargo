@@ -148,7 +148,7 @@ export class RequestComponent implements OnInit {
 	}
 
 	onAppartmentSelect() {
-		console.log(this.place.toLowerCase());
+		console.log(this.place);
 		// this.addressService.typeAppartment = this.typeRadio;
 	}
 

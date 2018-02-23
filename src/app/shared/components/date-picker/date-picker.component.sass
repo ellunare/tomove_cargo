@@ -1,7 +1,7 @@
 @import '../../../../styles.sass'
 
-$n_w: 13rem
-$n_h: 3rem
+$n_w: 12rem
+$n_h: 4rem
 $n_bor: 0.3rem
 .null
 	display: inline-block
@@ -11,11 +11,12 @@ $n_bor: 0.3rem
 	border-radius: 0.5rem
 	line-height: $n_h - 2 * $n_bor
 	text-align: center
-	color: #000
+	color: #fff
 	cursor: pointer
 
-$c_w: 40rem
+$c_w: 100%
 $day_w: $c_w / 7
+$day_h: 5rem
 
 $cl_bor: 0.2rem
 $cl_size: 5rem
@@ -31,8 +32,7 @@ $cl_size: 5rem
 	justify-content: center
 	align-items: center
 	&-wrap
-		// background-color: green
-		width: 400px
+		width: $c_w
 		text-align: center
 	&-date
 		width: 100%
@@ -40,20 +40,17 @@ $cl_size: 5rem
 		line-height: 4rem
 		color: #fff
 	&-table
-		// background-color: #3cc483
 		width: 100%
-		height: $day_w * 7 + 0.2rem
-		// border: 1px solid gold
+		height: $day_h * 7 + 1rem
 	&-days
 		display: flex
 		flex-wrap: wrap
 		width: 100%
 	&-day
 		width: $day_w
-		height: $day_w
+		height: $day_h
 		background: $color_bg_top_right
-		// border: 1px solid gold
-		line-height: $day_w
+		line-height: $day_h
 		color: #fff
 		text-align: center
 		cursor: pointer
@@ -71,7 +68,6 @@ $cl_size: 5rem
 			display: inline-block
 			width: 10rem
 			height: 5rem
-			// background-color: red
 			border-radius: 0.5rem
 			border: 0.2rem solid $color_gold
 			color: #fff

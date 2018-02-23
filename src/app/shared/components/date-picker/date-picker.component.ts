@@ -55,9 +55,9 @@ export class DatePickerComponent implements OnInit {
 
 	showDate() {
 		if (this.selected_day) {
-			return this.selected_day.format('L');
+			return this.selected_day.format('DD . MMM . YY');
 		}
-		return 'MM/DD/YYYY';
+		return 'MM . DD . YY';
 	}
 
 	public createCalendar(month) {

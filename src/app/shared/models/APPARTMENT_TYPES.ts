@@ -1,11 +1,11 @@
 export const APPARTMENT_TYPES = [
 	{
-		type: 'House'
+		type: 'house'
 	},
 	{
-		type: 'Appartment'
+		type: 'appartment'
 	},
 	{
-		type: 'Office'
+		type: 'office'
 	}
 ]

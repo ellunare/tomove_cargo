@@ -1,13 +1,13 @@
+export interface F_ITEM {
+	id: number,
+	name: string,
+	price: number,
+}
+
 export interface FURNITURE {
 	id: number,
 	name: string,
-	types: [
-		{
-			id: number,
-			name: string,
-			price: number
-		}
-	]
+	types: F_ITEM[]
 }
 
 export const FURNITURE_LIST: FURNITURE[] = [
@@ -18,7 +18,7 @@ export const FURNITURE_LIST: FURNITURE[] = [
 			{
 				id: 1,
 				name: 'Sofa 3',
-				price: 100
+				price: 100,
 			},
 			{
 				id: 2,
@@ -172,6 +172,11 @@ export const FURNITURE_LIST: FURNITURE[] = [
 				id: 1,
 				name: 'Washer Simple',
 				price: 300
+			},
+			{
+				id: 1,
+				name: 'Washer Simple',
+				price: 300
 			}
 		]
 	},
@@ -183,7 +188,8 @@ export const FURNITURE_LIST: FURNITURE[] = [
 				id: 1,
 				name: 'TV 42',
 				price: 300
-			}
+			},
+
 		]
 	}
 ]
