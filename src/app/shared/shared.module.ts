@@ -14,7 +14,7 @@ import { DatePickerComponent } from './components/date-picker/date-picker.compon
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
+    // ReactiveFormsModule,
     AgmCoreModule.forRoot({
       apiKey: CONFIG.googleMapsKey,
       libraries: ["places"]
@@ -22,7 +22,7 @@ import { DatePickerComponent } from './components/date-picker/date-picker.compon
   ],
   exports: [
     FormsModule,
-    ReactiveFormsModule,
+    // ReactiveFormsModule,
     TimePickerComponent,
     DatePickerComponent
   ],

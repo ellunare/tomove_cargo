@@ -1,5 +1,23 @@
 @import '../../../styles.sass'
 
+.req-step
+	width: 100%
+	// visibility: hidden
+	display: none
+
+.show-page
+	// visibility: visible
+	display: block
+
+.btn-page
+	height: 3rem
+	line-height: 3rem - 0.2rem * 2
+	background: none
+	color: #fff
+	border: 0.2rem solid $color_gold
+	border-radius: 0.5rem
+
+
 // ------------------- R1
 
 .types
@@ -155,6 +173,89 @@ $sw_trans: all .6s
 				background-color: $sw_tg_on
 
 // ------------------- R2
+
+$r_dot_w: 0.5rem
+.room-dot
+	display: inline-block
+	margin: 0 $r_dot_w / 2
+	width: $r_dot_w
+	height: $r_dot_w
+	border-radius: $r_dot_w
+	background-color: $color_gold
+	&--selected
+		background-color: #fff
+
+.item-list-name
+	line-height: 2rem
+
+
+
+
+.cam
+
+	&-wrap
+		text-align: center
+
+	&-main
+		margin: 0 auto
+		width: 100%
+		height: 220px
+		// background-color: gold
+
+	&-ramka
+		// background-color: $color_gold
+		width: auto
+		height: 100%
+		overflow-x: auto
+		overflow-y: hidden
+		// display: -webkit-box
+		// display: -webkit-flex
+		// display: -ms-flexbox
+		display: flex
+
+// .img_one
+//   position: relative
+//   img
+//     height: 200px
+
+// .tag
+//   position: absolute
+//   width: 20px
+//   height: 20px
+//   color: #000
+//   font-size: 9px
+//   line-height: 20px
+//   cursor: pointer
+//   z-index: 10
+//   &:after
+//     content: ''
+//     display: block
+//     width: 12px
+//     height: 12px
+//     -webkit-border-radius: 200px
+//     border-radius: 200px
+//     background-color: #00f6ff
+//     position: absolute
+//     top: 4px
+//     left: 4px
+//     z-index: -1
+
+#camera_icon
+  display: block
+  width: 50px
+  margin: 0 auto
+  margin-top: 20px
+
+.text
+  display: block
+  margin: auto
+
+
+
+
+
+
+
 
 .modal-bg
 	position: absolute

@@ -1,0 +1,17 @@
+@import '../../styles.sass'
+
+$sb_h: 5rem
+$sb_a: 3rem
+
+.statusbar
+	width: 100%
+	height: $sb_h
+	&__title
+		line-height: $sb_h
+	&__avatar
+		width: $sb_a
+		height: $sb_a
+		border: 1rem solid $color_gold
+		border-radius: $sb_h
+		margin-top: ($sb_h - $sb_a) / 2
+

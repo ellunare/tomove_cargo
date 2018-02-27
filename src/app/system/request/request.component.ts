@@ -17,6 +17,10 @@ import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST';
 })
 export class RequestComponent implements OnInit {
 
+	req_page = 1;
+
+	// ---------------------------------------------------------------------- 1
+
 	///////////////////////////// --- Place type
 	PLACES = APPARTMENT_TYPES;
 	place: string;
@@ -43,13 +47,23 @@ export class RequestComponent implements OnInit {
 	floors = [];
 
 	///////////////////////////// --- Switches
-	@ViewChild('floor_O') public lift_O: ElementRef;
+	// @ViewChild('floor_O') public lift_O: ElementRef;
+	// lift_O = false;
+	// lift_D = false;
 
 	o_lift: boolean = false;
+	d_lift: boolean = false;
 
 	///////////////////////////// --- Date and Time
 	request_time: any;
 	request_date: any;
+
+	// ---------------------------------------------------------------------- 2
+
+	@ViewChild('camera') public camera: ElementRef;
+	@ViewChild('cam_ramka') public cam_ramka: ElementRef;
+
+	tagId = 1;
 
 	///////////////////////////// --- Furniture
 	FURNITURE = FURNITURE_LIST;
@@ -62,80 +76,97 @@ export class RequestComponent implements OnInit {
 	total_price = 0;
 
 	///////////////////////////// --- Rooms
-	current_room = 1;
+	current_room = 2;
 	rooms = [
 		{
 			id: 1,
-			name: "ZAL",
+			name: "bathroom",
 			items: [
 				{
 					id: 2,
-					name: 'haha',
+					name: '01 - Washer',
 					price: 200
 				},
 				{
 					id: 3,
-					name: 'hasdaha',
+					name: '02 - Table',
 					price: 200
 				},
 				{
 					id: 2,
-					name: 'hww22aha',
+					name: '03 - Shelf',
 					price: 200
 				},
 			]
 		},
 		{
 			id: 2,
-			name: "kuhnia",
+			name: "salon",
 			items: [
 				{
 					id: 2,
-					name: '243haha',
+					name: '01 - TV 32',
 					price: 200
 				},
 				{
 					id: 3,
-					name: '9989hasdaha',
+					name: '02 - Sofa 2',
 					price: 200
 				},
 				{
 					id: 2,
-					name: '006fhww22aha',
+					name: '03 - Table',
 					price: 200
 				},
 			]
 		},
 		{
 			id: 3,
-			name: "vanna",
+			name: "kitchen",
 			items: [
 				{
 					id: 2,
-					name: 'hasdaha',
+					name: '01 - Microwave',
 					price: 200
 				},
 				{
 					id: 3,
-					name: 'h2223asdaha',
+					name: '02 - Table',
 					price: 200
 				},
 				{
 					id: 2,
-					name: 'h3131ww22aha',
+					name: '03 - Fridge 400',
 					price: 200
 				},
 			]
 		}
 	]
 
+	// ---------------------------------------------------------------------- 3
+
 	constructor(
 		private _maps: MapsGoogleService
 	) { }
 
 	ngOnInit() {
+		this.photoAppInit();
 		this.initFloors();
 		this.mapFormLoader();
+	}
+
+	// PAGER
+
+	stepNext() {
+		if (this.req_page < 3) {
+			this.req_page++;
+		}
+	}
+
+	stepPrev() {
+		if (this.req_page > 1) {
+			this.req_page--;
+		}
 	}
 
 	// STEP 1 -----------------------------------------------------------------------------------//
@@ -211,15 +242,15 @@ export class RequestComponent implements OnInit {
 	}
 
 	// Переключатели
-	liftCheck(e, place) {
-		const check = e.target.check;
-		if (place === 'O') {
-			this.o_lift = check;
-		}
-		if (place === 'D') {
-			// this.d_lift = check;
-		}
-	}
+	// liftCheck(e, place) {
+	// 	const check = e.target.check;
+	// 	if (place === 'O') {
+	// 		this.o_lift = check;
+	// 	}
+	// 	if (place === 'D') {
+	// 		// this.d_lift = check;
+	// 	}
+	// }
 
 	// Дата выбрана
 	evDateSelected(e) {
@@ -236,6 +267,72 @@ export class RequestComponent implements OnInit {
 
 	// STEP 2 -----------------------------------------------------------------------------------//
 
+	photoAppInit() {
+		// this.cam_ramka.nativeElement.addEventListener('click', this.addTag);
+		// this.cam_ramka.nativeElement.addEventListener('touchstart ', this.addTag);
+
+
+		// const
+		// camera = document.querySelector('#camera'),
+		// ramka = document.querySelector('.ramka'),
+		// imgs = document.querySelector('.imgs'),
+		// bodyText = document.querySelector('.text'),
+		// tagList = document.querySelector('#tags')
+		// ;
+
+		// let tagId = 1;
+
+		// camera.addEventListener('change', updateImageDisplay);
+	}
+
+	updateImageDisplay() {
+		const curFiles = this.camera.nativeElement.files;
+
+		for (let i = 0; i < curFiles.length; i++) {
+			let image = document.createElement('img');
+			image.src = window.URL.createObjectURL(curFiles[i]);
+
+			let imgOne = document.createElement('div');
+			imgOne.classList.add('img_one');
+			imgOne.appendChild(image);
+
+			this.cam_ramka.nativeElement.appendChild(imgOne);
+		}
+	}
+
+	addTag(e) {
+		console.log(e);
+		console.log(e.offsetX, e.offsetY);
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (e.target.parentElement.parentElement.classList.contains('cam-ramka')) {
+			if (!e.srcElement.classList.contains('tag')) {
+				let tagX = e.offsetX;
+				let tagY = e.offsetY;
+
+				let imgOne = e.srcElement.parentElement;
+				this.adrawTag(tagX, tagY, imgOne);
+			}
+			else {
+				e.srcElement.remove();
+			}
+		}
+
+	}
+
+	adrawTag(x, y, container) {
+		// console.log(x, y, container);
+		let tag = document.createElement('div');
+		tag.classList.add('tag');
+		tag.style.marginLeft = (x - 10) + 'px';
+		tag.style.marginTop = (y - 10) + 'px';
+
+		tag.innerText = String(this.tagId++);
+
+		container.insertAdjacentElement('afterbegin', tag);
+	}
+
 	selectItemType(e) {
 		const id = e.target.parentElement.dataset.id;
 		this.f_typeId = id;
@@ -245,25 +342,34 @@ export class RequestComponent implements OnInit {
 	onItemSelected(e) {
 		const id = e.target.parentElement.dataset.id;
 		this.showItems = false;
-		// this.roomItemList.push(this.FURNITURE[this.f_typeId - 1].types[id - 1]);
 		this.rooms[this.current_room - 1].items.push(this.FURNITURE[this.f_typeId - 1].types[id - 1]);
-		this.totalPrice();
+		// this.totalPrice();
 	}
 
-	totalPrice() {
-		this.total_price = 0;
-		const sum = this.roomItemList.reduce((prev, next) => {
-			return prev += next.price;
-		}, this.total_price);
-		this.total_price = sum;
-	}
+	// totalPrice() {
+	// 	this.total_price = 0;
+	// 	const sum = this.roomItemList.reduce((prev, next) => {
+	// 		return prev += next.price;
+	// 	}, this.total_price);
+	// 	this.total_price = sum;
+	// }
 
 	roomPage(page) {
-		if (page === 'prev' && this.current_room > 1) {
-			this.current_room--;
+		if (page === 'prev') {
+			if (this.current_room > 1) {
+				this.current_room--;
+			}
+			else {
+				this.current_room = this.rooms.length
+			}
 		}
-		if (page === 'next' && this.current_room < this.rooms.length) {
-			this.current_room++;
+		if (page === 'next') {
+			if (this.current_room < this.rooms.length) {
+				this.current_room++;
+			}
+			else {
+				this.current_room = 1;
+			}
 		}
 	}
 
@@ -271,6 +377,8 @@ export class RequestComponent implements OnInit {
 
 	console() {
 		// this.getDistance();
+		console.log(this.o_lift, this.d_lift);
+		
 		// console.log(this.rooms);
 	}
 
