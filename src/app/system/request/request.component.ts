@@ -5,10 +5,12 @@ import {
 	ElementRef
 } from '@angular/core';
 
+import { DomSanitizer } from '@angular/platform-browser';
+
 import { MapsGoogleService } from '../../shared/services/maps-google.service';
 
 import { APPARTMENT_TYPES } from '../../shared/models/APPARTMENT_TYPES';
-import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST';
+import { FURNITURE_LIST, rooms } from '../../shared/models/FURNITURE_LIST';
 
 @Component({
 	selector: 'request',
@@ -62,112 +64,55 @@ export class RequestComponent implements OnInit {
 
 	@ViewChild('camera') public camera: ElementRef;
 	@ViewChild('cam_ramka') public cam_ramka: ElementRef;
+	curFiles_arr = [];
 
 	tagId = 1;
 
+	@ViewChild('item_picker') private item_picker;
+
+	temp_tag;
+
 	///////////////////////////// --- Furniture
-	FURNITURE = FURNITURE_LIST;
-	f_typeId: number;
+	// FURNITURE = FURNITURE_LIST;
+	// f_typeId: number;
 	// f_Id: number;
-	showItems: boolean = false;
-	roomItemList = [];
+	// showItems: boolean = false;
+	// roomItemList = [];
 
 	///////////////////////////// --- Total
 	total_price = 0;
 
 	///////////////////////////// --- Rooms
 	current_room = 2;
-	rooms = [
-		{
-			id: 1,
-			name: "bathroom",
-			items: [
-				{
-					id: 2,
-					name: '01 - Washer',
-					price: 200
-				},
-				{
-					id: 3,
-					name: '02 - Table',
-					price: 200
-				},
-				{
-					id: 2,
-					name: '03 - Shelf',
-					price: 200
-				},
-			]
-		},
-		{
-			id: 2,
-			name: "salon",
-			items: [
-				{
-					id: 2,
-					name: '01 - TV 32',
-					price: 200
-				},
-				{
-					id: 3,
-					name: '02 - Sofa 2',
-					price: 200
-				},
-				{
-					id: 2,
-					name: '03 - Table',
-					price: 200
-				},
-			]
-		},
-		{
-			id: 3,
-			name: "kitchen",
-			items: [
-				{
-					id: 2,
-					name: '01 - Microwave',
-					price: 200
-				},
-				{
-					id: 3,
-					name: '02 - Table',
-					price: 200
-				},
-				{
-					id: 2,
-					name: '03 - Fridge 400',
-					price: 200
-				},
-			]
-		}
-	]
+	rooms = rooms;
 
 	// ---------------------------------------------------------------------- 3
 
 	constructor(
-		private _maps: MapsGoogleService
+		private _maps: MapsGoogleService,
+		private _sanitizer: DomSanitizer
 	) { }
 
 	ngOnInit() {
-		this.photoAppInit();
 		this.initFloors();
 		this.mapFormLoader();
 	}
 
 	// PAGER
 
-	stepNext() {
-		if (this.req_page < 3) {
-			this.req_page++;
+	pager(dir) {
+		if (dir === 'N') {
+			if (this.req_page < 3) {
+				this.req_page++;
+			}
+		}
+		if (dir === 'P') {
+			if (this.req_page > 1) {
+				this.req_page--;
+			}
 		}
 	}
 
-	stepPrev() {
-		if (this.req_page > 1) {
-			this.req_page--;
-		}
-	}
 
 	// STEP 1 -----------------------------------------------------------------------------------//
 
@@ -180,7 +125,6 @@ export class RequestComponent implements OnInit {
 
 	onAppartmentSelect() {
 		console.log(this.place);
-		// this.addressService.typeAppartment = this.typeRadio;
 	}
 
 	// Initialize search elements for MapAPI
@@ -267,62 +211,50 @@ export class RequestComponent implements OnInit {
 
 	// STEP 2 -----------------------------------------------------------------------------------//
 
-	photoAppInit() {
-		// this.cam_ramka.nativeElement.addEventListener('click', this.addTag);
-		// this.cam_ramka.nativeElement.addEventListener('touchstart ', this.addTag);
-
-
-		// const
-		// camera = document.querySelector('#camera'),
-		// ramka = document.querySelector('.ramka'),
-		// imgs = document.querySelector('.imgs'),
-		// bodyText = document.querySelector('.text'),
-		// tagList = document.querySelector('#tags')
-		// ;
-
-		// let tagId = 1;
-
-		// camera.addEventListener('change', updateImageDisplay);
-	}
-
-	updateImageDisplay() {
+	takePhoto(e) {
+		// console.log(e, this.camera);
 		const curFiles = this.camera.nativeElement.files;
-
-		for (let i = 0; i < curFiles.length; i++) {
-			let image = document.createElement('img');
-			image.src = window.URL.createObjectURL(curFiles[i]);
-
-			let imgOne = document.createElement('div');
-			imgOne.classList.add('img_one');
-			imgOne.appendChild(image);
-
-			this.cam_ramka.nativeElement.appendChild(imgOne);
+		if (curFiles.length) {
+			const _url = window.URL.createObjectURL(curFiles[curFiles.length - 1]);
+			this.curFiles_arr.push(_url);
+			// console.log(this.curFiles_arr);
 		}
 	}
 
+	sanitize(url: string) {
+		return this._sanitizer.bypassSecurityTrustUrl(url);
+	}
+
 	addTag(e) {
-		console.log(e);
-		console.log(e.offsetX, e.offsetY);
+		// console.log(e);
+		// console.log(e.offsetX, e.offsetY);
 		e.preventDefault();
 		e.stopPropagation();
 
 		if (e.target.parentElement.parentElement.classList.contains('cam-ramka')) {
 			if (!e.srcElement.classList.contains('tag')) {
-				let tagX = e.offsetX;
-				let tagY = e.offsetY;
+				const data = {
+					tagX: e.offsetX,
+					tagY: e.offsetY,
+					imgOne: e.srcElement.parentElement
+				}
+				this.temp_tag = data;
 
-				let imgOne = e.srcElement.parentElement;
-				this.adrawTag(tagX, tagY, imgOne);
+				this.item_picker.select();
 			}
 			else {
 				e.srcElement.remove();
 			}
 		}
-
+		
+	}
+	
+	evItemSelected(e) {
+		console.log(e);
+		this.drawTag(this.temp_tag.tagX, this.temp_tag.tagY, this.temp_tag.imgOne);
 	}
 
-	adrawTag(x, y, container) {
-		// console.log(x, y, container);
+	drawTag(x, y, container) {
 		let tag = document.createElement('div');
 		tag.classList.add('tag');
 		tag.style.marginLeft = (x - 10) + 'px';
@@ -331,19 +263,6 @@ export class RequestComponent implements OnInit {
 		tag.innerText = String(this.tagId++);
 
 		container.insertAdjacentElement('afterbegin', tag);
-	}
-
-	selectItemType(e) {
-		const id = e.target.parentElement.dataset.id;
-		this.f_typeId = id;
-		this.showItems = true;
-	}
-
-	onItemSelected(e) {
-		const id = e.target.parentElement.dataset.id;
-		this.showItems = false;
-		this.rooms[this.current_room - 1].items.push(this.FURNITURE[this.f_typeId - 1].types[id - 1]);
-		// this.totalPrice();
 	}
 
 	// totalPrice() {
@@ -378,7 +297,7 @@ export class RequestComponent implements OnInit {
 	console() {
 		// this.getDistance();
 		console.log(this.o_lift, this.d_lift);
-		
+
 		// console.log(this.rooms);
 	}
 

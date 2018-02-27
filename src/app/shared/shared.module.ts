@@ -6,8 +6,9 @@ import { CONFIG } from '../../environments/config';
 import { AgmCoreModule } from '@agm/core';
 import { MapsGoogleService } from './services/maps-google.service';
 
-import { TimePickerComponent } from './components/time-picker/time-picker.component'
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
+import { TimePickerComponent } from './components/time-picker/time-picker.component'
+import { ItemPickerComponent } from './components/item-picker/item-picker.component';
 
 
 @NgModule({
@@ -23,12 +24,14 @@ import { DatePickerComponent } from './components/date-picker/date-picker.compon
   exports: [
     FormsModule,
     // ReactiveFormsModule,
+    DatePickerComponent,
     TimePickerComponent,
-    DatePickerComponent
+    ItemPickerComponent
   ],
   declarations: [
     TimePickerComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    ItemPickerComponent
   ],
   providers: [
     MapsGoogleService

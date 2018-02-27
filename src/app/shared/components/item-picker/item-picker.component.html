@@ -1,0 +1,39 @@
+<div class="wrap" [class.hide]="!show_f_list">
+	<div class="furniture" (click)="selectType($event)">
+		<div 
+			class="f_item  type" 
+			*ngFor="let t of FURNITURE" 
+			attr.data-id="{{t.id}}">
+			
+			<img src="../../../assets/f/{{t.id}}/icon.gif">
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<div class="btns">
+		<button class="close" 
+			(click)="showList('F', false)">
+			✕</button>
+	</div>
+</div>
+
+<div class="modal-bg" *ngIf="show_i_list">
+	<div class="furniture-select" (click)="onItemSelected($event)">
+		<div 
+			class="f_item  item" 
+			*ngFor="let f of FURNITURE[f_typeId - 1].types" 
+			attr.data-id="{{f.id}}">
+			
+			<img src="../../../assets/f/{{f_typeId}}/i/{{f.id}}.gif">
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<div class="btns">
+		<button class="close" 
+			(click)="showList('I', false)">
+			✕</button>
+	</div>
+</div>

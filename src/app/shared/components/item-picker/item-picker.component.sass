@@ -1,0 +1,59 @@
+@import '../../../../styles.sass'
+
+.hide
+	display: none
+
+.wrap
+	position: fixed
+	z-index: 20
+	width: 100%
+	height: 100%
+	top: 0
+	left: 0
+	background-color: $color_bg_bottom_left
+
+.f_item
+	width: 33.3%
+	padding: 0.5rem
+	cursor: pointer
+	img
+		width: 100%
+
+.furniture
+	width: 100%
+	display: flex
+	flex-wrap: wrap
+	&-select
+		width: 100%
+		display: flex
+		flex-wrap: wrap
+
+.modal-bg
+	position: fixed
+	left: 0
+	top: 0
+	width: 100%
+	height: 100%
+	background-color: $color_bg_bottom_left
+	z-index: 20
+	display: flex
+	flex-direction: column
+	justify-content: center
+	align-items: center
+
+
+$cl_bor: 0.2rem
+$cl_size: 5rem
+.btns
+	width: 100%
+	text-align: center
+	.close
+		width: $cl_size
+		height: $cl_size
+		background-color: transparentize(#000, 1)
+		color: $color_gold
+		line-height: $cl_size - $cl_bor * 2
+		border-radius: $cl_size
+		outline: none
+		border: $cl_bor solid $color_gold
+		cursor: pointer
