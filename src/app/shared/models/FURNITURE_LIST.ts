@@ -12,7 +12,68 @@ export interface FURNITURE {
 
 export const FURNITURE_LIST: FURNITURE[] = [
 	{
-		id: 1,
+		id: 101,
+		name: 'fridge',
+		types: [
+			{
+				id: 1,
+				name: 'Fridge 3-Door',
+				price: 200
+			},
+			{
+				id: 2,
+				name: 'Fridge 2-Door',
+				price: 200
+			},
+			{
+				id: 3,
+				name: 'Fridge 600L',
+				price: 200
+			},
+			{
+				id: 4,
+				name: 'Fridge 400L',
+				price: 200
+			},
+			{
+				id: 5,
+				name: 'Fridge 250L',
+				price: 200
+			},
+			{
+				id: 6,
+				name: 'Fridge Office',
+				price: 200
+			},
+			{
+				id: 7,
+				name: 'Freezer Large',
+				price: 200
+			},
+			{
+				id: 8,
+				name: 'Freezer Small',
+				price: 200
+			},
+			{
+				id: 9,
+				name: 'Wine Cooler',
+				price: 200
+			}
+		]
+	},
+	{
+		id: 102,
+		name: 'stove',
+		types: []
+	},
+	{
+		id: 103,
+		name: 'table',
+		types: []
+	},
+	{
+		id: 104,
 		name: 'Sofa',
 		types: [
 			{
@@ -63,59 +124,75 @@ export const FURNITURE_LIST: FURNITURE[] = [
 		]
 	},
 	{
-		id: 2,
-		name: 'Fridge',
+		id: 105,
+		name: 'desk',
+		types: []
+	},
+	{
+		id: 106,
+		name: 'bed_dbl',
+		types: []
+	},
+	{
+		id: 107,
+		name: 'bed_sgl',
+		types: []
+	},
+	{
+		id: 108,
+		name: 'chair',
+		types: []
+	},
+	{
+		id: 109,
+		name: 'washer',
 		types: [
 			{
 				id: 1,
-				name: 'Fridge 3-Door',
-				price: 200
+				name: 'Washer Simple',
+				price: 300
 			},
 			{
-				id: 2,
-				name: 'Fridge 2-Door',
-				price: 200
-			},
-			{
-				id: 3,
-				name: 'Fridge 600L',
-				price: 200
-			},
-			{
-				id: 4,
-				name: 'Fridge 400L',
-				price: 200
-			},
-			{
-				id: 5,
-				name: 'Fridge 250L',
-				price: 200
-			},
-			{
-				id: 6,
-				name: 'Fridge Office',
-				price: 200
-			},
-			{
-				id: 7,
-				name: 'Freezer Large',
-				price: 200
-			},
-			{
-				id: 8,
-				name: 'Freezer Small',
-				price: 200
-			},
-			{
-				id: 9,
-				name: 'Wine Cooler',
-				price: 200
+				id: 1,
+				name: 'Washer Simple',
+				price: 300
 			}
 		]
 	},
 	{
-		id: 3,
-		name: 'Wardrobe',
+		id: 110,
+		name: 'stand',
+		types: []
+	},
+	{
+		id: 111,
+		name: 'tv',
+		types: [
+			{
+				id: 1,
+				name: 'TV 42',
+				price: 300
+			}
+		]
+	},
+	{
+		id: 112,
+		name: 'piano',
+		types: []
+	},
+	{
+		id: 113,
+		name: 'aquarium',
+		types: []
+	},
+	{
+		id: 114,
+		name: 'sport',
+		types: []
+	},
+	{
+		id: 115,
+		name: 'wardrobe',
 		types: [
 			{
 				id: 1,
@@ -165,33 +242,40 @@ export const FURNITURE_LIST: FURNITURE[] = [
 		]
 	},
 	{
-		id: 4,
-		name: 'Washer',
-		types: [
-			{
-				id: 1,
-				name: 'Washer Simple',
-				price: 300
-			},
-			{
-				id: 1,
-				name: 'Washer Simple',
-				price: 300
-			}
-		]
+		id: 116,
+		name: 'glasscase',
+		types: []
 	},
 	{
-		id: 5,
-		name: 'TV',
-		types: [
-			{
-				id: 1,
-				name: 'TV 42',
-				price: 300
-			},
-
-		]
-	}
+		id: 117,
+		name: 'climate',
+		types: []
+	},
+	{
+		id: 118,
+		name: 'shelf',
+		types: []
+	},
+	{
+		id: 119,
+		name: 'pro',
+		types: []
+	},
+	{
+		id: 120,
+		name: 'storage',
+		types: []
+	},
+	{
+		id: 121,
+		name: 'box',
+		types: []
+	},
+	{
+		id: 122,
+		name: 'garden',
+		types: []
+	},
 ]
 
 

@@ -6,13 +6,6 @@ import {
 	EventEmitter
 } from '@angular/core';
 
-// import {
-// 	FormBuilder,
-// 	FormControl,
-// 	FormGroup,
-// 	Validators
-// } from '@angular/forms';
-
 import * as moment from 'moment';
 
 @Component({
@@ -33,19 +26,7 @@ export class DatePickerComponent implements OnInit {
 
 	@Output() outOnDateSelect = new EventEmitter();
 
-	// public isReserved = null;
-	// public dateForm: FormGroup;
-
-	constructor(/*private fb: FormBuilder*/) {
-		// this.initDateRange();
-	}
-
-	// public initDateRange() {
-	// 	return (this.dateForm = this.fb.group({
-	// 		dateFrom: [null, Validators.required],
-	// 		dateTo: [null, Validators.required]
-	// 	}));
-	// }
+	constructor() { }
 
 	public ngOnInit() {
 		this.date = moment();
@@ -104,14 +85,9 @@ export class DatePickerComponent implements OnInit {
 		return moment().format('L') === day.format('L');
 	}
 
-	// public reserve() {
-	// 	if (!this.dateForm.valid) {
-	// 		return;
-	// 	}
-	// 	let dateFromMoment = this.dateForm.value.dateFrom;
-	// 	let dateToMoment = this.dateForm.value.dateTo;
-	// 	this.isReserved = `Reserved from ${dateFromMoment} to ${dateToMoment}`;
-	// }
+	isBeforeToday(day) {
+		return moment().isAfter(day, 'D');
+	}
 
 	public isSelected(day) {
 		if (!day) {
@@ -119,60 +95,30 @@ export class DatePickerComponent implements OnInit {
 		}
 		else {
 			if (this.selected_day) {
-
 				if (this.selected_day.format('L') == day.format('L')) {
 					return true;
 				}
-
 			}
 		}
-
-		// let dateFromMoment = moment(this.dateForm.value.dateFrom, 'MM/DD/YYYY');
-		// let dateToMoment = moment(this.dateForm.value.dateTo, 'MM/DD/YYYY');
-		// if (this.dateForm.valid) {
-		// 	return (
-		// 		dateFromMoment.isSameOrBefore(day) && dateToMoment.isSameOrAfter(day)
-		// 	);
-		// }
-		// if (this.dateForm.get('dateFrom').valid) {
-		// 	return dateFromMoment.isSame(day);
-		// }
 	}
 
 	public selectDay(e, day) {
-		if(day != null) {
-			this.selected_day = day;
-			setTimeout(() => {
-				this.hideCalendar('emit');
-			}, 200)
+		if (day == null || e.target.classList.contains('beforetoday')) {
+			return;
 		}
 
-		// this.selected_day = day["_d"];
-		// let dayFormatted = day.format('MM/DD/YYYY');
+		this.selected_day = day;
+		setTimeout(() => {
+			this.hideCalendar('emit');
+		}, 200);
 
-		// console.log(this.selected_day);
-		// console.log(day["_d"]);
-		// console.log();
-
-		// if (this.dateForm.valid) {
-		// 	this.dateForm.setValue({ dateFrom: null, dateTo: null });
-		// 	return;
-		// }
-		// if (!this.dateForm.get('dateFrom').value) {
-		// 	this.dateForm.get('dateFrom').patchValue(dayFormatted);
-		// } else {
-		// 	this.dateForm.get('dateTo').patchValue(dayFormatted);
-		// }
 	}
 
 	hideCalendar(flag) {
 		if (flag === 'close') {
-			console.log('just close');
 			this.showCalendar();
 		}
 		if (flag === 'emit') {
-			console.log('emit date selected');
-			// let _date = this.selected_day.format('L');
 			let _date = {
 				m: this.selected_day.month(),
 				d: this.selected_day.date(),
@@ -188,9 +134,9 @@ export class DatePickerComponent implements OnInit {
 	}
 
 	modalClick(e) {
-    if (e.target.classList.contains('calendar')) {
-      this.showCalendar();
-    }
-  }
+		if (e.target.classList.contains('calendar')) {
+			this.showCalendar();
+		}
+	}
 
 }

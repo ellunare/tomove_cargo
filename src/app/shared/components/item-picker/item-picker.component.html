@@ -16,13 +16,15 @@
 			(click)="showList('F', false)">
 			✕</button>
 	</div>
+	<br>
+	<br>
 </div>
 
 <div class="modal-bg" *ngIf="show_i_list">
 	<div class="furniture-select" (click)="onItemSelected($event)">
 		<div 
 			class="f_item  item" 
-			*ngFor="let f of FURNITURE[f_typeId - 1].types" 
+			*ngFor="let f of FURNITURE[f_typeId - 1 - 100].types" 
 			attr.data-id="{{f.id}}">
 			
 			<img src="../../../assets/f/{{f_typeId}}/i/{{f.id}}.gif">

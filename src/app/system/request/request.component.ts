@@ -250,8 +250,9 @@ export class RequestComponent implements OnInit {
 	}
 	
 	evItemSelected(e) {
-		console.log(e);
+		console.log(e.item);
 		this.drawTag(this.temp_tag.tagX, this.temp_tag.tagY, this.temp_tag.imgOne);
+		this.rooms[this.current_room - 1].items.push(e.item);
 	}
 
 	drawTag(x, y, container) {

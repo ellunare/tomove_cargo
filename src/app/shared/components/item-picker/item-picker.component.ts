@@ -1,6 +1,5 @@
 import {
 	Component,
-	OnInit,
 	Output,
 	EventEmitter
 } from '@angular/core';
@@ -12,7 +11,7 @@ import { FURNITURE_LIST } from '../../models/FURNITURE_LIST';
 	templateUrl: './item-picker.component.html',
 	styleUrls: ['./item-picker.component.sass']
 })
-export class ItemPickerComponent implements OnInit {
+export class ItemPickerComponent {
 
 	FURNITURE = FURNITURE_LIST;
 	f_typeId: number;
@@ -22,9 +21,6 @@ export class ItemPickerComponent implements OnInit {
 	@Output() outItemSelected = new EventEmitter();
 
 	constructor() { }
-
-	ngOnInit() {
-	}
 
 	select() {
 		this.showList('F', true);
@@ -53,7 +49,7 @@ export class ItemPickerComponent implements OnInit {
 
 			const data = {
 				id_type: this.f_typeId,
-				item: this.FURNITURE[+this.f_typeId - 1].types[+id - 1]
+				item: this.FURNITURE[+this.f_typeId - 1 - 100].types[+id - 1]
 			}
 
 			this.outItemSelected.emit(data);
