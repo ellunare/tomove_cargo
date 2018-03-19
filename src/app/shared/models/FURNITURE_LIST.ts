@@ -284,63 +284,63 @@ export const rooms = [
 		id: 1,
 		name: "bathroom",
 		items: [
-			{
-				id: 2,
-				name: '01 - Washer',
-				price: 200
-			},
-			{
-				id: 3,
-				name: '02 - Table',
-				price: 200
-			},
-			{
-				id: 2,
-				name: '03 - Shelf',
-				price: 200
-			},
+			// {
+			// 	id: 2,
+			// 	name: '01 - Washer',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 3,
+			// 	name: '02 - Table',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 2,
+			// 	name: '03 - Shelf',
+			// 	price: 200
+			// },
 		]
 	},
 	{
 		id: 2,
 		name: "salon",
 		items: [
-			{
-				id: 2,
-				name: '01 - TV 32',
-				price: 200
-			},
-			{
-				id: 3,
-				name: '02 - Sofa 2',
-				price: 200
-			},
-			{
-				id: 2,
-				name: '03 - Table',
-				price: 200
-			},
+			// {
+			// 	id: 2,
+			// 	name: '01 - TV 32',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 3,
+			// 	name: '02 - Sofa 2',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 2,
+			// 	name: '03 - Table',
+			// 	price: 200
+			// },
 		]
 	},
 	{
 		id: 3,
 		name: "kitchen",
 		items: [
-			{
-				id: 2,
-				name: '01 - Microwave',
-				price: 200
-			},
-			{
-				id: 3,
-				name: '02 - Table',
-				price: 200
-			},
-			{
-				id: 2,
-				name: '03 - Fridge 400',
-				price: 200
-			},
+			// {
+			// 	id: 2,
+			// 	name: '01 - Microwave',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 3,
+			// 	name: '02 - Table',
+			// 	price: 200
+			// },
+			// {
+			// 	id: 2,
+			// 	name: '03 - Fridge 400',
+			// 	price: 200
+			// },
 		]
 	}
 ]

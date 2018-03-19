@@ -156,7 +156,9 @@
 
 	<div class="p2">
 		<ul>
-			<li *ngFor="let r of rooms[current_room - 1].items" class="item-list-name">{{r.name}}</li>
+			<li class="item-list-name"
+				*ngFor="let r of rooms[current_room - 1].items; let idxi = index" 
+				>{{idxi + 1}} - {{r.name}}</li>
 		</ul>
 	</div>
 

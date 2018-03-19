@@ -231,6 +231,7 @@ export class RequestComponent implements OnInit {
 		e.preventDefault();
 		e.stopPropagation();
 
+		// Press on PHOTO
 		if (e.target.parentElement.parentElement.classList.contains('cam-ramka')) {
 			if (!e.srcElement.classList.contains('tag')) {
 				const data = {
@@ -242,26 +243,70 @@ export class RequestComponent implements OnInit {
 
 				this.item_picker.select();
 			}
+
+			// Press on TAG
 			else {
+				const tagIdHash = e.srcElement.dataset.id;
+				const itemRoom = Number(e.srcElement.dataset.room);
+				
+				const room = this.rooms[itemRoom - 1].items;
+
 				e.srcElement.remove();
+
+				for (let i = 0; i < room.length; i++) {
+					if (room[i].id === tagIdHash) {
+						this.rooms[itemRoom - 1].items.splice(i, 1);
+					}
+				}
+
 			}
 		}
-		
-	}
-	
-	evItemSelected(e) {
-		console.log(e.item);
-		this.drawTag(this.temp_tag.tagX, this.temp_tag.tagY, this.temp_tag.imgOne);
-		this.rooms[this.current_room - 1].items.push(e.item);
+
 	}
 
-	drawTag(x, y, container) {
+	evItemSelected(e) {
+		const _id = this.generateId();
+
+		this.drawTag(this.temp_tag.tagX, this.temp_tag.tagY, this.temp_tag.imgOne, _id);
+
+		const _item: any = {
+			id: _id,
+			name: e.item.name,
+			price: e.item.price
+		};
+		this.rooms[this.current_room - 1].items.push(_item);
+		console.log(_item);
+	}
+
+	generateId() {
+		let num = '';
+		const letters = 'abcdefghjiklmnopqrstvwxyz'
+		let steps = 8;
+
+		for (let i = 0; i < steps; i++) {
+			if (i % 2 == 0) {
+				var a = Math.floor((Math.random() * 10));
+				num += a;
+			}
+			else {
+				var a = Math.floor((Math.random() * letters.length));
+				num += letters[a];
+			}
+		}
+
+		return num;
+	}
+
+	drawTag(x, y, container, idhash) {
 		let tag = document.createElement('div');
 		tag.classList.add('tag');
 		tag.style.marginLeft = (x - 10) + 'px';
 		tag.style.marginTop = (y - 10) + 'px';
 
 		tag.innerText = String(this.tagId++);
+
+		tag.setAttribute("data-id", idhash);
+		tag.setAttribute("data-room", String(this.current_room));
 
 		container.insertAdjacentElement('afterbegin', tag);
 	}
