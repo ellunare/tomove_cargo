@@ -141,29 +141,30 @@
 <!-- STEP 2 ---------------------------------------------------------------------------------- -->
 
 <div class="req-step"  [class.show-page]="req_page == 2">
-	
+
 	<div class="flex  jcsb  w100">
 		<button class="btn-page" (click)="roomPage('prev')"><<</button>
-		<span style="font-size: 2rem">{{rooms[current_room - 1].name | uppercase}}</span>
+		<span style="font-size: 2rem">{{request.rooms[current_room].name | uppercase}}</span>
 		<button class="btn-page" (click)="roomPage('next')">>></button>
 	</div>
-	
+
 	<div class="w100  c">
 		<div class="room-dot" 
-			*ngFor="let r of rooms; let idx = index"
-			[class.room-dot--selected]="idx == current_room - 1"></div>
+			*ngFor="let r of request.rooms; let idx = index"
+			[class.room-dot--selected]="idx == current_room"></div>
 	</div>
 
 	<div class="p2">
 		<ul>
 			<li class="item-list-name"
-				*ngFor="let r of rooms[current_room - 1].items; let idxi = index" 
-				>{{idxi + 1}} - {{r.name}}</li>
+				*ngFor="let t of request.rooms[current_room].tags; let idxi = index" 
+				>{{idxi + 1}} - {{t.name}}</li>
 		</ul>
 	</div>
 
 	<br>
 	<br>
+
 	<!-- // //////////////////////////////////////////////////////////// -->
 
 	<section class="cam-wrap">
@@ -172,10 +173,21 @@
 			<div class="cam-ramka" 
 				#cam_ramka 
 				(click)="addTag($event)">
+				{{itemNumber("null")}}
 
-				<div class="img_one" 
-					*ngFor="let url of curFiles_arr; let i = index">
-					<img [src]="sanitize(url)">
+				<div class="tags">
+					<div class="tag" 
+						*ngFor="let t of request.rooms[current_room].tags; let idx = index" 
+						attr.data-id="{{t.idhash}}" 
+						[style.margin-left.px]="t.tagX - 10"
+						[style.margin-top.px]="t.tagY - 10">{{itemNumber()}}</div>
+				</div>
+
+				<div class="photos">
+					<img 
+						*ngFor="let p of request.rooms[current_room].pictures; let i = index"
+						attr.data-id="{{i}}"
+						[src]="sanitize(p)">
 				</div>
 			</div>
 		</div>
@@ -236,6 +248,27 @@
 
 <!-- STEP 3 ---------------------------------------------------------------------------------- -->
 
+<div class="req-step"  [class.show-page]="req_page == 3">
+
+	<div class="p2">
+		<ul *ngFor="let r of request.rooms">
+			<li *ngIf="r.tags.length">{{r.name | uppercase}}</li>
+			<li> </li>
+			<li class="item-list-name"
+			*ngFor="let t of r.tags; let idxi = index" 
+			>{{idxi + 1}} - {{t.name}}</li>
+		</ul>
+	</div>
+
+	<br>
+	<br>
+
+	<div class="p2">
+		<p>TOTAL PRICE:</p>
+		<p>{{totalPrice()}}</p>
+	</div>
+	
+</div>
 
 
 <!-- STEP 4 ---------------------------------------------------------------------------------- -->

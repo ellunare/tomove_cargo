@@ -200,20 +200,42 @@ $r_dot_w: 0.5rem
 		// background-color: gold
 
 	&-ramka
-		// background-color: $color_gold
 		width: auto
 		height: 100%
 		overflow-x: auto
 		overflow-y: hidden
-		// display: -webkit-box
-		// display: -webkit-flex
-		// display: -ms-flexbox
-		display: flex
+		position: relative
 
-// .img_one
-//   position: relative
-//   img
-//     height: 200px
+.photos
+	position: relative
+	display: flex
+	img
+		height: 200px
+
+.tags
+	position: relative
+
+.tag
+	position: absolute
+	width: 20px
+	height: 20px
+	color: #000
+	font-size: 9px
+	line-height: 20px
+	cursor: pointer
+	z-index: 10
+	&:after
+		content: ''
+		display: block
+		width: 12px
+		height: 12px
+		-webkit-border-radius: 200px
+		border-radius: 200px
+		background-color: #00f6ff
+		position: absolute
+		top: 4px
+		left: 4px
+		z-index: -1
 
 // .tag
 //   position: absolute

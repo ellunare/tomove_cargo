@@ -10,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MapsGoogleService } from '../../shared/services/maps-google.service';
 
 import { APPARTMENT_TYPES } from '../../shared/models/APPARTMENT_TYPES';
-import { FURNITURE_LIST, rooms } from '../../shared/models/FURNITURE_LIST';
+import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST';
 
 @Component({
 	selector: 'request',
@@ -62,29 +62,56 @@ export class RequestComponent implements OnInit {
 
 	// ---------------------------------------------------------------------- 2
 
+	request = {
+		rooms: [
+			{
+				id: 1,
+				name: "bathroom",
+				tags: [],
+				pictures: []
+			},
+			{
+				id: 2,
+				name: "salon",
+				tags: [],
+				pictures: []
+			},
+			{
+				id: 3,
+				name: "kitchen",
+				tags: [],
+				pictures: []
+			}
+		],
+	}
+
 	@ViewChild('camera') public camera: ElementRef;
 	@ViewChild('cam_ramka') public cam_ramka: ElementRef;
 	curFiles_arr = [];
 
-	tagId = 1;
+	// tagId = 1;
 
 	@ViewChild('item_picker') private item_picker;
 
-	temp_tag;
+	temp_tag = {
+		name: '',
+		price: 0,
+		idhash: '',
 
-	///////////////////////////// --- Furniture
-	// FURNITURE = FURNITURE_LIST;
-	// f_typeId: number;
-	// f_Id: number;
-	// showItems: boolean = false;
-	// roomItemList = [];
+		tagX: 0,
+		tagY: 0,
+	};
+	temp_picture_id;
+
+	itemnumber = 1;
+
 
 	///////////////////////////// --- Total
 	total_price = 0;
 
 	///////////////////////////// --- Rooms
-	current_room = 2;
-	rooms = rooms;
+	current_room = 1;
+	// rooms = rooms;
 
 	// ---------------------------------------------------------------------- 3
 
@@ -212,12 +239,11 @@ export class RequestComponent implements OnInit {
 	// STEP 2 -----------------------------------------------------------------------------------//
 
 	takePhoto(e) {
-		// console.log(e, this.camera);
 		const curFiles = this.camera.nativeElement.files;
 		if (curFiles.length) {
 			const _url = window.URL.createObjectURL(curFiles[curFiles.length - 1]);
-			this.curFiles_arr.push(_url);
-			// console.log(this.curFiles_arr);
+
+			this.request.rooms[this.current_room].pictures.push(_url);
 		}
 	}
 
@@ -226,7 +252,7 @@ export class RequestComponent implements OnInit {
 	}
 
 	addTag(e) {
-		// console.log(e);
+		console.log(e);
 		// console.log(e.offsetX, e.offsetY);
 		e.preventDefault();
 		e.stopPropagation();
@@ -234,30 +260,36 @@ export class RequestComponent implements OnInit {
 		// Press on PHOTO
 		if (e.target.parentElement.parentElement.classList.contains('cam-ramka')) {
 			if (!e.srcElement.classList.contains('tag')) {
-				const data = {
-					tagX: e.offsetX,
-					tagY: e.offsetY,
-					imgOne: e.srcElement.parentElement
-				}
-				this.temp_tag = data;
+				this.temp_picture_id = e.srcElement.parentElement.dataset.id;
+				this.temp_tag.tagX = e.layerX;
+				this.temp_tag.tagY = e.layerY;
+				// this.temp_tag.imgOne = e.srcElement.parentElement;
 
 				this.item_picker.select();
 			}
 
 			// Press on TAG
 			else {
+				// const pictureId = e.srcElement.parentElement.dataset.id;
 				const tagIdHash = e.srcElement.dataset.id;
-				const itemRoom = Number(e.srcElement.dataset.room);
-				
-				const room = this.rooms[itemRoom - 1].items;
 
+				const tags = this.request.rooms[this.current_room].tags;
 				e.srcElement.remove();
 
-				for (let i = 0; i < room.length; i++) {
-					if (room[i].id === tagIdHash) {
-						this.rooms[itemRoom - 1].items.splice(i, 1);
+				for (let i = 0; i < tags.length; i++) {
+					if (tags[i].idhash === tagIdHash) {
+						this.request.rooms[this.current_room].tags.splice(i, 1);
+						break;
 					}
 				}
+
+				// const items = this.request.rooms[this.current_room].tags;
+				// for (let i = 0; i < items.length; i++) {
+				// 	if (items[i].idhash === tagIdHash) {
+				// 		this.request.rooms[this.current_room].tags.splice(i, 1);
+				// 		break;
+				// 	}
+				// }
 
 			}
 		}
@@ -265,17 +297,11 @@ export class RequestComponent implements OnInit {
 	}
 
 	evItemSelected(e) {
-		const _id = this.generateId();
+		this.temp_tag.idhash = this.generateId();
+		this.temp_tag.name = e.item.name;
+		this.temp_tag.price = e.item.price;
 
-		this.drawTag(this.temp_tag.tagX, this.temp_tag.tagY, this.temp_tag.imgOne, _id);
-
-		const _item: any = {
-			id: _id,
-			name: e.item.name,
-			price: e.item.price
-		};
-		this.rooms[this.current_room - 1].items.push(_item);
-		console.log(_item);
+		this.drawTag();
 	}
 
 	generateId() {
@@ -297,43 +323,57 @@ export class RequestComponent implements OnInit {
 		return num;
 	}
 
-	drawTag(x, y, container, idhash) {
-		let tag = document.createElement('div');
-		tag.classList.add('tag');
-		tag.style.marginLeft = (x - 10) + 'px';
-		tag.style.marginTop = (y - 10) + 'px';
-
-		tag.innerText = String(this.tagId++);
-
-		tag.setAttribute("data-id", idhash);
-		tag.setAttribute("data-room", String(this.current_room));
-
-		container.insertAdjacentElement('afterbegin', tag);
+	itemNumber(flag) {
+		if (flag === "null") {
+			this.itemnumber = 1;
+			return '';
+		}
+		return this.itemnumber++;
 	}
 
-	// totalPrice() {
-	// 	this.total_price = 0;
-	// 	const sum = this.roomItemList.reduce((prev, next) => {
-	// 		return prev += next.price;
-	// 	}, this.total_price);
-	// 	this.total_price = sum;
-	// }
+	drawTag() {
+		// this.request.rooms[this.current_room].tags.push(Object.create({
+		// 	name: this.temp_tag.name,
+		// 	idhash: this.temp_tag.idhash
+		// }))
+
+		const new_tag = Object.assign({}, this.temp_tag);
+		this.request.rooms[this.current_room].tags.push(new_tag);
+		console.log(this.request);
+		// console.log(this.temp_tag);
+	}
+
+	totalPrice() {
+		let sum = 0;
+		// this.total_price = 0;
+		// const sum = this.roomItemList.reduce((prev, next) => {
+		// 	return prev += next.price;
+		// }, this.total_price);
+		// this.total_price = sum;
+		for (let i = 0; i < this.request.rooms.length; i++) {
+			for (let j = 0; j < this.request.rooms[i].tags.length; j++) {
+				sum += this.request.rooms[i].tags[j].price;
+			}
+		}
+
+		return sum;
+	}
 
 	roomPage(page) {
 		if (page === 'prev') {
-			if (this.current_room > 1) {
+			if (this.current_room > 0) {
 				this.current_room--;
 			}
 			else {
-				this.current_room = this.rooms.length
+				this.current_room = this.request.rooms.length - 1
 			}
 		}
 		if (page === 'next') {
-			if (this.current_room < this.rooms.length) {
+			if (this.current_room < this.request.rooms.length - 1) {
 				this.current_room++;
 			}
 			else {
-				this.current_room = 1;
+				this.current_room = 0;
 			}
 		}
 	}
