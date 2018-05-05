@@ -2,6 +2,8 @@
 
 <div class="req-step"  [class.show-page]="req_page == 1">
 
+	<gmap #gmap></gmap>
+
 	<p class="p2  w100  tac">Choose your apartment type</p>
 	<br>
 
@@ -28,7 +30,9 @@
 
 		<div class="p2  flex  jcsb">
 
-			<div class="place-type"></div>
+			<div class="place-type" (click)="showOnMap()">
+				<img src="assets/i/marker.svg" *ngIf="search_O_map_render">
+			</div>
 			<!-- <p>Start</p> -->
 			<input type="text" 
 				class="adress-line"

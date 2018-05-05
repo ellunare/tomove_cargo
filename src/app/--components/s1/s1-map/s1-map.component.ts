@@ -31,19 +31,19 @@ class S1MapComponent implements OnInit {
   }
 
   initMap() {
-    this._maps.map(this.map.nativeElement);
+    // this._maps.map(this.map.nativeElement);
   }
 
   getRouteInfo() {
-    let data = this._maps.getRouteInfo();
-    this.distance = data.distance;
-    this.time = data.time;
+    // let data = this._maps.getRouteInfo();
+    // this.distance = data.distance;
+    // this.time = data.time;
   }
 
   navigate() {
     let nav_url = 'https://waze.com/ul?ll=';
-    let waze = this._maps.getWazeData();
-    window.open(nav_url + waze.d_lat + ',' + waze.d_lng, "_blank");
+    // let waze = this._maps.getWazeData();
+    // window.open(nav_url + waze.d_lat + ',' + waze.d_lng, "_blank");
   }
 
 }

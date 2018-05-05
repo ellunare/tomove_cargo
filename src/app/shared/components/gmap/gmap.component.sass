@@ -1,0 +1,41 @@
+@import '../../../../styles.sass'
+
+.wrap
+	position: fixed
+	left: 0
+	top: 0
+	width: 100%
+	height: 100%
+	background-color: transparentize(#000, 0.1)
+	z-index: 10
+
+.gmap
+	width: 100%
+	height: 100%
+	position: relative
+	&_map
+		width: 100%
+		height: 100%
+		background-color: #fff
+	&_close
+		position: absolute
+		width: 100%
+		bottom: 0
+		left: 0
+		height: 5rem
+		background-color: $color_gold
+		text-align: center
+		line-height: 5rem
+		cursor: pointer
+		z-index: 20
+	&_me
+		position: absolute
+		width: 100%
+		top: 0
+		left: 0
+		height: 5rem
+		background-color: $color_blue
+		text-align: center
+		line-height: 5rem
+		cursor: pointer
+		z-index: 20

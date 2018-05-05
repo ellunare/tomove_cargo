@@ -16,7 +16,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   declarations: [
     SystemComponent,
     RequestComponent,
-    DashboardComponent
+    DashboardComponent,
   ]
 })
 export class SystemModule { }

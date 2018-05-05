@@ -1,3 +1,3 @@
 export const CONFIG = {
-	googleMapsKey: 'AIzaSyAAoxP9CERlWVA7Xsv-1-FUO_j9sMctNY8'
+	googleMapsKey: 'AIzaSyD_o_7RwTaHjtL8CL0UJqcPTvK8PBaN2wE'
 }

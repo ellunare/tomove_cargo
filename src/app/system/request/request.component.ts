@@ -28,6 +28,7 @@ export class RequestComponent implements OnInit {
 	place: string;
 
 	///////////////////////////// --- Adress
+	search_O_map_render = false;
 	@ViewChild('search_O') public search_O: ElementRef;
 	@ViewChild('search_D') public search_D: ElementRef;
 
@@ -59,6 +60,8 @@ export class RequestComponent implements OnInit {
 	///////////////////////////// --- Date and Time
 	request_time: any;
 	request_date: any;
+
+	@ViewChild('gmap') private gmap;
 
 	// ---------------------------------------------------------------------- 2
 
@@ -151,22 +154,23 @@ export class RequestComponent implements OnInit {
 	}
 
 	onAppartmentSelect() {
-		console.log(this.place);
+		// console.log(this.place);
 	}
 
 	// Initialize search elements for MapAPI
 	mapFormLoader() {
 
-		this._maps.autocomplite(this.search_O.nativeElement)
+		this._maps.autocomplete(this.search_O.nativeElement)
 			.subscribe(data => {
-				this.o_lat = data._lat;
-				this.o_lng = data._lng;
+				this.o_lat = data.lat;
+				this.o_lng = data.lng;
+				this.search_O_map_render = true;
 			});
 
-		this._maps.autocomplite(this.search_D.nativeElement)
+		this._maps.autocomplete(this.search_D.nativeElement)
 			.subscribe(data => {
-				this.d_lat = data._lat;
-				this.d_lng = data._lng;
+				this.d_lat = data.lat;
+				this.d_lng = data.lng;
 			});
 
 	}
@@ -181,12 +185,13 @@ export class RequestComponent implements OnInit {
 	getDistance() {
 		// Save current route data to MapService
 		this.storeMapData();
+
 		// Get distance from MapService
-		this._maps.distanceMatrix()
-			.subscribe(data => {
-				this.distance = data.distance;
-				this.time = data.time;
-			});
+		// this._maps.distanceMatrix()
+		// 	.subscribe(data => {
+		// 		this.distance = data.distance;
+		// 		this.time = data.time;
+		// 	});
 	}
 
 	storeMapData() {
@@ -236,6 +241,12 @@ export class RequestComponent implements OnInit {
 		// console.log(e);
 	}
 
+	showOnMap() {
+		if (this.search_O_map_render) {
+			this.gmap.showMap();
+		}
+	}
+
 	// STEP 2 -----------------------------------------------------------------------------------//
 
 	takePhoto(e) {
@@ -248,11 +259,12 @@ export class RequestComponent implements OnInit {
 	}
 
 	sanitize(url: string) {
+		// console.log(url);
 		return this._sanitizer.bypassSecurityTrustUrl(url);
 	}
 
 	addTag(e) {
-		console.log(e);
+		// console.log(e);
 		// console.log(e.offsetX, e.offsetY);
 		e.preventDefault();
 		e.stopPropagation();
@@ -339,7 +351,7 @@ export class RequestComponent implements OnInit {
 
 		const new_tag = Object.assign({}, this.temp_tag);
 		this.request.rooms[this.current_room].tags.push(new_tag);
-		console.log(this.request);
+		// console.log(this.request);
 		// console.log(this.temp_tag);
 	}
 

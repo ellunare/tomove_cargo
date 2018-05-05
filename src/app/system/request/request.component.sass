@@ -59,7 +59,7 @@ input
 		&:checked + label
 			border-color: $color_green
 			background-color: $color_green
-			color: $color_bg_top_right
+			color: $color_bg_TR
 			font-weight: 700
 
 
@@ -76,9 +76,13 @@ $al_bor_rad: 0.5rem
 	border-radius: $al_bor_rad
 	line-height: $al_h - 2 * $al_bor
 	text-align: center
-	color: $color_bg_top_right
+	color: $color_bg_TR
 	font-weight: 700
 	font-size: 2rem
+	cursor: pointer
+	padding: 0.3rem
+	img
+		width: 100%
 
 .adress-line
 	background: none
@@ -92,7 +96,7 @@ $al_bor_rad: 0.5rem
 	color: #fff
 	&--fill
 		// background-color: $color_green
-		// color: $color_bg_top_right
+		// color: $color_bg_TR
 
 .floor
 	width: $al_fl_w
@@ -103,7 +107,7 @@ $al_bor_rad: 0.5rem
 	border-radius: $al_bor_rad
 	outline: 0px
 	option
-		background-color: $color_bg_top_right
+		background-color: $color_bg_TR
 		border: 0px
 		outline: 0px
 
