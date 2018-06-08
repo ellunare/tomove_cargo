@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this._router.navigate(['/system', 'request'])
+    this._router.navigate(['/system', 'request'], { queryParams: { page: 1 } })
   }
 
 }

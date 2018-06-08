@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 
 import { CONFIG } from '../../environments/config';
 import { AgmCoreModule } from '@agm/core';
+
 import { MapsGoogleService } from './services/maps-google.service';
+import { CanvasService } from './services/canvas.service';
+import { RequestService } from './services/request.service';
 
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
 import { TimePickerComponent } from './components/time-picker/time-picker.component'
@@ -37,7 +40,9 @@ import { GmapComponent } from './components/gmap/gmap.component';
 		GmapComponent
 	],
 	providers: [
-		MapsGoogleService
+		MapsGoogleService,
+		RequestService,
+		CanvasService
 	]
 })
 export class SharedModule { }

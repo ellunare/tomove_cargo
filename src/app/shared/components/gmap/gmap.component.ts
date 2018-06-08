@@ -13,8 +13,8 @@ export class GmapComponent implements OnInit {
 
 	showMode = {
 		map: false,
-		O: false,
-		D: false
+		// O: false,
+		// D: false
 	}
 
 	constructor(
@@ -23,19 +23,19 @@ export class GmapComponent implements OnInit {
 
 	ngOnInit() { }
 
-	initMap() {
-		this._maps.showOnMap(this.map.nativeElement, 'O');
+	initMap(type) {
+		this._maps.showOnMap(this.map.nativeElement, type);
 	}
 
 	modalClick(e) {
 		this.showMode.map = false;
 	}
 
-	showMap() {
+	showMap(type) {
 		this.showMode.map = true;
 		setTimeout(() => {
 			if (this.map) {
-				this.initMap();
+				this.initMap(type);
 			}
 		}, 1000);
 	}

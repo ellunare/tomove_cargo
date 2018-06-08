@@ -186,8 +186,15 @@ $r_dot_w: 0.5rem
 	&--selected
 		background-color: #fff
 
-.item-list-name
-	line-height: 2rem
+.item-list
+	min-height: calc(100vh - 45rem)
+	margin-top: 1rem
+	ul
+		columns: 2
+		max-height: calc(100vh - 45rem)
+		overflow-x: auto
+	&-name
+		line-height: 2rem
 
 
 
@@ -267,8 +274,95 @@ $r_dot_w: 0.5rem
 	display: block
 	width: 50px
 	margin: 0 auto
-	margin-top: 20px
+	// margin-top: 20px
+
+
+// ------------------- R3
+
+.carton
+	&-title
+		// background-color: $color_gold
+		// width: $al_h
+		height: $al_h
+		border-radius: $al_bor_rad
+		line-height: $al_h - 2 * $al_bor
+		text-align: center
+		color: #fff
+		font-weight: 700
+		font-size: 2rem
+		cursor: pointer
+		padding: 0.3rem
+		// img
+			// width: 100%
+	&-input
+		background: none
+		width: 5rem
+		height: $al_h
+		border-radius: $al_bor_rad
+		border: $al_bor solid $color_gold
+		line-height: $al_h - 2 * $al_bor
+		font-size: 1.6rem
+		padding-left: 0.5rem
+		color: #fff
+
+
+
+
+
+
+// ------------------- MISC
+	
 
 .text
 	display: block
 	margin: auto
+
+
+// DELETE
+.deleteCanvasWrap
+	width: 100%
+	overflow-x: auto
+
+.deleteCanvas
+	max-height: 200px
+
+.loader
+	width: 100%
+	text-align: center
+	margin-top: 1rem
+	&_circle
+		margin: 0 auto
+		height: 3rem
+		width: 3rem
+		border: 3px solid $color_gold
+		border-radius: 200px
+		border-bottom: none
+		animation: loader infinite 0.5s linear
+
+@keyframes loader
+	0%
+		transform: rotateZ(0deg)
+	100%
+		transform: rotateZ(360deg)
+
+
+/////// MISC
+
+.button_big
+	width: 100%
+	height: 4rem
+	background-color: $color_gold
+	border: none
+	color: #000
+	text-transform: uppercase
+	font-weight: 700
+	border: none
+	border-radius: 0.5rem
+
+.furniture_preload
+	max-width: 0px
+	max-height: 0px
+	overflow: hidden
+	*
+		max-width: 0px
+		max-height: 0px

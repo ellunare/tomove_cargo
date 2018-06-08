@@ -120,7 +120,7 @@ export class DatePickerComponent implements OnInit {
 		}
 		if (flag === 'emit') {
 			let _date = {
-				m: this.selected_day.month(),
+				m: this.selected_day.month() + 1,
 				d: this.selected_day.date(),
 				y: this.selected_day.year()
 			}

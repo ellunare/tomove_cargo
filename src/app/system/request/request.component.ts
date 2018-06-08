@@ -4,12 +4,15 @@ import {
 	ViewChild,
 	ElementRef
 } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { DomSanitizer } from '@angular/platform-browser';
 
+import { CanvasService } from '../../shared/services/canvas.service';
 import { MapsGoogleService } from '../../shared/services/maps-google.service';
+import { RequestService } from '../../shared/services/request.service';
 
-import { APPARTMENT_TYPES } from '../../shared/models/APPARTMENT_TYPES';
+import { APARTMENT_TYPES } from '../../shared/models/APARTMENT_TYPES';
 import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST';
 
 @Component({
@@ -24,54 +27,49 @@ export class RequestComponent implements OnInit {
 	// ---------------------------------------------------------------------- 1
 
 	///////////////////////////// --- Place type
-	PLACES = APPARTMENT_TYPES;
-	place: string;
+	PLACES = APARTMENT_TYPES;
 
 	///////////////////////////// --- Adress
-	search_O_map_render = false;
 	@ViewChild('search_O') public search_O: ElementRef;
 	@ViewChild('search_D') public search_D: ElementRef;
+	search_O_map_render = false;
+	search_D_map_render = false;
 
-	o_lat: number;
-	o_lng: number;
-	d_lat: number;
-	d_lng: number;
-	type: any = 'driving';
-	distance: number;
-	time: number;
+	type: any = 'DRIVING';
 
 	///////////////////////////// --- Floors
-	@ViewChild('floor_O') public floor_O: ElementRef;
-	@ViewChild('floor_D') public floor_D: ElementRef;
-
-	o_floor: number;
-	d_floor: number;
-
 	floors = [];
-
-	///////////////////////////// --- Switches
-	// @ViewChild('floor_O') public lift_O: ElementRef;
-	// lift_O = false;
-	// lift_D = false;
-
-	o_lift: boolean = false;
-	d_lift: boolean = false;
-
-	///////////////////////////// --- Date and Time
-	request_time: any;
-	request_date: any;
 
 	@ViewChild('gmap') private gmap;
 
 	// ---------------------------------------------------------------------- 2
 
-	request = {
+	request: any = {
+		adress: {
+			o: {
+				floor: undefined,
+				lift: true
+			},
+			d: {
+				floor: undefined,
+				lift: false
+			}
+		},
+		route: {
+			distance: undefined,
+			time: undefined
+		},
+		date: {
+			day: undefined,
+			time: undefined
+		},
+		place: 'apartment',
 		rooms: [
 			{
 				id: 1,
 				name: "bathroom",
 				tags: [],
-				pictures: []
+				pictures: [],
 			},
 			{
 				id: 2,
@@ -86,6 +84,9 @@ export class RequestComponent implements OnInit {
 				pictures: []
 			}
 		],
+		packing: {
+			carton: 40
+		}
 	}
 
 	@ViewChild('camera') public camera: ElementRef;
@@ -108,7 +109,6 @@ export class RequestComponent implements OnInit {
 
 	itemnumber = 1;
 
-
 	///////////////////////////// --- Total
 	total_price = 0;
 
@@ -116,14 +116,35 @@ export class RequestComponent implements OnInit {
 	current_room = 1;
 	// rooms = rooms;
 
+	// 
+	// 
 	// ---------------------------------------------------------------------- 3
+
+	@ViewChild('canvasSS') public canvaSS: ElementRef;
+	xx_canvas_msg: string = '';
+	xx_upload_msg: string = '';
+	xx_download_link: string = '';
+	xx_download_msg: string = '';
+	xx_loader = false;
+
+	FUR = FURNITURE_LIST;
+
+	// ---------------------------------------------------------------------- MISC
 
 	constructor(
 		private _maps: MapsGoogleService,
-		private _sanitizer: DomSanitizer
+		private _request: RequestService,
+		private _sanitizer: DomSanitizer,
+		private _canvas: CanvasService,
+		private _router: Router,
+		private _AR: ActivatedRoute
 	) { }
 
 	ngOnInit() {
+		this._AR.queryParams.subscribe(qp => {
+			if (qp.page) { this.req_page = qp.page }
+		});
+
 		this.initFloors();
 		this.mapFormLoader();
 	}
@@ -141,9 +162,11 @@ export class RequestComponent implements OnInit {
 				this.req_page--;
 			}
 		}
+		this._router.navigate(['/system', 'request'], { queryParams: { page: this.req_page } });
 	}
 
-
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 1 -----------------------------------------------------------------------------------//
 
 	initFloors() {
@@ -153,114 +176,106 @@ export class RequestComponent implements OnInit {
 		}
 	}
 
-	onAppartmentSelect() {
+	onApartmentSelect() {
 		// console.log(this.place);
 	}
 
 	// Initialize search elements for MapAPI
 	mapFormLoader() {
 
-		this._maps.autocomplete(this.search_O.nativeElement)
+		this._maps.autocomplete(this.search_O.nativeElement, 'O')
 			.subscribe(data => {
-				this.o_lat = data.lat;
-				this.o_lng = data.lng;
-				this.search_O_map_render = true;
-			});
+				Object.assign(this.request.adress.o, data)
+				this.search_O_map_render = true
+				this.getDistance()
+				console.log(this.request)
+			})
 
-		this._maps.autocomplete(this.search_D.nativeElement)
+		this._maps.autocomplete(this.search_D.nativeElement, 'D')
 			.subscribe(data => {
-				this.d_lat = data.lat;
-				this.d_lng = data.lng;
-			});
+				Object.assign(this.request.adress.d, data)
+				this.search_D_map_render = true
+				this.getDistance()
+			})
 
 	}
 
 	// showRoute() {
-	//   this.toggleMap();
-	//   if (this._renderMap) {
-	//     this.getDistance();
-	//   }
+	// 	this.toggleMap();
+	// 	if (this._renderMap) {
+	// 		this.getDistance();
+	// 	}
 	// }
 
 	getDistance() {
 		// Save current route data to MapService
-		this.storeMapData();
+		// this.storeMapData();
 
-		// Get distance from MapService
-		// this._maps.distanceMatrix()
-		// 	.subscribe(data => {
-		// 		this.distance = data.distance;
-		// 		this.time = data.time;
-		// 	});
+		if (this.search_O_map_render && this.search_D_map_render) {
+			// Get distance from MapService
+			this._maps.distanceMatrix()
+				.then((data: any) => {
+					// console.log(data)
+					this.request.route.distance = Math.floor(data.distance);
+					this.request.route.time = data.time;
+				});
+		}
 	}
 
-	storeMapData() {
-		let req = {
-			o_lat: this.o_lat,
-			o_lng: this.o_lng,
-			d_lat: this.d_lat,
-			d_lng: this.d_lng,
-			type: this.type
-		}
-		this._maps.storeMapData(req);
-	}
-
-	// Изменение этажа
-	floorChange(e, place) {
-		const floor = +e.target.value;
-		if (place === 'O') {
-			this.o_floor = floor;
-		}
-		if (place === 'D') {
-			this.d_floor = floor;
-		}
-		// console.log(this.o_floor, this.d_floor);
-	}
-
-	// Переключатели
-	// liftCheck(e, place) {
-	// 	const check = e.target.check;
-	// 	if (place === 'O') {
-	// 		this.o_lift = check;
+	// storeMapData() {
+	// 	let req = {
+	// 		o_lat: this.o_lat,
+	// 		o_lng: this.o_lng,
+	// 		d_lat: this.d_lat,
+	// 		d_lng: this.d_lng,
+	// 		type: this.type
 	// 	}
-	// 	if (place === 'D') {
-	// 		// this.d_lift = check;
-	// 	}
+	// 	this._maps.storeMapData(req);
 	// }
 
-	// Дата выбрана
-	evDateSelected(e) {
-		this.request_date = e;
-		// let d = new Date((e.m + 1) + '/' + e.d + '/' + e.y);
-		// console.log(d);
+	_toNumber(place) {
+		this.request.adress[place].floor = +this.request.adress[place].floor
 	}
 
-	// Время выбрано
-	evTimeSelected(e) {
-		this.request_time = e;
-		// console.log(e);
+	// Дата / Время
+	evDTSelected(e, type) {
+		this.request.date[type] = e;
 	}
 
-	showOnMap() {
-		if (this.search_O_map_render) {
-			this.gmap.showMap();
+	showOnMap(type) {
+		if (type === 'O') {
+			if (this.search_O_map_render) {
+				this.gmap.showMap('O');
+				return;
+			}
+		}
+		if (type === 'D') {
+			if (this.search_D_map_render) {
+				this.gmap.showMap('D');
+				return;
+			}
+		}
+		if (type === 'R') {
+			this.gmap.showMap('R');
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 2 -----------------------------------------------------------------------------------//
 
 	takePhoto(e) {
 		const curFiles = this.camera.nativeElement.files;
 		if (curFiles.length) {
-			const _url = window.URL.createObjectURL(curFiles[curFiles.length - 1]);
-
-			this.request.rooms[this.current_room].pictures.push(_url);
+			// const _url = window.URL.createObjectURL(curFiles[curFiles.length - 1]);
+			// this.request.rooms[this.current_room].pictures.push(_url);
+			this.request.rooms[this.current_room].pictures.push(curFiles[0]);
 		}
 	}
 
-	sanitize(url: string) {
-		// console.log(url);
-		return this._sanitizer.bypassSecurityTrustUrl(url);
+	sanitize(picture: File) {
+		const _url = window.URL.createObjectURL(picture);
+		return this._sanitizer.bypassSecurityTrustUrl(_url);
 	}
 
 	addTag(e) {
@@ -351,24 +366,8 @@ export class RequestComponent implements OnInit {
 
 		const new_tag = Object.assign({}, this.temp_tag);
 		this.request.rooms[this.current_room].tags.push(new_tag);
-		// console.log(this.request);
+		console.log(this.request);
 		// console.log(this.temp_tag);
-	}
-
-	totalPrice() {
-		let sum = 0;
-		// this.total_price = 0;
-		// const sum = this.roomItemList.reduce((prev, next) => {
-		// 	return prev += next.price;
-		// }, this.total_price);
-		// this.total_price = sum;
-		for (let i = 0; i < this.request.rooms.length; i++) {
-			for (let j = 0; j < this.request.rooms[i].tags.length; j++) {
-				sum += this.request.rooms[i].tags[j].price;
-			}
-		}
-
-		return sum;
 	}
 
 	roomPage(page) {
@@ -390,11 +389,159 @@ export class RequestComponent implements OnInit {
 		}
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 3 -----------------------------------------------------------------------------------//
+
+	// getPacking() {
+	// 	return (this.request.rooms.length - 1) * 10
+	// }
+
+	requestUpload() {
+		var __arr = [
+			{ name: 'sdas', kk: 's112' },
+			{ name: 'sdas', kk: 's112' },
+			{ name: 'sdas', kk: 's112' },
+			{ name: 'sdas', kk: 's112' }
+		];
+
+		const files: Array<File> = this.request.rooms[1].pictures;
+		const formData: any = new FormData();
+
+		for (let f of files) {
+			formData.append("uploads[]", f, f['name']);
+		}
+
+		formData.append("reqID", 'xla29a9s');
+		formData.append("room", 'Salon');
+		formData.append("tags", JSON.stringify(__arr));
+
+		this._request.requestUpload(formData);
+	}
+
+
+
+	xrequestdelete(file) {
+		let hashID = this.generateId();
+		this.xx_upload_msg = 'Отправка заявки';
+
+		const formData: any = new FormData();
+		formData.append("_file_to_upload", file, file['name']);
+
+		formData.append("reqID", 'xla29a9s');
+		formData.append("room", 'Probe');
+		formData.append("hashID", hashID);
+
+		this._request.requestUpload(formData)
+			.subscribe((res: any) => {
+				console.log(res);
+				if (res.success) {
+					this.xx_upload_msg = 'Успешно отправлено';
+					this.xx_download_msg = 'Ссылка на скачивание';
+					this.xx_download_link = res.result.Location;
+					this.xx_loader = false;
+				}
+			});
+	}
+
+	canvasDraw() {
+		this.xx_loader = true;
+		this.xx_canvas_msg = 'Обработка изображений';
+		// Передаем файлы и канвас
+		this._canvas.prepareCanvas(
+			this.request.rooms[1].pictures,
+			this.canvaSS.nativeElement
+		)
+			.then(result_file => {
+				this.xx_canvas_msg = 'Изображения обработаны';
+				// this.xrequestdelete(result_file);
+			})
+	}
+
+
+	totalPrice() {
+		let _self = this
+		let sum = 0
+		let M = 1
+
+		// DAY
+		const _d = this.request.date.day.d
+		if ((_d >= 1 && _d <= 8) || (_d >= 24 && _d <= 31)) M += 0.05
+
+		// SEASON
+		const _m = this.request.date.day.m
+		if ((_m == 6 && _d >= 11) || (_m >= 7 && _m <= 8) || (_m == 9 && _d < 10)) M += 0.00
+
+		// LIFT
+		function _getFloorM(T) {
+			const _floor = Math.abs(_self.request.adress[T].floor)
+			const _floor_M = _floor * 0.025
+			if (_floor <= 5) {
+				return _floor_M
+			}
+			else {
+				return 0.125
+			}
+		}
+		M += _getFloorM('o')
+		M += _getFloorM('d')
+
+		// DISTANCE
+		const car = 100
+		const _dst = this.request.route.distance
+		let _dst_M
+
+		if (_dst > 0 && _dst <= 10) _dst_M = 7
+		if (_dst > 10 && _dst <= 25) _dst_M = 6
+		if (_dst > 25 && _dst <= 50) _dst_M = 5
+		if (_dst > 50 && _dst <= 100) _dst_M = 4
+		if (_dst > 100) _dst_M = 3
+
+		const _distance = _dst * _dst_M * 1.5
+
+
+		// FURNITURE
+		let _furniture = 0
+		for (let _room of this.request.rooms) {
+			for (let _tag of _room.tags) {
+				_furniture += _tag.price
+			}
+		}
+
+
+		// PACKING
+		let packing
+		const _room_to_pack = (this.request.rooms.length - 1)
+		const _carton = _room_to_pack * 10
+		packing = _carton
+		if (true) packing = _room_to_pack * 30
+
+		sum = (car + _distance + _furniture + packing) * M
+
+		alert(M + ' | ' + sum)
+		return sum
+	}
+
+
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// MISC - -----------------------------------------------------------------------------------//
+
+
+	timeTransform(x) {
+		var sec_num = parseInt(x, 10); // don't forget the second param
+
+		var hours: any = Math.floor(sec_num / 60);
+		var minutes: any = Math.floor((sec_num - (hours * 60)));
+
+		if (hours < 10) { hours = "0" + hours; }
+		if (minutes < 10) { minutes = "0" + minutes; }
+
+		return hours + ':' + minutes;
+	}
 
 	console() {
 		// this.getDistance();
-		console.log(this.o_lift, this.d_lift);
 
 		// console.log(this.rooms);
 	}
