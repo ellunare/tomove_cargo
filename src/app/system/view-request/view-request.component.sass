@@ -1,0 +1,60 @@
+@import '../../../styles.sass'
+
+.room
+	width: 100%
+	background-color: $color_dark_gold
+	margin-bottom: 2rem
+	padding-top: 1rem
+	&-img
+		width: 100%
+		height: 50vh
+		overflow-x: auto
+		overflow-y: hidden
+		position: relative
+		img
+			height: 100%
+		&--none
+			height: 0.1rem
+
+	&-title
+		font-size: 2rem
+		margin-bottom: 1rem
+	&-items
+		margin-bottom: 1rem
+		p
+			margin-bottom: 0.5rem
+
+
+$rtag_w: 2rem
+$rtag_bgw: 2rem //1.2
+$rtag_bgm: 0 // 0.4
+
+.tag
+	position: absolute
+	width: $rtag_w
+	height: $rtag_w
+	color: #fff
+	font-size: 1.1rem
+	line-height: $rtag_w
+	text-align: center
+	cursor: pointer
+	z-index: 10
+	letter-spacing: -1px
+	font-weight: 700
+
+	&:after
+		content: ''
+		display: block
+		width: $rtag_bgw
+		height: $rtag_bgw
+		-webkit-border-radius: 200px
+		border-radius: 200px
+		background-color: $color_green
+		position: absolute
+		top: $rtag_bgm
+		left: $rtag_bgm
+		z-index: -1
+	&-trash
+		color: #fff
+		&:after
+			background-color: red

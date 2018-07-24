@@ -2,7 +2,7 @@
 	
 $n_w: 8rem
 $n_h: 4rem
-$n_bor: 0.3rem
+$n_bor: 0.2rem
 .null
 	display: inline-block
 	width: $n_w
@@ -13,6 +13,8 @@ $n_bor: 0.3rem
 	text-align: center
 	color: #fff
 	cursor: pointer
+	&--correct
+		border-color: $color_green
 
 .time-block
 	position: fixed
@@ -49,22 +51,12 @@ $cp_h: 5rem
 	color: #fff
 	cursor: pointer
 
-$cl_bor: 0.2rem
-$cl_size: 5rem
 .time
 	&-btns
 		width: 100%
 		text-align: center
 		.close
-			width: $cl_size
-			height: $cl_size
-			background-color: transparentize(#000, 1)
-			color: $color_gold
-			line-height: $cl_size - $cl_bor * 2
-			border-radius: $cl_size
-			outline: none
-			border: $cl_bor solid $color_gold
-			cursor: pointer
+			+buttonok
 
 .element
 	position: absolute

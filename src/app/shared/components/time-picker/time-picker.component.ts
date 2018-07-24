@@ -19,8 +19,8 @@ export class TimePickerComponent implements OnInit {
 
 	@Output() outTimePicked = new EventEmitter();
 
-	select_H;
-	select_M;
+	select_H = '08';
+	select_M = '00';
 
 	show_time = false;
 	show_H = false;
@@ -33,6 +33,15 @@ export class TimePickerComponent implements OnInit {
 
 	ngOnInit() {
 		this.initTime();
+
+
+		////////////////////
+		let _time = {
+			h: +this.select_H,
+			m: +this.select_M
+		}
+		// Отдаем НАВЕРХ (strings)
+		this.outTimePicked.emit(_time);
 	}
 
 	// Создаем диапазон выбора часов и минут
@@ -137,8 +146,8 @@ export class TimePickerComponent implements OnInit {
 			// если выбраны и часы и минуты
 			if (this.timeValid()) {
 				let _time = {
-					h: this.select_H,
-					m: this.select_M
+					h: +this.select_H,
+					m: +this.select_M
 				}
 				// Отдаем НАВЕРХ (strings)
 				this.outTimePicked.emit(_time);

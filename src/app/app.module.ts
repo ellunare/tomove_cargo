@@ -1,28 +1,28 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser'
+import { NgModule } from '@angular/core'
+import { HttpClientModule } from '@angular/common/http'
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module'
 
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module'
 
-import { AppComponent } from './app.component';
-import { SystemModule } from './system/system.module';
+import { AppComponent } from './app.component'
+import { SystemModule } from './system/system.module'
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AuthModule,
-    SystemModule,
-    AppRoutingModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+	],
+	imports: [
+		BrowserModule,
+		HttpClientModule,
+		AuthModule,
+		SystemModule,
+		AppRoutingModule
+	],
+	providers: [],
+	bootstrap: [AppComponent]
 })
 
 export class AppModule { }

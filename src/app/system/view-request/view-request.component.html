@@ -1,0 +1,37 @@
+<div class="w100">
+
+	<div class="p2">
+		<p>Request ID: {{request.requestID}}</p>
+		<p>Date / Time</p>
+		<P>{{request.date.day.d}}</P>
+	</div>
+
+	<div class="room" *ngFor="let r of request.rooms; let i = index">
+		<div class="p2  w100">
+			<p class="room-title">{{i}}  {{r.name | uppercase}}</p>
+			<div class="room-items">
+				<p *ngFor="let t of r.tags; let i = index"><span style="font-weight: 100; margin-right: 1rem">{{(i + 1) + ' ·'}}</span>{{t.name}}</p>
+			</div>
+		</div>
+		<div class="room-img"  #roomimg  *ngIf="r.tags.length">
+
+			<div class="tag"
+				*ngFor="let t of r.tags; let idx = index" 
+				[style.left.px]="getTagCoords(t, roomimg, 'X')"
+				[style.top.px]="getTagCoords(t, roomimg, 'Y')"
+				>{{'A'}}</div>
+
+			<img [src]="getPhoto(r)">
+		</div>
+	</div>
+
+	<br>
+
+	<div class="p2">
+		<p>Name: {{request.customer.name}}</p>
+		<p>Phone: {{request.customer.phone}}</p>
+	</div>
+
+	<br>
+
+</div>

@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { Observable } from 'rxjs/Observable';
-import { NgZone } from '@angular/core';
+import { Observable } from 'rxjs/Observable'
+import { NgZone } from '@angular/core'
 
-import { MapsAPILoader } from '@agm/core';
-import { } from '@types/googlemaps';
+import { MapsAPILoader } from '@agm/core'
+import { } from 'googlemaps'
 
-import { AGM_STYLE } from '../misc/agm.style';
-import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
+import { AGM_STYLE } from '../misc/agm.style'
+// import { platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing'
 
 @Injectable()
 export class MapsGoogleService {
@@ -16,19 +16,21 @@ export class MapsGoogleService {
 		style: AGM_STYLE
 	}
 
-	gps_id: any;
+	gps_id: any
 	gps_me: any = {
 		lat: 0,
 		lng: 0
 	}
 
-	_o_lat: any;
-	_o_lng: any;
-	_d_lat: any;
-	_d_lng: any;
-	_type: any;
-	_distance: any;
-	_time: any;
+	_o_lat: any
+	_o_lng: any
+	_d_lat: any
+	_d_lng: any
+	_type: any
+	_distance: any
+	_time: any
+
+	drivemode: string = 'DRIVING'
 
 	constructor(
 		private _mapsAPILoader: MapsAPILoader,
@@ -50,6 +52,7 @@ export class MapsGoogleService {
 		for (let _adr of place) {
 			for (let _type of _adr.types) {
 
+				// 'political' 'postal_town'
 				if (_type === 'locality') {
 					adress.city = _adr.short_name
 					break
@@ -204,10 +207,10 @@ export class MapsGoogleService {
 						// МАРКЕР для одиночной карты
 						if (mode !== 'R') {
 							const marker_img = {
-								url: 'assets/i/marker40.png',
-								size: new google.maps.Size(40, 40),
+								url: 'assets/i/marker41.png',
+								size: new google.maps.Size(50, 50),
 								origin: new google.maps.Point(0, 0),
-								anchor: new google.maps.Point(20, 40)
+								anchor: new google.maps.Point(25, 50)
 							};
 							var marker = new google.maps.Marker({
 								position: center,
@@ -235,7 +238,7 @@ export class MapsGoogleService {
 		const __options = {
 			origin: { lat: this._o_lat, lng: this._o_lng },
 			destination: { lat: this._d_lat, lng: this._d_lng },
-			travelMode: 'DRIVING'
+			travelMode: this.drivemode
 		}
 
 		directionsService.route(__options, (response, status) => {
@@ -259,22 +262,26 @@ export class MapsGoogleService {
 			const __options = {
 				origins: [__o],
 				destinations: [__d],
-				travelMode: 'DRIVING',
+				travelMode: this.drivemode
 			}
 
 			__DMS.getDistanceMatrix(__options, (response, status) => {
-				console.log(response)
+				// console.log('--->', status, response)
 				if (status == 'OK') {
+					let _res = response.rows[0].elements[0]
+
+					if (_res.status === 'ZERO_RESULTS') {
+						// console.log('ZR')
+						resolve({ status: 'ZR' })
+					}
+
 					let data = {
-						distance: response.rows[0].elements[0]['distance']['value'] / 1000,
-						time: response.rows[0].elements[0]['duration']['value'] / 60
+						distance: _res['distance']['value'] / 1000,
+						time: _res['duration']['value'] / 60
 					}
 					this._distance = data.distance;
 					this._time = data.time;
 					resolve(data)
-				}
-				else {
-					reject(response)
 				}
 			}
 			);

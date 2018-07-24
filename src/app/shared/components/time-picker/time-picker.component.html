@@ -1,5 +1,7 @@
 <div class="null"
-	(click)="showTimeBlock()">
+	(click)="showTimeBlock()"
+	[class.null--correct]="true"
+	>
 	<p>{{showTime()}}</p>
 </div>
 
@@ -24,7 +26,7 @@
 	<br>
 		
 	<div class="time-btns">
-		<button class="close" (click)="showTimeBlock()">✕</button>
+		<button class="close" (click)="showTimeBlock()">OK</button>
 	</div>
 		
 	</div>
@@ -44,7 +46,7 @@
 			</div>
 			<br>
 			<div class="time-btns">
-				<button class="close" (click)="showElement('H')">✕</button>
+				<button class="close" (click)="showElement('H')">OK</button>
 			</div>
 		</div>
 	</div>
@@ -63,7 +65,7 @@
 			</div>
 			<br>
 			<div class="time-btns">
-				<button class="close" (click)="showElement('M')">✕</button>
+				<button class="close" (click)="showElement('M')">OK</button>
 			</div>
 		</div>
 	</div>

@@ -1,15 +1,18 @@
 @import '../../../styles.sass'
 
+\:host
+	height: 100% !important
+
 .req-step
 	width: 100%
-	// visibility: hidden
+	height: calc(100% - 5rem)
 	display: none
 
 .show-page
-	// visibility: visible
 	display: block
 
 .btn-page
+	width: 6rem
 	height: 3rem
 	line-height: 3rem - 0.2rem * 2
 	background: none
@@ -17,50 +20,77 @@
 	border: 0.2rem solid $color_gold
 	border-radius: 0.5rem
 
+	&--confirm
+		width: auto
+		text-transform: uppercase
+		background-color: $color_gold
+		transition: all 0.5s ease
+	&--invalid
+		border-color: #222
+		background-color: #222
+		color: #555
 
-// ------------------- R1
+.settings
+	width: 2rem
+	height: 2rem
+	// background-color: red
+	position: absolute
+	left: 50%
+	transform: translateX(-50%)
+	bottom: 1.5rem
+	img
+		width: 100%
 
-.types
-	width: 100%
-	padding: 0 2rem
-	display: flex
-	justify-content: space-between
+// ////////////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------------- R1
+// ////////////////////////////////////////////////////////////////////////////////////////
 
-.type
-	width: 30%
-
-$rd_h: 4rem
-$rd_w: 100%
-$rd_bord: 0.2rem
-$rd_radius: 0.8rem
-
-.radio
-	border: $rd_bord solid $color_gold
-	border-radius: $rd_radius
-	display: inline-block
-	height: $rd_h
-	width: $rd_w
-	cursor: pointer
-	line-height: $rd_h - $rd_bord * 2
+.hamovil
 	text-align: center
-	color: white
-	font-size: 1.2rem
 	text-transform: uppercase
-	font-weight: 400
-	transition: all .5s 
-	&:hover, &:focus, &:active
-		border-color: $color_green
-
-input
-	&[type="radio"]
+	font-weight: 700
+	padding: 1rem
+	padding-top: 0
+	margin-bottom: 2rem
+	background-color: #09284b
+	&:after
+		content: ''
+		display: block
 		position: absolute
-		display: none
-		&:active + label
-		&:checked + label
-			border-color: $color_green
-			background-color: $color_green
-			color: $color_bg_TR
-			font-weight: 700
+		top: 0
+		left: 0
+		right: 0
+		height: 1.1rem
+		background-color: #09284b
+
+.circle
+	width: 3rem
+	div
+		width: 1.7rem
+		height: 1.7rem
+		border: 4px solid $color_green
+		border-radius: 100%
+		position: relative
+	&--line
+		&:after
+			content: ''
+			display: block
+			position: absolute
+			top: 1rem
+			left: 50%
+			width: 1px
+			height: 17rem
+			border-left: 1px dashed $color_gold
+			z-index: -1
+			transform: translateX(-50%)
+	&--finish
+		div
+			border-color: #fff !important
+
+.location
+	flex-grow: 2
+
+
 
 
 $al_h: 4rem
@@ -74,6 +104,9 @@ $al_bor_rad: 0.5rem
 	width: $al_h
 	height: $al_h
 	border-radius: $al_bor_rad
+	border-top-right-radius: 0
+	border-bottom-right-radius: 0
+
 	line-height: $al_h - 2 * $al_bor
 	text-align: center
 	color: $color_bg_TR
@@ -83,27 +116,54 @@ $al_bor_rad: 0.5rem
 	padding: 0.3rem
 	img
 		width: 100%
+		padding: 0.2rem
 
 .adress-line
 	background: none
-	width: calc(100% - #{$al_h} - #{$al_fl_w} - 2 * #{$al_gap}
+	flex-grow: 2
 	height: $al_h
 	border-radius: $al_bor_rad
 	border: $al_bor solid $color_gold
+	border-left: none
+	border-bottom-left-radius: 0
+	border-top-left-radius: 0
+
 	line-height: $al_h - 2 * $al_bor
 	font-size: 1.6rem
-	padding-left: 0.5rem
+	padding-left: 1rem
 	color: #fff
-	&--fill
-		// background-color: $color_green
-		// color: $color_bg_TR
+
+.placeinfo
+	&--correct
+		&-pi
+			::ng-deep .null
+				background-color: $color_green
+				border-color: $color_green
+		&-loc
+			div
+				background-color: $color_green
+			input
+				border-color: $color_green
+	&--incorrect
+		&-pi
+			::ng-deep .null
+				background-color: $color_red
+				border-color: $color_red
+		&-loc
+			div
+				background-color: $color_red
+			input
+				border-color: $color_red
 
 .floor
-	width: $al_fl_w
+	width: $al_fl_w + 2rem
+	height: $al_h - 1rem
 	background: none
 	border: $al_bor solid $color_gold
 	color: #fff
-	line-height: $al_h - 2 * $al_bor
+	text-align: center
+	line-height: $al_h - 1rem
+	//  - 2 * $al_bor - 
 	border-radius: $al_bor_rad
 	outline: 0px
 	option
@@ -111,21 +171,21 @@ $al_bor_rad: 0.5rem
 		border: 0px
 		outline: 0px
 
+
+
+
 .switch
 	&-group
 	&-name
 		height: 3rem
-		margin-left: 1rem
+		margin-right: 1rem
 		font-size: 1.2rem
 		text-transform: uppercase
 		display: inline-block
 
-
-
-
 // SWITCH
 $sw_height: 3rem
-$sw_width: $sw_height * 2 
+$sw_width: $sw_height * 2
 $sw_gap: $sw_height / 3
 $sw_radius: $sw_height / 1
 $sw_bord: 0.2rem
@@ -173,44 +233,287 @@ $sw_trans: all .6s
 				transform: translateX($sw_width - $sw_height)
 				background-color: $sw_tg_on
 
-// ------------------- R2
+
+// 3 STATE SWITCH
+$swl_bord: 0.2rem
+$swl_height: 3rem
+$swl_width: 10rem
+$swl_gap: 0.3rem
+$swl_tog_wh: $swl_height - 2 * $swl_gap - 2 * $swl_bord
+$swl_marg: $swl_gap + $swl_bord - $swl_bord
+
+=swl-dot
+	content: ''
+	display: block
+	position: absolute
+	width: 4px
+	height: 4px
+	border-radius: 2rem
+	background-color: $color_gold
+	top: 1.1rem
+	opacity: 0.4
+
+.swlift
+	width: $swl_width
+	height: $swl_height
+	&__wrap
+		position: relative
+		width: 100%
+		height: 100%
+		&:after
+			content: ""
+			display: block
+			padding-bottom: 30%
+
+		.lifttoggle
+			position: absolute
+			margin-left: -9999px
+			display: block
+			&:checked
+				&:nth-child(1)
+					& ~ div > .swlift__thumb
+						left: $swl_marg
+					& ~ .swlift__bg
+						background-color: none
+						border-color: $color_gold
+				&:nth-child(2)
+					& ~ div > .swlift__thumb
+						left: $swl_width / 2 - $swl_height / 2 + $swl_gap
+						background-color: #fff
+					& ~ .swlift__bg
+						background-color: $color_green
+						border-color: $color_green
+						&:before
+							opacity: 0
+						&:after
+							background-color: #fff !important
+				&:nth-child(3)
+					& ~ div > .swlift__thumb
+						left: $swl_width - $swl_height + $swl_gap
+						background-color: #fff
+					& ~ .swlift__bg
+						background-color: $color_orange
+						border-color: $color_orange
+						&:before
+							background-color: #fff !important
+						&:after
+							opacity: 0
+
+		&--disabled
+			& > div
+				opacity: 0.4
+				// span
+
+
+		label
+			position: absolute
+			outline: none
+			user-select: none
+			box-sizing: border-box
+			width: 33.33%
+			height: 100%
+			z-index: 1000
+			transition: background 0.4s
+
+		.swlift__bg
+			position: absolute
+			width: 100%
+			height: 100%
+			border: $swl_bord solid
+			border-radius: 200px
+			transition: all 0.4s ease
+			&:before
+				+swl-dot
+				left: 4.6rem
+			&:after
+				+swl-dot
+				left: 8.1rem
+		.swlift__thumb
+			position: relative
+			display: block
+			top: $swl_marg
+			left: $swl_marg
+			width: $swl_tog_wh
+			height: $swl_tog_wh
+			background-color: $color_gold
+			border-radius: 100%
+			transition: all 0.4s ease
+			&:after
+				content: ""
+				display: block
+				padding-bottom: 100%
+
+	&__title
+		font-size: 1.2rem
+		margin-top: 0.9rem
+		margin-right: 1rem
+		text-transform: uppercase
+		&--name
+			margin-left: 1rem
+			transition: 0.4s linear
+
+.distance
+	width: 100%
+	justify-content: center
+	display: flex
+	height: 3rem
+	line-height: 3rem
+	img
+		height: 100%
+		margin-right: 1.5rem
+	&--title
+		text-transform: uppercase
+		margin-right: 1rem
+
+// ////////////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------------- R2
+// ////////////////////////////////////////////////////////////////////////////////////////
 
 $r_dot_w: 0.5rem
-.room-dot
-	display: inline-block
-	margin: 0 $r_dot_w / 2
-	width: $r_dot_w
-	height: $r_dot_w
-	border-radius: $r_dot_w
-	background-color: $color_gold
-	&--selected
-		background-color: #fff
+$r_btn_w: 9rem
+$r_btn_h: 2.5rem
+$r_btn_bor: 0.2rem
+.room
+	&-page
+		height: 3rem
+		img
+			height: 100%
+	&-dot
+		display: inline-block
+		margin: 0 $r_dot_w / 2
+		width: $r_dot_w
+		height: $r_dot_w
+		border-radius: $r_dot_w
+		background-color: $color_gold
+		&--selected
+			background-color: #fff !important
+		&--green
+			background-color: $color_green
+	&-btn
+		width: $r_btn_w
+		height: $r_btn_h
+		line-height: $r_btn_h - 2 * $r_btn_bor
+		border: $r_btn_bor solid #000
+		border-radius: 0.5rem
+		font-size: 1.4rem
+		color: #fff
+		text-transform: uppercase
+		padding: 0 1rem
+		text-align: center
+		&--add
+			background-color: $color_green
+			border-color: $color_green
+		&--reset
+			border-color: $color_orange
+		&--disabled
+			color: #505050
+			border-color: #505050
+		&--del
+			border-color: #192a3d
+	&-title
+		font-size: 2rem
+		line-height: 3rem
+	&-titlesmall
+		font-size: 1.1rem
+		width: 7rem
+		color: #909090
+		font-weight: 700
+		line-height: 2.8rem
 
+	&-modal
+		position: fixed
+		top: 0
+		left: 0
+		width: 100%
+		height: 100%
+		background: transparentize(#000, 0.1)
+		z-index: 1000
+		display: flex
+		justify-content: center
+		align-items: center
+		&__wrap
+			width: 20rem
+			margin: 0 auto
+			text-align: center
+			p
+				text-transform: uppercase
+				margin-bottom: 2rem
+			&-btns
+				display: flex
+				justify-content: space-between
+
+	&-itemcount
+		width: 8rem
+		height: 100%
+		font-size: 1.4rem
+		text-align: center
+		text-transform: uppercase
+		font-weight: 300
+		p:first-child
+			font-size: 1.6rem
+		span
+			margin-right: 0.5rem
+
+	&-totalitems
+		width: 100%
+		text-align: center
+		text-transform: uppercase
+
+.close
+	+buttonok
+	&--room
+		width: 9rem
+		font-size: 1.6rem
+		text-align: center
+		text-transform: uppercase
+		font-weight: 700
+	&--white
+		color: #fff
+		border-color: #fff
+
+$r2il_h: calc((100% - 7rem)*0.2)
 .item-list
-	min-height: calc(100vh - 45rem)
-	margin-top: 1rem
+	height: $r2il_h
 	ul
-		columns: 2
-		max-height: calc(100vh - 45rem)
+		height: 100%
 		overflow-x: auto
+		display: flex
+		flex-direction: column
+		flex-wrap: wrap
+		justify-content: flex-start
+		align-content: flex-start
+		padding-bottom: 0.3rem
+	&--preview
+		min-height: 13rem
+		ul
+			max-height: 13rem
 	&-name
+		height: 2rem
 		line-height: 2rem
+		margin-right: 2rem
+	&--count
+		color: $color_gold
+		margin-left: 0.2rem
+	&--trash
+		color: #ff3b3b
+		font-weight: 700
+	&--da
+		margin-left: 0.5rem
+		img
+			height: 1.3rem
 
 
 
-
+$cam_h: calc((100% - 7rem)*0.8)
 .cam
-
 	&-wrap
 		text-align: center
-
+		height: $cam_h
 	&-main
 		margin: 0 auto
 		width: 100%
-		height: 220px
-		// background-color: gold
-
-	&-ramka
+		height: calc(100% - 6rem)
+	&-frame
 		width: auto
 		height: 100%
 		overflow-x: auto
@@ -218,104 +521,208 @@ $r_dot_w: 0.5rem
 		position: relative
 
 .photos
+	height: 100%
 	position: relative
 	display: flex
 	img
-		height: 200px
+		height: calc(100% - 1rem)
 
 .tags
 	position: relative
 
+
+$rtag_w: 2rem
+$rtag_bgw: 2rem //1.2
+$rtag_bgm: 0 // 0.4
+
 .tag
 	position: absolute
-	width: 20px
-	height: 20px
-	color: #000
-	font-size: 9px
-	line-height: 20px
+	width: $rtag_w
+	height: $rtag_w
+	color: #fff
+	font-size: 1.1rem
+	line-height: $rtag_w
 	cursor: pointer
 	z-index: 10
+	letter-spacing: -1px
+	font-weight: 700
+
 	&:after
 		content: ''
 		display: block
-		width: 12px
-		height: 12px
+		width: $rtag_bgw
+		height: $rtag_bgw
 		-webkit-border-radius: 200px
 		border-radius: 200px
-		background-color: #00f6ff
+		background-color: $color_green
 		position: absolute
-		top: 4px
-		left: 4px
+		top: $rtag_bgm
+		left: $rtag_bgm
 		z-index: -1
-
-// .tag
-//   position: absolute
-//   width: 20px
-//   height: 20px
-//   color: #000
-//   font-size: 9px
-//   line-height: 20px
-//   cursor: pointer
-//   z-index: 10
-//   &:after
-//     content: ''
-//     display: block
-//     width: 12px
-//     height: 12px
-//     -webkit-border-radius: 200px
-//     border-radius: 200px
-//     background-color: #00f6ff
-//     position: absolute
-//     top: 4px
-//     left: 4px
-//     z-index: -1
+	&-trash
+		color: #fff
+		&:after
+			background-color: red
 
 #camera_icon
 	display: block
-	width: 50px
+	width: 5rem
 	margin: 0 auto
-	// margin-top: 20px
 
-
-// ------------------- R3
+// ////////////////////////////////////////////////////////////////////////////////////////
+// ------------------------------------------------------------------------------------- R3
+// ////////////////////////////////////////////////////////////////////////////////////////
 
 .carton
+	&--bg
+		position: relative
+		background-color: $color_dark_gold
+		padding-top: 1rem
+		padding-bottom: 1rem
+	&-icon
+		width: 6rem
+		padding-right: 2rem
+		//
+		height: 11rem
+		display: flex
+		justify-content: space-between
+		flex-direction: column
+		&--info
+			padding: 1rem
+			padding-bottom: 0
+		img
+			width: 100%
+	&-options
+		flex-grow: 2
+
 	&-title
-		// background-color: $color_gold
-		// width: $al_h
-		height: $al_h
-		border-radius: $al_bor_rad
-		line-height: $al_h - 2 * $al_bor
-		text-align: center
+		font-size: 1.2rem
 		color: #fff
 		font-weight: 700
-		font-size: 2rem
-		cursor: pointer
-		padding: 0.3rem
-		// img
-			// width: 100%
+		text-transform: uppercase
+		margin-right: 1rem
+		&--rec
+			color: $color_gold
+			font-weight: 400
 	&-input
 		background: none
-		width: 5rem
-		height: $al_h
+		width: 6rem
+		height: $al_h - 1rem
+		line-height: $al_h - 1rem
 		border-radius: $al_bor_rad
 		border: $al_bor solid $color_gold
-		line-height: $al_h - 2 * $al_bor
 		font-size: 1.6rem
-		padding-left: 0.5rem
 		color: #fff
+		text-align: center
 
+	&-modal
+		position: absolute
+		left: 0
+		top: 12.9rem
+		width: 100%
+		z-index: 9999
+		padding: 2rem
+		background-color: #1e1c16
+		color: #fff
+		box-shadow: 0px 200px 70px 10px rgba(0,0,0,0.55)
+		&__title
+			height: 2rem
+			line-height: 2rem
+			text-transform: uppercase
+			margin-bottom: 2rem
+			img
+				height: 2rem
+				float: right
+		p
+			&:nth-child(2n)
+				text-transform: uppercase
+				margin-bottom: 0.5rem
+			&:nth-child(2n + 1)
+				margin-bottom: 1rem
+				color: #cccccc
 
+.price
+	width: 26rem
+	margin: 0 auto
+	text-transform: uppercase
 
+	&-part
+		color: $color_gold
+		margin-bottom: 0.5rem
+	&-total
+		margin: 0 auto
+		font-size: 2.8rem
+		text-align: right
+		&--title
+			margin-right: 1rem
+			float: left
+			font-size: 1.6rem
+		&--vat
+			color: #a58f43
+			font-size: 1.1rem
+			display: inline-block
+			width: 100%
+			text-align: right
+	&-divider
+		width: 100%
+		height: 2px
+		margin: 1.4rem 0
+		border-bottom: 1px dashed $color_gold
 
+.agree
+	display: flex
+	justify-content: space-between
+	align-items: center
+	p
+		padding-left: 2rem
 
+.swcheck
+	input[type=checkbox]
+		display: none
+		& + label
+			display: block
+			width: 2rem
+			height: 2rem
+			border: 2px solid $color_gold
+			transition: all 0.4s ease
+		&:checked
+			& + label
+				width: 1rem
+				height: 3rem
+				border: 2px solid #a58f43
+				border-left-width: 0
+				border-top-width: 0
+				border-color: $color_green
+				transform: rotate(45deg)
+				margin-left: 1rem
 
-// ------------------- MISC
-	
+.customer
+	&-message
+		width: 100%
+		height: 8vh
+		border: 2px solid $color_gold
+		background: none
+		color: #fff
+		padding: 0.5rem 1rem
+		border-radius: 0.5rem
 
-.text
-	display: block
-	margin: auto
+.valert
+	color: $color_red
+	font-weight: 700
+	font-size: 1.4rem
+	text-transform: uppercase
+	p
+		margin-bottom: 0.5rem
+	&-title
+		font-size: 1.8rem
+		margin-bottom: 2rem !important
+		color: #fff
+		font-weight: 400
+		text-align: center
+
+// ////////////////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------------- MISC
+// ////////////////////////////////////////////////////////////////////////////////////////
 
 
 // DELETE
@@ -348,6 +755,8 @@ $r_dot_w: 0.5rem
 
 /////// MISC
 
+
+
 .button_big
 	width: 100%
 	height: 4rem
@@ -366,3 +775,7 @@ $r_dot_w: 0.5rem
 	*
 		max-width: 0px
 		max-height: 0px
+
+.hebrew
+	.hamovil
+		background-color: red

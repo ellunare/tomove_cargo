@@ -142,7 +142,10 @@ export class CanvasService {
 	}
 
 	// Получение финальной панорамы
-	async _drawCanvas(files, canvas) {
+	async _drawCanvas(files, canvas_) {
+		// Для отладки canvas_ заменить на canvas / закоментить ниже
+		let canvas: any = document.createElement('canvas')
+		//////////////////////////////////////////////////
 		let ctx = canvas.getContext('2d');
 
 		let data = await this._filesLooper(files);
@@ -211,10 +214,13 @@ export class CanvasService {
 		return Promise.resolve(result_file);
 	}
 
-	prepareCanvas(files, canvas) {
+	prepareCanvas(files, canvas, file_name) {
 		return this._drawCanvas(files, canvas)
 			.then(file => {
-				return file;
+				return {
+					file: file,
+					name: file_name
+				}
 			})
 	}
 

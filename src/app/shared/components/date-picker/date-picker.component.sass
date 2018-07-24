@@ -2,7 +2,7 @@
 
 $n_w: 12rem
 $n_h: 4rem
-$n_bor: 0.3rem
+$n_bor: 0.2rem
 .null
 	display: inline-block
 	width: $n_w
@@ -13,13 +13,12 @@ $n_bor: 0.3rem
 	text-align: center
 	color: #fff
 	cursor: pointer
+	&--correct
+		border-color: $color_green
 
 $c_w: 100%
 $day_w: $c_w / 7
 $day_h: 5rem
-
-$cl_bor: 0.2rem
-$cl_size: 5rem
 
 .calendar
 	background-color: transparentize(#000, 0.1)
@@ -46,6 +45,8 @@ $cl_size: 5rem
 		display: flex
 		flex-wrap: wrap
 		width: 100%
+		&--week
+			background-color: $color_green
 	&-day
 		width: $day_w
 		height: $day_h
@@ -70,25 +71,17 @@ $cl_size: 5rem
 			border: 0.2rem solid $color_gold
 			color: #fff
 			cursor: pointer
-			line-height: 5rem
+			line-height: 4.6rem
 			border-radius: 0.5rem
 		.close
-			width: $cl_size
-			height: $cl_size
-			background-color: transparentize(#000, 1)
-			color: $color_gold
-			line-height: $cl_size - $cl_bor * 2
-			border-radius: $cl_size
-			outline: none
-			border: $cl_bor solid $color_gold
-			cursor: pointer
+			+buttonok
 
 .inactive
 	cursor: default
 	opacity: 0.2
 
 .today
-	background-color: $color_bg_BL
+	background-color: #0c335f
 	color: $color_gold
 
 .beforetoday

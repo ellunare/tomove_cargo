@@ -1,0 +1,50 @@
+<div class="edit-block" *ngIf="show_modal" (click)="modalClick('xclose')">
+
+	<div class="edit-wrap">
+		<div class="edit-item">
+				<p>{{tag.name}}</p>
+			<img src="assets/f/{{tag.PID}}/i/{{tag.CID}}.gif">
+		</div>
+
+		<!-- <p>Number of items</p> -->
+		<div class="edit-count">
+			<div class="edit-count__block  edit-count--btn" (click)="countChange('m')">-</div>
+			<div class="edit-count__block">{{tag.count}}</div>
+			<div class="edit-count__block  edit-count--btn" (click)="countChange('p')">+</div>
+		</div>
+
+		<div class="edit-options">
+
+			<div class="edit-trash" (click)="trashItem()" [class.edit-trash--true]="tag.trash">
+				<div>
+					<img src="assets/i/trash_t.svg" *ngIf="tag.trash">
+					<img src="assets/i/trash_f.svg" *ngIf="!tag.trash">
+				</div>
+				<p>Throw</p>
+				<p>away</p>
+			</div>
+
+			<div class="edit-trash" (click)="daChange()" [class.edit-da--true]="tag.da === 11" [class.edit-da--disabled]="!tag.da">
+				<div>
+					<img src="assets/i/da_t.svg" *ngIf="tag.da === 11">
+					<img src="assets/i/da_f.svg" *ngIf="tag.da === 10 || !tag.da">
+				</div>
+				<p>Disassembly</p>
+				<p>+ Assembly</p>
+			</div>
+
+		</div>
+
+		<div class="edit-delete" (click)="deleteItem()">
+			<img src="assets/i/close_x2.svg">
+			<div>
+				<p>Delete</p>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="edit-btns">
+		<button class="close" (click)="modalClick('close')">OK</button>
+	</div>
+</div>

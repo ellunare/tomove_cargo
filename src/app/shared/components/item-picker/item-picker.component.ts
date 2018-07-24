@@ -48,8 +48,8 @@ export class ItemPickerComponent {
 			const id = e.target.parentElement.dataset.id;
 
 			const data = {
-				id_type: this.f_typeId,
-				item: this.FURNITURE[+this.f_typeId - 1 - 100].types[+id - 1]
+				id_type: this.f_typeId, // PID
+				item: this.FURNITURE[+this.f_typeId - 1 - 100].types[+id - 1] // CID
 			}
 
 			this.outItemSelected.emit(data);

@@ -111,7 +111,6 @@ export class DatePickerComponent implements OnInit {
 		setTimeout(() => {
 			this.hideCalendar('emit');
 		}, 200);
-
 	}
 
 	hideCalendar(flag) {

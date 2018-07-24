@@ -46,18 +46,8 @@
 	align-items: center
 
 
-$cl_bor: 0.2rem
-$cl_size: 5rem
 .btns
 	width: 100%
 	text-align: center
 	.close
-		width: $cl_size
-		height: $cl_size
-		background-color: transparentize(#000, 1)
-		color: $color_gold
-		line-height: $cl_size - $cl_bor * 2
-		border-radius: $cl_size
-		outline: none
-		border: $cl_bor solid $color_gold
-		cursor: pointer
+		+buttonok

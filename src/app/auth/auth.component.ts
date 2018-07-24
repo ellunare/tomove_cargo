@@ -13,7 +13,7 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.router.navigate(['/login']);
+    // this.router.navigate(['/login']);
   }
 
 }

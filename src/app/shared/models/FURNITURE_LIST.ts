@@ -2,6 +2,8 @@ export interface F_ITEM {
 	id: number,
 	name: string,
 	price: number,
+	da?: number,
+	dap?: number
 }
 
 export interface FURNITURE {
@@ -80,16 +82,22 @@ export const FURNITURE_LIST: FURNITURE[] = [
 				id: 1,
 				name: 'Sofa 3',
 				price: 100,
+				da: 1,
+				dap: 30
 			},
 			{
 				id: 2,
 				name: 'Sofa 2',
-				price: 100
+				price: 100,
+				da: 1,
+				dap: 20
 			},
 			{
 				id: 3,
 				name: 'Sofa 1',
-				price: 100
+				price: 100,
+				da: 1,
+				dap: 10
 			},
 			{
 				id: 4,

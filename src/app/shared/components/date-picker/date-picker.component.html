@@ -1,5 +1,7 @@
 <div class="null"
-	(click)="showCalendar()">
+	(click)="showCalendar()"
+	[class.null--correct]="selected_day"
+	>
 	<p>{{showDate()}}</p>
 </div>
 
@@ -10,7 +12,7 @@
 		<p class="calendar-date">{{date.format('MMMM ')}} {{date.format('YYYY ')}}</p>
 		
 		<div class="calendar-table">
-			<div class='calendar-days'>
+			<div class='calendar-days  calendar-days--week'>
 				<div *ngFor="let day of dayNames" 
 					class='calendar-day  calendar-day--name'>{{day}}</div>
 			</div>
@@ -31,7 +33,7 @@
 
 		<div class="calendar-btns  p2">
 			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">PREV</div>
-			<button class="close" (click)="hideCalendar('close')">✕</button>
+			<button class="close" (click)="hideCalendar('close')">OK</button>
 			<div class="btn" (click)="monthPager('next')">NEXT</div>
 		</div>
 		

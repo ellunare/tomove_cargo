@@ -1,17 +1,22 @@
 @import '../../styles.sass'
 
 $sb_h: 5rem
-$sb_a: 3rem
+$sb_aw: 5rem
+$sb_ah: 3rem
 
 .statusbar
 	width: 100%
-	height: $sb_h
+	// height: $sb_h
+	max-height: 1rem
+	overflow: hidden
 	&__title
 		line-height: $sb_h
 	&__avatar
-		width: $sb_a
-		height: $sb_a
-		border: 1rem solid $color_gold
-		border-radius: $sb_h
-		margin-top: ($sb_h - $sb_a) / 2
+		width: $sb_aw
+		height: $sb_ah
+		border: 0.2rem solid #606060
+		border-radius: 0.5rem
+		margin-top: ($sb_h - $sb_ah) / 2
+		text-align: center
+		line-height: $sb_ah - 0.4rem
 

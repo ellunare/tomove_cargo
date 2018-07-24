@@ -11,7 +11,7 @@ table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
-time, mark, audio, video, input, select
+time, mark, audio, video, input, select, textarea
 	margin: 0
 	padding: 0
 	border: 0
@@ -83,18 +83,25 @@ button, textarea:focus, input:focus
 
 $main-font: 'Lato'
 
+// #1e1c16
+// #dfd7ba
+
 // $color_bg_TR: #010e1d
 // $color_bg_BL: #131737
 
 $color_bg_TR: #000
 $color_bg_BL: #010e1d
 
+$cccc: #212039
+
 $bglg: linear-gradient(to bottom left, $color_bg_TR, $color_bg_BL)
 
 $color_gold: #a58f43
+$color_dark_gold: #1e1c16
 $color_green: #24bc68
 $color_red: #bc2424
 $color_blue: #0a45f9
+$color_orange: orange
 
 // Services
 $color_2_TR: #246cbc
@@ -104,10 +111,15 @@ $color_2_BL: #7a24bc
 html
 	font-size: 10px
 	font-family: $main-font
+	width: 100%
+	height: 100%
 
 body
+	width: 100%
+	height: 100%
 	font-size: 1.6rem
 	color: #fff
+	// background: $bglg
 	background-color: $color_bg_BL
 
 .app-main
@@ -117,6 +129,7 @@ body
 
 .app-wrap
 	width: 100%
+	height: 100%
 	@media screen and (min-width: 480px)
 		background-color: green
 		width: 48rem
@@ -133,11 +146,19 @@ body
 .jcsb
 	justify-content: space-between
 
+.aic
+	align-items: center
+
 .w100
 	width: 100%
 
-.tac
-	text-align: center
+.ta
+	&c
+		text-align: center !important
+	&l
+		text-align: left !important
+	&r
+		text-align: right !important
 
 .mh4
 	min-height: 4rem
@@ -145,5 +166,36 @@ body
 .hidden
 	visibility: hidden
 
+.fw_
+	&eb
+		font-weight: 700
+	&l
+		font-weight: 300
+
+.c_
+	&white
+		color: #fff
+	&gold
+		color: $color_gold
+	&green
+		color: $color_green
+	&orange
+		color: $color_orange
+
 /* Renderer */
 
+// MIXINS
+
+$cl_bor: 0.2rem
+$cl_size: 5rem
+=buttonok
+	width: $cl_size + 2rem
+	height: $cl_size
+	font-size: 2rem
+	background-color: transparentize(#000, 1)
+	color: $color_gold
+	line-height: $cl_size - $cl_bor * 2
+	border-radius: 2rem
+	outline: none
+	border: $cl_bor solid $color_gold
+	cursor: pointer
