@@ -1,37 +1,451 @@
-<div class="w100">
+<gmap #gmap  [lng]="lng"></gmap>
+<date-picker #datePicker  [lng]="lng"  (outOnDatePicked)="evDateTimeSelected($event, 'date')"></date-picker>
+<time-picker #timePicker  [lng]="lng"  (outOnTimePicked)="evDateTimeSelected($event, 'time')"></time-picker>
 
-	<div class="p2">
-		<p>Request ID: {{request.requestID}}</p>
-		<p>Date / Time</p>
-		<P>{{request.date.day.d}}</P>
+
+<div class="edit  flex">
+	<div *ngIf="admin"  style="margin-right: 2rem">
+		<img src="assets/i/save.svg" *ngIf="edit" style="margin-right: 2rem" (click)="updateRequest()">
+		<img [src]="'assets/i/' + (edit ? 'close_x2' : 'edit') + '.svg'"  (click)="_edit()">
 	</div>
+	<span class="edit-lng"  (click)="nextLNG()">{{lng}}</span>
+</div>
+
+
+<div class="root" [class.root--access]="getAccess()"  [class.root--edit]="edit">
+
+	<div class="p2  upper"  [class.root--edit]="edit" [class.upper--repack]="repack" [class.upper--remove]="remove"  [class.upper--mod]="!repack && !remove">
+		<p class="upper-id"  [class.c_gold]="edit">{{LNG[lng].c.request}}: {{request.requestID}}</p>
+
+		<!-- <br *ngIf="!repack && !remove"> -->
+
+		<div class="title">
+			<p class="title-repack"  *ngIf="repack">{{LNG[lng].c.repack}}</p>
+			<p class="title-remove"  *ngIf="remove">{{LNG[lng].c.remove}}</p>
+		</div>
+
+		<!-- DATE / TIME ///////////////////////////////////////////////////////////////////////////////////////// DATE / TIME -->
+		<div class="flex  jcsb  ttu">
+			<p>{{LNG[lng].date.date}}</p>
+			<p>{{LNG[lng].date.time}}</p>
+		</div>
+
+		<div class="flex  jcsb  dt  dt--main"  [class.none]="edit">
+			<span>
+				<span class="dt-d">{{showDatePart('date', 'd')}}</span>
+				<span class="dt-m">{{showMonth('date')}}</span>
+				<span class="dt-y">{{showDatePart('date', 'y')}}</span>
+			</span>
+
+			<span>{{showTime('date')}}</span>
+		</div>
+
+		<div  class="flex  jcsb"  *ngIf="edit">
+			<div class="dtpicker"  (click)="DTpicker('date', 'date')">{{showDate('date')}}</div>
+			<div class="dtpicker"  (click)="DTpicker('time', 'date')">{{showTime('date')}}</div>
+		</div>
+		<!-- DATE / TIME ///////////////////////////////////////////////////////////////////////////////////////// DATE / TIME -->
+
+	</div>
+
+
+
+	<br>
+
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS 1 -->
+	<!-- <div class="p2  adress">
+		<div class="adress-circle  adress-circle--green" [class.adress-circle--line]="!repack"></div>
+
+		<div class="adress-info">
+
+			<div class="adress-info-up">
+				<div class="adress-info-text">
+					<p>{{request.adress.o.city}}</p>
+					<div class="flex">
+						<p>{{request.adress.o.street}}</p>
+						<p>
+							<span [class.adress-info--zerotext]="!getAccess()">{{request.adress.o.number}}</span>
+							<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+						</p>
+					</div>
+				</div>
+
+				<a class="adress-info-navigate" 
+					[class.none]="!getAccess()"
+					target="_blank" [href]="wazeLink('o')">
+					<img src="assets/i/finish.svg">
+				</a>
+			</div>
+
+			<p class="adress-info-type"><img src="assets/i/pi_o_t.svg">{{LNG[lng].r1.loc.t[request.adress.o.info.t[0]]}}</p>
+
+			<div class="adress-place">
+
+				<div class="adress-place-item"
+					*ngFor="let X of placeItems"
+					[class.adress-place-item--translucent]="!render('items', 'o', X)"
+					[class.none]="render('hs', 'o', null)"
+					>
+					<img src="{{'assets/i/pi_o_' + X + '.svg'}}">
+					<p>
+						<span [class.none]="render('value', 'o', X)">{{request.adress.o.info[X]}}</span>
+						<img class="lock" src="assets/i/lock.svg" *ngIf="render('value', 'o', X)">
+					</p>
+				</div>
+
+				<div class="adress-place-item">
+					<p class="adress-place-item--lift">{{LNG[lng].r1.lift.t}} <span class="lift" [ngClass]="lift('o', 'C')">{{lift('o', 'T')}}</span></p>
+				</div>
+
+			</div>
+
+		</div>
+	</div> -->
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS 1 -->
+
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS 2 -->
+	<!-- <div class="p2  adress"   *ngIf="!repack">
+		<div class="adress-circle"></div>
+
+		<div class="adress-info">
+
+			<div class="adress-info-up">
+				<div class="adress-info-text">
+					<p class="fw_eb  ttu">{{request.adress.d.city}}</p>
+					<div class="flex">
+						<p>{{request.adress.d.street}}</p>
+						<p>
+							<span [class.adress-info--zerotext]="!getAccess()">{{request.adress.d.number}}</span>
+							<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+						</p>
+					</div>
+				</div>
+
+				<a class="adress-info-navigate" 
+					[class.none]="!getAccess()"
+					target="_blank" [href]="wazeLink('d')">
+					<img src="assets/i/finish.svg">
+				</a>
+			</div>
+
+			<p class="adress-info-type"><img src="assets/i/pi_o_t.svg">{{LNG[lng].r1.loc.t[request.adress.d.info.t[0]]}}</p>
+		
+			<div class="adress-place">
+
+				<div class="adress-place-item"
+					*ngFor="let X of placeItems"
+					[class.adress-place-item--translucent]="!render('items', 'd', X)"
+					[class.none]="render('hs', 'd', null)"
+					>
+					<img src="{{'assets/i/pi_o_' + X + '.svg'}}">
+					<p>
+						<span [class.none]="render('value', 'd', X)">{{request.adress.d.info[X]}}</span>
+						<img class="lock" src="assets/i/lock.svg" *ngIf="render('value', 'd', X)">
+					</p>
+				</div>
+
+				<div class="adress-place-item">
+					<p class="adress-place-item--lift">{{LNG[lng].r1.lift.t}} <span class="lift" [ngClass]="lift('d', 'C')">{{lift('d', 'T')}}</span></p>
+				</div>
+
+			</div>
+
+		</div>
+	</div> -->
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS 2 -->
+
+
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS  -->
+	<div class="p2  adress"  *ngFor="let a of ADRESSES"  [class.none]="repack && a === 'd'">
+		<div class="adress-circle"  [class.adress-circle--green]="a === 'o'"  [class.adress-circle--line]="!repack && a === 'o'"></div>
+
+		<div class="adress-info">
+
+			<div class="adress-info-up">
+				<div class="adress-info-text">
+					<p>{{request.adress[a].city}}</p>
+					<div class="flex">
+						<p>{{request.adress[a].street}}</p>
+						<p>
+							<span [class.adress-info--zerotext]="!getAccess()">{{request.adress[a].number}}</span>
+							<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+						</p>
+					</div>
+				</div>
+
+				<a class="adress-info-navigate" 
+					[class.none]="!getAccess()"
+					target="_blank" [href]="wazeLink(a)">
+					<img src="assets/i/finish.svg">
+				</a>
+			</div>
+
+			<p class="adress-info-type"><img src="assets/i/pi_o_t.svg">{{LNG[lng].r1.loc.t[request.adress[a].info.t[0]]}}</p>
+
+			<div class="adress-place">
+
+				<div class="adress-place-item"
+					*ngFor="let X of placeItems"
+					[class.adress-place-item--translucent]="!render('items', a, X)"
+					[class.none]="render('hs', a, null)"
+					>
+					<img src="{{'assets/i/pi_o_' + X + '.svg'}}">
+					<p>
+						<span [class.none]="render('value', a, X)">{{request.adress[a].info[X]}}</span>
+						<img class="lock" src="assets/i/lock.svg" *ngIf="render('value', a, X)">
+					</p>
+				</div>
+
+				<div class="adress-place-item">
+					<p class="adress-place-item--lift">{{LNG[lng].r1.lift.t}} <span class="lift" [ngClass]="lift(a, 'C')">{{lift(a, 'T')}}</span></p>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS  -->
+
+
+	<div class="p2  distance"  *ngIf="!repack">
+		<img class="distance-icon"  src="assets/i/map.svg"  (click)="showOnMap()" [class.distance-icon--disabled]="!getAccess()">
+		<img class="lock  distance-icon--lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+
+		<span class="distance-value"  [style.margin-left]="!getAccess() ? '1rem' : '2rem'">{{LNG[lng].c.distance}} <span>{{request.route.distance}} {{LNG[lng].c.km}}</span></span>
+
+		<img class="distance-time-icon" src="assets/i/time.svg">
+		<span class="distance-time">{{timeTransform(request.route.distance)}}</span>
+	</div>
+
+
+	<div *ngIf="!repack">
+		<br>
+		<br>
+	</div>
+
+
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// CARTON -->
+	<div class="p2  carton">
+		<div class="carton-carton">
+			<img class="carton-carton-icon" src="assets/i/box.svg">
+			<p class="carton-carton-text">{{LNG[lng].r3.c.t}}: <span>{{request.boxes.carton}}</span></p>
+		</div>
+
+		<div class="carton-wrap">
+			<p class="carton-need" [class.none]="remove">{{LNG[lng].r3.c.cneed}} 
+				<span [class.carton--yes]="request.boxes.boxes">{{' ' + request.boxes.boxes ? LNG[lng].c.yes : LNG[lng].c.no}}</span>
+			</p>
+
+			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// КОРОБКИ -->
+			<div class="carton-packing"  *ngIf="request.boxes.boxes && !request.packing.pack" [class.none]="remove">
+				<div class="carton-block  carton-boxes-title"  *ngIf="request.boxes.date.d">{{LNG[lng].r3.c.bringb}}</div>
+
+				<span class="dt"  *ngIf="request.boxes.date.d"  [class.none]="edit">
+					<span class="dt-d">{{showDatePart('boxes', 'd')}}</span>
+					<span class="dt-m">{{showMonth('boxes')}}</span>
+					<span class="dt-y">{{showDatePart('boxes', 'y')}}</span>
+					<span>{{showTime('boxes')}}</span>
+				</span>
+
+				<div *ngIf="edit"  class="carton--dtpicker">
+					<div class="dtpicker"  (click)="DTpicker('date', 'boxes')">{{showDate('boxes')}}</div>
+					<div class="dtpicker"  (click)="DTpicker('time', 'boxes')">{{showTime('boxes')}}</div>
+				</div>
+
+				<img src="assets/i/close_x.svg"  class="boxes-nulldate"  *ngIf="edit"  (click)="nullBoxesDate()">
+			</div>
+			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// КОРОБКИ -->
+
+
+
+			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// УПАКОВКА -->
+			<p class="carton-packing-title  carton-packing-block"  [class.none]="repack || remove">{{LNG[lng].c.repack}}
+				<span [class.carton--yes]="request.packing.pack">{{' ' + request.packing.pack ? LNG[lng].c.yes : LNG[lng].c.no}}</span>
+			</p>
+
+			<div class="carton-packing"  *ngIf="request.packing.pack"  [class.none]="remove || repack">
+
+				<div class="carton-packing-block"  *ngIf="request.packing.sameday"  [class.dnone]="repack">{{LNG[lng].r3.c.samedays}}</div>
+
+				<div class="carton-packing-block"  *ngIf="!request.packing.sameday"  [class.dnone]="repack"  [class.none]="remove">
+					<span class="dt"  [class.none]="edit">
+						<span class="dt-d">{{showDatePart('packing', 'd')}}</span>
+						<span class="dt-m">{{showMonth('packing')}}</span>
+						<span class="dt-y">{{showDatePart('packing', 'y')}}</span>
+						<span>{{showTime('packing')}}</span>
+					</span>
+
+					<div *ngIf="edit">
+						<div class="dtpicker"  (click)="DTpicker('date', 'packing')">{{showDate('packing')}}</div>
+						<div class="dtpicker"  (click)="DTpicker('time', 'packing')">{{showTime('packing')}}</div>
+					</div>
+
+					<p class="carton-packing-price">
+						<span style="font-weight: 100">{{LNG[lng].r3.p.pckvr}}</span> ₪ 
+						<span [class.none]="edit">{{getPrice('P')}}</span>
+						<input type="number" *ngIf="edit" class="edit-input" [(ngModel)]="request.price.packing">
+					</p>
+				</div>
+
+			</div>
+			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// УПАКОВКА -->
+
+		</div>
+
+	</div>
+
+	<p class="price-transportation"  *ngIf="!request.packing.sameday"  [class.none]="repack || remove">+ {{LNG[lng].r3.p.trn}} ₪ {{getPrice('T')}}</p>
+
+	<div class="price">
+		<p class="price-line"  [class.root--edit]="edit">{{LNG[lng].r3.p.total}} ₪ 
+			<span class="fw_eb"  [class.none]="edit">{{getPrice('TOTAL')}}</span>
+			<input type="number" *ngIf="edit" class="edit-input" [(ngModel)]="request.price.transportation">
+		</p>
+		<span class="price-vat">+ {{LNG[lng].r3.p.vat}} 17% : ₪ {{getPrice('VAT')}}</span>
+	</div>
+
+	<br>
+
+	<div class="p2  comment"  [class.none]="repack || remove">
+		<p class="comment-title" *ngIf="request.comment != 0 || edit">{{LNG[lng].c.comment}}</p>
+		<p class="comment-text" *ngIf="request.comment != 0"  [class.none]="edit">{{request.comment}}</p>
+		<textarea *ngIf="edit"  [(ngModel)]="request.comment"  rows="5"></textarea>
+	</div>
+
+	<br>
+
+	<div class="p2  customer">
+		<div class="customer-line">
+			<img class="customer-icon" src="assets/i/user.svg"> 
+			<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+			<span *ngIf="getAccess()">{{request.customer.name}}</span>
+		</div>
+
+		<div class="customer-line">
+			<img class="customer-icon" src="assets/i/phone.svg"> 
+			<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+			<a class="customer-line--phone" href="{{'tel:+' + phonePrepare()}}" *ngIf="getAccess()">{{request.customer.phone}}</a>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="access" *ngIf="!getAccess()" [class.access--denied]="!temp_correct_code">
+		<input type="text" [(ngModel)]="temp_access" [attr.maxlength]="4" [attr.size]="4" placeholder="····" (keyup)="checkAccess($event)">
+		<div>
+			<p>{{LNG[lng].acc.lock[1]}} <img class="lock--code" src="assets/i/lock.svg"></p>
+			<p>{{LNG[lng].acc.lock[2]}}</p>
+		</div>
+	</div>
+
+
+
+	<!-- ///////////////////////////////////////////////////////////////////////////////////////// ROOMS & ITEMS -->
+	<br>
 
 	<div class="room" *ngFor="let r of request.rooms; let i = index">
-		<div class="p2  w100">
-			<p class="room-title">{{i}}  {{r.name | uppercase}}</p>
-			<div class="room-items">
-				<p *ngFor="let t of r.tags; let i = index"><span style="font-weight: 100; margin-right: 1rem">{{(i + 1) + ' ·'}}</span>{{t.name}}</p>
+
+		<p class="room-title"  [class.room-title--empty]="!r._p">{{i + 1}}  {{getRoomName(r.name)}}</p>
+		<div class="p2  w100"   *ngIf="!repack">
+
+			<div class="room-items" *ngIf="r.tags.length">
+
+				<p *ngFor="let t of r.tags; let i = index" [class.room-item--trash]="t.trash">
+					<span class="room-item-number">{{(i + 1) + ' ·'}}</span>
+
+					<span class="room-item">{{FUR[t.PID % 100].types[+t.IID].name[1]}}</span>
+
+					<img class="room-item--icon"  *ngIf="t.da[1] * 1"  [src]="'assets/i/da_' + (t.da[0] * 1 ? 't' : 'fl') + '.svg'">
+					<img class="room-item--icon"  *ngIf="t.trash"  src="assets/i/trash_t.svg">
+					<span class="room-item--da  room-item--count" *ngIf="t.count > 1">{{'X ' + t.count}}</span>
+				</p>
+
 			</div>
 		</div>
-		<div class="room-img"  #roomimg  *ngIf="r.tags.length">
 
-			<div class="tag"
-				*ngFor="let t of r.tags; let idx = index" 
+		<div class="room-img"  #roomimg  *ngIf="r._p">
+
+			<div class="tag"  *ngFor="let t of r.tags; let idx = index"
+				[class.none]="repack"
 				[style.left.px]="getTagCoords(t, roomimg, 'X')"
 				[style.top.px]="getTagCoords(t, roomimg, 'Y')"
-				>{{'A'}}</div>
+				[class.tag-trash]="t.trash">
+				{{idx + 1}}
+			</div>
 
+			<!-- (touchmove)="alert($event)" -->
 			<img [src]="getPhoto(r)">
+		</div>
+
+	</div>
+
+
+
+	<!-- //////////////////////////////////////////////////////////////////////////////////////////// ADMIN BOTTOM -->
+	<br>
+
+	<div class="p2 w100 tac"  style="margin-top: 20rem"  *ngIf="admin">
+		<p style="margin-bottom: 3rem; letter-spacing: 1rem; padding-left: 1rem">{{this.request.xx}}</p>
+		<div class="links">
+
+			<div class="link">
+				<img src="assets/i/tv_view.svg">
+				<p style="color: #fff">{{LNG[lng].acc.full}}</p>
+				<a class="hidden">
+					<img src="assets/i/eye.svg">
+				</a>
+				<img src="assets/i/copy.svg"  (click)="copyToCB('full')"  [class.link--copied]="copy.f">
+			</div>
+
+			<div class="link"  *ngIf="!request.packing.sameday">
+				<img src="assets/i/box.svg">
+				<p>{{LNG[lng].c.repack}}</p>
+				<a target="_blank" href="{{'https://tmctestx.firebaseapp.com/en/db/' + request.requestID + '?p=1'}}">
+					<img src="assets/i/eye.svg">
+				</a>
+				<img src="assets/i/copy.svg"  (click)="copyToCB('pack')"  [class.link--copied]="copy.p">
+			</div>
+
+			<div class="link"  *ngIf="!request.packing.sameday">
+				<img src="assets/i/truck.svg">
+				<p>{{LNG[lng].c.remove}}</p>
+				<a target="_blank" href="{{'https://tmctestx.firebaseapp.com/en/db/' + request.requestID + '?m=1'}}">
+					<img src="assets/i/eye.svg">
+				</a>
+				<img src="assets/i/copy.svg"  (click)="copyToCB('move')"  [class.link--copied]="copy.m">
+			</div>
+
+		</div>
+
+		<div class="delete">
+			<img src="assets/i/trash_t.svg"  (click)="deleteRequest()">
 		</div>
 	</div>
 
 	<br>
 
-	<div class="p2">
-		<p>Name: {{request.customer.name}}</p>
-		<p>Phone: {{request.customer.phone}}</p>
+	<div>
+		<img style="height: 0px" src="assets/i/edit.svg">
+		<img style="height: 0px" src="assets/i/save.svg">
+		<img style="height: 0px" src="assets/i/close_x2.svg">
+		<img style="height: 0px" src="assets/i/lock.svg">
+		<img style="height: 0px" src="assets/i/eye.svg">
+		<img style="height: 0px" src="assets/i/copy.svg">
+		<img style="height: 0px" src="assets/i/truck.svg">
+		<img style="height: 0px" src="assets/i/trash_t.svg">
+		<img style="height: 0px" src="assets/i/box.svg">
+		<img style="height: 0px" src="assets/i/box_p.svg">
+		<img style="height: 0px" src="assets/i/box_g.svg">
+		<img style="height: 0px" src="assets/i/time.svg">
 	</div>
 
-	<br>
-
 </div>
+
+<!-- <div class="menu" *ngIf="getAccess()">
+	
+	<div class="menu-settings" >
+		<img src="assets/i/menu.svg">
+	</div>
+
+</div> -->
+<!-- https://www.waze.com/location?ll= -->

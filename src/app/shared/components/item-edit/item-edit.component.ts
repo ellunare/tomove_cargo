@@ -1,9 +1,7 @@
-import {
-	Component,
-	OnInit,
-	Output,
-	EventEmitter
-} from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
+
+import { LNG_PACK } from '../../models/LOCALIZATION'
+import { FURNITURE_LIST } from '../../models/FURNITURE_LIST'
 
 @Component({
 	selector: 'item-edit',
@@ -12,54 +10,56 @@ import {
 })
 export class ItemEditComponent implements OnInit {
 
+	@Input() lng
+	LNG = LNG_PACK
+
 	show_modal: boolean = false
 	tag: any = {}
 
 	@Output() outItemEdited = new EventEmitter()
 
+	FUR = FURNITURE_LIST
+
 	constructor() { }
 
-	ngOnInit() {
-	}
+	ngOnInit() { }
 
-	modalClick(flag) {
-		if (flag === 'open') {
-			this.show_modal = true
-		}
-		if (flag === 'close') {
-			this.show_modal = false
-		}
+	showModal(flag) {
+		this.show_modal = flag
+
+		if (!flag) this.onItemEdited()
 	}
 
 	editItem(tag) {
 		this.tag = tag
-		console.log(tag)
-		this.modalClick('open')
+		this.showModal(true)
 	}
 
 	countChange(dir) {
-		if (dir === 'm') {
-			if (this.tag.count > 1) this.tag.count--
-		}
-		if (dir === 'p') {
+		if (dir === 'm') if (this.tag.count > 1)
+			this.tag.count--
+		if (dir === 'p')
 			this.tag.count++
-		}
-		this.onItemEdited()
 	}
 
 	trashItem() {
 		this.tag.trash = !this.tag.trash
-		this.onItemEdited()
 	}
 
 	deleteItem() {
 		this.tag.delete = true
-		this.modalClick('close')
-		this.onItemEdited()
+		this.showModal(false)
 	}
 
 	daChange() {
-		if (this.tag.da) this.tag.da = this.tag.da === 11 ? 10 : 11
+		const DA = this.tag.da
+		if (DA[1] * 1) {
+			const idx = 0
+			const SYMBOL = DA[0]
+			const REP = +SYMBOL ? 0 : 1
+
+			this.tag.da = DA.substring(0, idx) + REP + DA.substring(idx + 1)
+		}
 	}
 
 	onItemEdited() {
@@ -67,3 +67,8 @@ export class ItemEditComponent implements OnInit {
 	}
 
 }
+
+// xxx() {
+// 	const a = this.FUR[this.tag.PID % 100].types[+this.tag.IID].name[this.lng]
+// 	console.log(a)
+// }

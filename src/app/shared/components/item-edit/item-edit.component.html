@@ -1,14 +1,13 @@
-<div class="edit-block" *ngIf="show_modal" (click)="modalClick('xclose')">
+<div class="edit-block" *ngIf="show_modal">
 
 	<div class="edit-wrap">
 		<div class="edit-item">
-				<p>{{tag.name}}</p>
-			<img src="assets/f/{{tag.PID}}/i/{{tag.CID}}.gif">
+			<p>{{FUR[tag.PID % 100].types[+tag.IID].name[FUR[0][lng]]}}</p>
+			<img src="assets/f/{{tag.PID}}/i/{{tag.IID}}.gif">
 		</div>
 
-		<!-- <p>Number of items</p> -->
 		<div class="edit-count">
-			<div class="edit-count__block  edit-count--btn" (click)="countChange('m')">-</div>
+			<div class="edit-count__block  edit-count--btn" (click)="countChange('m')">—</div>
 			<div class="edit-count__block">{{tag.count}}</div>
 			<div class="edit-count__block  edit-count--btn" (click)="countChange('p')">+</div>
 		</div>
@@ -17,20 +16,18 @@
 
 			<div class="edit-trash" (click)="trashItem()" [class.edit-trash--true]="tag.trash">
 				<div>
-					<img src="assets/i/trash_t.svg" *ngIf="tag.trash">
-					<img src="assets/i/trash_f.svg" *ngIf="!tag.trash">
+					<img [src]="'assets/i/trash_' + (tag.trash ? 't' : 'f') + '.svg'">
 				</div>
-				<p>Throw</p>
-				<p>away</p>
+				<p>{{LNG[lng].r2.ie.tr1}}</p>
+				<p>{{LNG[lng].r2.ie.tr2}}</p>
 			</div>
 
-			<div class="edit-trash" (click)="daChange()" [class.edit-da--true]="tag.da === 11" [class.edit-da--disabled]="!tag.da">
+			<div class="edit-trash" (click)="daChange()" [class.edit-da--true]="tag.da[0] * 1" [class.edit-da--disabled]="!(tag.da[1] * 1)">
 				<div>
-					<img src="assets/i/da_t.svg" *ngIf="tag.da === 11">
-					<img src="assets/i/da_f.svg" *ngIf="tag.da === 10 || !tag.da">
+					<img [src]="'assets/i/da_' + (tag.da[0] * 1 ? 't' : 'f') + '.svg'">
 				</div>
-				<p>Disassembly</p>
-				<p>+ Assembly</p>
+				<p>{{LNG[lng].r2.ie.da1}}</p>
+				<p>+ {{LNG[lng].r2.ie.da2}}</p>
 			</div>
 
 		</div>
@@ -38,13 +35,13 @@
 		<div class="edit-delete" (click)="deleteItem()">
 			<img src="assets/i/close_x2.svg">
 			<div>
-				<p>Delete</p>
+				<p>{{LNG[lng].r2.rm.delete}}</p>
 			</div>
 		</div>
 
 	</div>
 
 	<div class="edit-btns">
-		<button class="close" (click)="modalClick('close')">OK</button>
+		<button class="close" (click)="showModal(false)">OK</button>
 	</div>
 </div>

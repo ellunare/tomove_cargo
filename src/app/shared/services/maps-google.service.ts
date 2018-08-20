@@ -17,18 +17,10 @@ export class MapsGoogleService {
 	}
 
 	gps_id: any
-	gps_me: any = {
-		lat: 0,
-		lng: 0
-	}
-
-	_o_lat: any
-	_o_lng: any
-	_d_lat: any
-	_d_lng: any
-	_type: any
-	_distance: any
-	_time: any
+	// gps_me: any = {
+	// 	lat: 0,
+	// 	lng: 0
+	// }
 
 	drivemode: string = 'DRIVING'
 
@@ -37,14 +29,6 @@ export class MapsGoogleService {
 		private _ngZone: NgZone
 	) { }
 
-	// storeMapData(data) {
-	// 	this._o_lat = data.o_lat;
-	// 	this._o_lng = data.o_lng;
-	// 	this._d_lat = data.d_lat;
-	// 	this._d_lng = data.d_lng;
-	// 	this._type = data.type;
-	// }
-
 	_prepareAdress(place) {
 		console.log(place)
 		let adress: any = {}
@@ -52,17 +36,16 @@ export class MapsGoogleService {
 		for (let _adr of place) {
 			for (let _type of _adr.types) {
 
-				// 'political' 'postal_town'
 				if (_type === 'locality') {
-					adress.city = _adr.short_name
+					adress.city = _adr.long_name
 					break
 				}
 				if (_type === 'route') {
-					adress.street = _adr.short_name
+					adress.street = _adr.long_name
 					break
 				}
 				if (_type === 'street_number') {
-					adress.number = _adr.short_name
+					adress.number = _adr.long_name
 					break
 				}
 			}
@@ -77,7 +60,7 @@ export class MapsGoogleService {
 			this._mapsAPILoader
 				.load()
 				.then(() => {
-					//////////////////////////////////////
+					//////////////////////////////////////////////////////////////////////////////////////////////////////
 					let input__ = new google.maps.places.Autocomplete(input_element)
 
 					input__.addListener("place_changed", () => {
@@ -86,92 +69,79 @@ export class MapsGoogleService {
 
 							if (place__.geometry === undefined || place__.geometry === null) { return }
 
-							// ADRESS ///////////////////////////////////////////////
-							const adress: any = this._prepareAdress(place__.address_components)
-							// ADRESS ///////////////////////////////////////////////
+							const ADRESS: any = this._prepareAdress(place__.address_components)
 
 							let data = {
-								city: adress.city,
-								street: adress.street,
-								number: adress.number,
+								city: ADRESS.city,
+								street: ADRESS.street,
+								number: ADRESS.number,
 								lat: place__.geometry.location.lat(),
 								lng: place__.geometry.location.lng()
 							}
 
-							// SAVE LOCAL ////
-							if (type === 'O') {
-								this._o_lat = data.lat
-								this._o_lng = data.lng
-							}
-							if (type === 'D') {
-								this._d_lat = data.lat
-								this._d_lng = data.lng
-							}
-							// SAVE LOCAL ////
-
 							observer.next(data)
 							// observer.complete()
-						});
-					});
-					//////////////////////////////////////
-				});
-		});
+						})
+					})
+					//////////////////////////////////////////////////////////////////////////////////////////////////////
+				})
+		})
 	}
 
-	gpsGetCenter(mode) {
+	gpsGetCenter(mode, COORDS) {
 		// Локация своя
 		if (mode === 'ME') {
 			// GPS /////////////////////////////////////////////
-			if (!navigator.geolocation) {
-				alert('No geolocation available');
-				return;
-			}
-			else {
-				return new Promise((resolve, reject) => {
-					this.gps_id = navigator.geolocation.watchPosition(
-						(position) => {
-							navigator.geolocation.clearWatch(this.gps_id);
-							resolve({
-								lat: position.coords.latitude,
-								lng: position.coords.longitude
-							});
-						}),
-						(error) => {
-							reject(error);
-						}
-				})
-			}
+			// if (!navigator.geolocation) {
+			// 	alert('No geolocation available');
+			// 	return;
+			// }
+			// else {
+			// 	return new Promise((resolve, reject) => {
+			// 		this.gps_id = navigator.geolocation.watchPosition(
+			// 			(position) => {
+			// 				navigator.geolocation.clearWatch(this.gps_id);
+			// 				resolve({
+			// 					lat: position.coords.latitude,
+			// 					lng: position.coords.longitude
+			// 				});
+			// 			}),
+			// 			(error) => {
+			// 				reject(error);
+			// 			}
+			// 	})
+			// }
 			// GPS /////////////////////////////////////////////
 		}
 
 		// Локация старта
 		if (mode === 'O') {
 			return Promise.resolve({
-				lat: this._o_lat,
-				lng: this._o_lng
+				lat: COORDS.OLAT,
+				lng: COORDS.OLNG
 			})
 		}
 
 		if (mode === 'D') {
 			return Promise.resolve({
-				lat: this._d_lat,
-				lng: this._d_lng
+				lat: COORDS.DLAT,
+				lng: COORDS.DLNG
 			})
 		}
 
 		if (mode === 'R') {
 			return Promise.resolve({
-				lat: (this._o_lat + this._d_lat) / 2,
-				lng: (this._o_lng + this._d_lng) / 2
+				lat: (COORDS.OLAT + COORDS.DLAT) / 2,
+				lng: (COORDS.OLNG + COORDS.DLNG) / 2
 			})
 		}
 
 	}
 
-	showOnMap(map_element, mode) {
+	showOnMap(map_element, mode, COORDS) {
 
 		// Получаем центр
-		this.gpsGetCenter(mode)
+		this.gpsGetCenter(mode, COORDS)
 			.then((center: any) => {
 
 				// После этого рисуем его на карте
@@ -188,9 +158,9 @@ export class MapsGoogleService {
 						}
 
 						// ОПЦИИ для одиночной карты
-						// if (mode !== 'R') {
-						// 	_map_options.center = center
-						// }
+						if (mode !== 'R') {
+							_map_options.center = center
+						}
 
 						let _map = new google.maps.Map(map_element, _map_options);
 
@@ -226,7 +196,7 @@ export class MapsGoogleService {
 
 						if (mode === 'R') {
 							var directionsService = new google.maps.DirectionsService;
-							this.calculateAndDisplayRoute(directionsService, directionsDisplay);
+							this.calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS);
 						}
 					});
 
@@ -234,10 +204,10 @@ export class MapsGoogleService {
 
 	}
 
-	calculateAndDisplayRoute(directionsService, directionsDisplay) {
+	calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS) {
 		const __options = {
-			origin: { lat: this._o_lat, lng: this._o_lng },
-			destination: { lat: this._d_lat, lng: this._d_lng },
+			origin: { lat: COORDS.OLAT, lng: COORDS.OLNG },
+			destination: { lat: COORDS.DLAT, lng: COORDS.DLNG },
 			travelMode: this.drivemode
 		}
 
@@ -252,12 +222,12 @@ export class MapsGoogleService {
 	}
 
 
-	distanceMatrix() {
+	distanceMatrix(COORDS) {
 		return new Promise((resolve, reject) => {
 
-			let __DMS: any = new google.maps.DistanceMatrixService();
-			let __o = new google.maps.LatLng(this._o_lat, this._o_lng);
-			let __d = new google.maps.LatLng(this._d_lat, this._d_lng);
+			let __DMS: any = new google.maps.DistanceMatrixService()
+			let __o = new google.maps.LatLng(COORDS.OLAT, COORDS.OLNG)
+			let __d = new google.maps.LatLng(COORDS.DLAT, COORDS.DLNG)
 
 			const __options = {
 				origins: [__o],
@@ -266,68 +236,35 @@ export class MapsGoogleService {
 			}
 
 			__DMS.getDistanceMatrix(__options, (response, status) => {
-				// console.log('--->', status, response)
+
 				if (status == 'OK') {
 					let _res = response.rows[0].elements[0]
 
 					if (_res.status === 'ZERO_RESULTS') {
-						// console.log('ZR')
 						resolve({ status: 'ZR' })
+						return
 					}
 
 					let data = {
 						distance: _res['distance']['value'] / 1000,
 						time: _res['duration']['value'] / 60
 					}
-					this._distance = data.distance;
-					this._time = data.time;
+
 					resolve(data)
 				}
 			}
-			);
+			)
 
 		})
 	}
 
-	// map(map_element) {
-	// 	this._mapsAPILoader
-	// 		.load()
-	// 		.then(() => {
-
-	// 			let m_lat = (this._o_lat + this._d_lat) / 2;
-	// 			let m_lng = (this._o_lng + this._d_lng) / 2;
-
-	// 			let _map = new google.maps.Map(
-	// 				map_element,
-	// 				{
-	// 					zoom: 24,
-	// 					center: { lat: m_lat, lng: m_lng }
-	// 				}
-	// 			);
-
-	// 			var directionsDisplay = new google.maps.DirectionsRenderer;
-	// 			var directionsService = new google.maps.DirectionsService;
-	// 			directionsDisplay.setMap(_map);
-
-	// 			this.calculateAndDisplayRoute(directionsService, directionsDisplay);
-	// 		});
-	// }
-
-
-	// getRouteInfo() {
-	// 	let res = {
-	// 		distance: this._distance,
-	// 		time: this._time
-	// 	}
-	// 	return res;
-	// }
-
-	// getWazeData() {
-	// 	let res = {
-	// 		d_lat: this._d_lat,
-	// 		d_lng: this._d_lng
-	// 	}
-	// 	return res;
-	// }
-
 }
+
+		////////////////////////////////////// DISTANCE MATRIX URL
+		// const URL = `
+		// https://maps.googleapis.com/maps/api/distancematrix/json
+		// ?units=metric
+		// &origins=32.32,34.34
+		// &destinations=32.32,34.34
+		// &key='key'
+		// `

@@ -1,0 +1,53 @@
+@import '../../../../styles.sass'
+
+.success
+	color: $color_green
+
+$vr_ac_h: 4rem
+.access
+	display: flex
+	align-items: center
+	justify-content: space-between
+	margin: 0 auto
+	width: 24rem
+	border: 2px solid #a58f43
+	border-radius: 0.5rem
+
+	input
+		text-align: center
+		height: $vr_ac_h
+		flex-grow: 2
+		font-size: 2rem
+		letter-spacing: 0.5rem
+		line-height: 2.2rem
+		background: none
+		color: #fff
+		&::placeholder
+			opacity: 0.5
+			letter-spacing: 1rem
+	div
+		width: 12rem
+		height: $vr_ac_h
+		border-left: 1px solid $color_gold
+		color: #fff
+		text-transform: uppercase
+		padding: 0 1rem
+		display: flex
+		align-items: center
+		justify-content: center
+		flex-wrap: wrap
+		align-content: center
+		p
+			line-height: 1.4rem
+			font-size: 1rem
+			text-align: center
+	&--denied
+		border-color: $color_red
+		div
+			border-left-color: $color_red
+
+// .lock
+// 	width: 1.2rem
+// 	opacity: 0.5
+// 	&--code
+// 		width: 0.8rem

@@ -1,10 +1,3 @@
-<div class="null"
-	(click)="showTimeBlock()"
-	[class.null--correct]="true"
-	>
-	<p>{{showTime()}}</p>
-</div>
-
 <div class="time-block" *ngIf="show_time" (click)="modalClick($event, 'time-block', 'B')">
 
 	<div class="time-wrap" *ngIf="!show_H && !show_M">
@@ -24,24 +17,24 @@
 	</div>
 
 	<br>
-		
+
 	<div class="time-btns">
-		<button class="close" (click)="showTimeBlock()">OK</button>
+		<button class="close" (click)="showWIDGET(null)">OK</button>
 	</div>
 		
 	</div>
 
 	<div class="element" *ngIf="show_H" (click)="modalClick($event, 'element', 'H')">
 		<div class="element-wrap">
-			<p>Hours</p>
+			<p class="ttu">{{LNG[lng].date.th}}</p>
 			<br>
 			<div class="hours">
 				<ul class="box">
 					<li class="cell"
 					*ngFor="let h of hours"
-					(click)="selectTime($event, 'H')"
-					[class.cell-light]="h >= 8 && h <= 15"
-					[class.selected]="h==select_H">{{h}}</li>
+					(click)="cellClick($event, 'H')"
+					[class.actual]="h >= 8 && h <= 15"
+					[class.selected]="h == select_H">{{h}}</li>
 				</ul>
 			</div>
 			<br>
@@ -53,14 +46,14 @@
 	
 	<div class="element" *ngIf="show_M" (click)="modalClick($event, 'element', 'M')">
 		<div class="element-wrap">
-			<p>Minutes</p>
+			<p class="ttu">{{LNG[lng].date.tm}}</p>
 			<br>
 			<div class="minutes">
 				<ul class="box">
 					<li class="cell"
 					*ngFor="let m of minutes"
-					(click)="selectTime($event, 'M')"
-					[class.selected]="m==select_M">{{m}}</li>
+					(click)="cellClick($event, 'M')"
+					[class.selected]="m == select_M">{{m}}</li>
 				</ul>
 			</div>
 			<br>

@@ -2,9 +2,9 @@ import {
 	Component,
 	Output,
 	EventEmitter
-} from '@angular/core';
+} from '@angular/core'
 
-import { FURNITURE_LIST } from '../../models/FURNITURE_LIST';
+import { FURNITURE_LIST } from '../../models/FURNITURE_LIST'
 
 @Component({
 	selector: 'item-picker',
@@ -13,33 +13,28 @@ import { FURNITURE_LIST } from '../../models/FURNITURE_LIST';
 })
 export class ItemPickerComponent {
 
-	FURNITURE = FURNITURE_LIST;
-	f_typeId: number;
-	show_f_list: boolean = false;
-	show_i_list: boolean = false;
+	FURNITURE = FURNITURE_LIST
+	PID: number
+	show_list_P: boolean = false
+	show_list_I: boolean = false
 
-	@Output() outItemSelected = new EventEmitter();
+	@Output() outItemSelected = new EventEmitter()
 
 	constructor() { }
 
 	select() {
-		this.showList('F', true);
+		this.showList('P', true)
 	}
 
-	showList(type, flag) {
-		if (type === 'F') {
-			this.show_f_list = flag;
-		}
-		if (type === 'I') {
-			this.show_i_list = flag;
-		}
+	showList(T, flag) {
+		this['show_list_' + T] = flag
 	}
 
 	selectType(e) {
 		if (e.target.parentElement.classList.contains('type')) {
-			const id = e.target.parentElement.dataset.id;
-			this.f_typeId = id;
-			this.showList('I', true);
+			const id = e.target.parentElement.dataset.id
+			this.PID = +id
+			this.showList('I', true)
 		}
 	}
 
@@ -48,13 +43,13 @@ export class ItemPickerComponent {
 			const id = e.target.parentElement.dataset.id;
 
 			const data = {
-				id_type: this.f_typeId, // PID
-				item: this.FURNITURE[+this.f_typeId - 1 - 100].types[+id - 1] // CID
+				PID: this.PID, // PID
+				item: this.FURNITURE[this.PID % 100].types[+id] // IID
 			}
 
-			this.outItemSelected.emit(data);
-			this.showList('I', false);
-			this.showList('F', false);
+			this.outItemSelected.emit(data)
+			this.showList('P', false)
+			this.showList('I', false)
 		}
 	}
 

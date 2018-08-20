@@ -1,6 +1,10 @@
-import { Component, OnInit, ElementRef } from '@angular/core'
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { RequestService } from '../../shared/services/request.service'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
+
+import { LNG_PACK } from '../../shared/models/LOCALIZATION'
+import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
 	selector: 'view-request',
@@ -9,23 +13,89 @@ import { ActivatedRoute } from '@angular/router'
 })
 export class ViewRequestComponent implements OnInit {
 
+	lng = undefined
+	LNG = LNG_PACK
+
+	admin: boolean = false
+	edit = false
+
 	request: any
 
+	access = false
+
+	temp_access: string = undefined
+	temp_correct_code: boolean = true
+
+	ADRESSES = ['o', 'd']
+
+	placeItems = [
+		'e',
+		'f',
+		'n'
+	]
+
+	copy = {
+		f: false,
+		p: false,
+		m: false
+	}
+
+	remove = false
+	repack = false
+	nullBoxesDateFlag = false
+
+	@ViewChild('gmap') private gmap
+	@ViewChild('datePicker') private datePicker
+	@ViewChild('timePicker') private timePicker
+
+	FUR = FURNITURE_LIST
+
 	constructor(
-		// private _request: RequestService,
+		private _request: RequestService,
 		private _AR: ActivatedRoute,
+		private _router: Router,
+		private sanitizer: DomSanitizer
 	) { }
 
 	ngOnInit() {
-		// Получение объявления от резолвера
-		this._AR.data
+		this._AR.data    // Получение объявления от резолвера
 			.subscribe(data => {
 				this.request = data.request
-				console.log(this.request)
+
+				if (this.request.comment === '0') this.request.comment = '' // Обнуляем коммент
+				console.log('----------', this.request)
 			})
+
+		this._AR.queryParams    // Получаем query параметры
+			.subscribe(e => {
+				if (e.p) this.repack = true
+				if (e.m) this.remove = true
+			})
+
+		this._AR.parent.url    // Получаем язык
+			.subscribe(e => {
+				let lng = e[0].path
+					, qp = this.getQP()
+
+				this.lng = this.LNG[lng] ? lng : 'en'
+
+				this._router.navigate([this.lng, 'db', this.request.requestID], { queryParams: qp })
+			})
+
+		this.initAccess()
+
+		if (localStorage.getItem('_xad')) {
+			this.admin = true
+			if (this.repack || this.remove) this.admin = false
+		}
 	}
 
-	getPhoto(r, axes) {
+	initAccess() {
+		const A = localStorage.getItem('ac')
+		if (A === this.request.xx.toString()) this.access = true
+	}
+
+	getPhoto(r) {
 		const baseURL = 'https://tmctestrequests.s3.amazonaws.com/requests/' + this.request.requestID + '/'
 		const N = r.name[0]
 		let rAdd = (N === 'r') ? r.name.slice(5) : ''
@@ -41,8 +111,318 @@ export class ViewRequestComponent implements OnInit {
 		return (H * tag['tag' + C]) / this.request.rawh - 10
 	}
 
-	show(e) {
-		console.log(e.clientHeight)
+	getAccess() {
+		const access = this.access || this.admin
+		return access
+	}
+
+	setAccess() {
+		localStorage.setItem('ac', this.temp_access.toString())
+		this.temp_access = undefined
+		this.access = true
+	}
+
+	checkAccess(e) {
+		const V = e.target.value
+		this.temp_correct_code = true
+
+		if (V.length == 4) {
+			if (V === this.request.xx.toString()) this.setAccess()
+			else this.temp_correct_code = false
+		}
+	}
+
+	quit() {
+		localStorage.removeItem('ac')
+		this.access = false
+	}
+
+	deleteRequest() {
+		const _confirm = confirm('DELETE REQUEST?')
+		if (_confirm)
+			this._request.deleteRequest(this.request.requestID)
+				.subscribe((res: any) => {
+					alert(res.msg)
+					if (res.success) this._router.navigate(['/en', 'me'])
+				})
+	}
+
+	updateRequest() {
+		const _confirm = confirm('SAVE CHANGES?')
+		if (_confirm) {
+			let body = {
+				date: this.request.date.date,
+				time: this.request.date.time,
+				price: this.request.price,
+
+				pack_date: this.request.packing.date,
+				pack_time: this.request.packing.time,
+
+				boxes_date: this.request.boxes.date,
+				boxes_time: this.request.boxes.time,
+				nullBoxesDate: this.nullBoxesDateFlag,
+
+				comment: this.request.comment,
+			}
+
+			// console.log(body)
+			this._request.updateRequest(this.request.requestID, body)
+				.subscribe((res: any) => {
+					alert(res.msg)
+					if (res.success) this._edit()
+				})
+		}
+	}
+
+	// Дата / Время
+	DTpicker(type, obj) {
+		let send = {
+			data: this.request[obj][type],
+			flag: obj
+		}
+		this[type + 'Picker'].showWIDGET(send)
+	}
+
+	evDateTimeSelected(e, type) {
+		this.request[e.flag][type] = e.data
+	}
+
+	/////////////////////////////////////////////////////////////////// MISC
+
+	render(F, T, X) {
+		let AI = this.request.adress[T].info
+		// Полупрозрачный если нет значения
+		if (F === 'items') if (AI[X]) return true
+
+		// Виден этаж если есть значение
+		if (F === 'value') if (!this.getAccess() && (X === 'e' || X === 'n' || (X === 'f' && !AI['f']))) return true
+
+		// Не виден если дом или склад
+		if (F === 'hs') if (this.request.adress[T].info.t === 'house' || this.request.adress[T].info.t === 'store') return true
+	}
+
+	lift(T, F) {
+		let LIFT = this.request.adress[T].lift
+			, L = this.LNG[this.lng].r1.lift
+			, O = {
+				T: {
+					0: L[0],
+					1: L[1],
+					2: L[2]
+				},
+				C: {
+					0: 'lift--no',
+					1: 'lift--one',
+					2: 'lift--two'
+				}
+			}
+		return O[F][LIFT]
+	}
+
+	showDatePart(type, X) {
+		let T = type
+		if (this.repack) T = 'packing'
+
+		return this.request[T].date[X]
+	}
+
+	showMonth(type) {
+		let T = type
+		if (this.repack) T = 'packing'
+
+		let objDate = new Date(this.request[T].date.m + '/' + this.request[T].date.d + '/' + this.request[T].date.y)
+			, locale = this.lng
+			, month = objDate.toLocaleString(locale, { month: "long" })
+
+		return month
+	}
+
+	showDate(T) {
+		let d = this.request[T].date
+			, objDate = new Date(d.m + '/' + d.d + '/' + d.y)
+			, locale = this.lng
+			, D = objDate.toLocaleString(locale, { day: "2-digit" })
+			, M = objDate.toLocaleString(locale, { month: "long" })
+			, Y = objDate.toLocaleString(locale, { year: "2-digit" })
+
+		if (!d.d) return 'DD . MM . YY'
+
+		return `${D} . ${M} . ${Y}`
+	}
+
+	showTime(X) {
+		const T = this.request[X].time
+		if (!T.h) return 'HH : MM'
+
+		return T.h + ' : ' + T.m
+	}
+
+	timeTransform(x) {
+		var sec_num = parseInt(x, 10) // don't forget the second param
+
+		var H: any = Math.floor(sec_num / 60)
+		var M: any = Math.floor((sec_num - (H * 60)))
+		if (H < 1) return M + this.LNG[this.lng].c.m
+
+		if (M < 10) { M = "0" + M }
+		return H + ':' + M
+	}
+
+	getPrice(F) {
+		let RP = this.request.price
+		if (F === 'P') return RP.packing + RP.boxes
+		if (F === 'T') return RP.transportation
+
+		if (F === 'TOTAL') return (this.repack ? 0 : RP.transportation) + (this.remove ? 0 : RP.packing) + (this.request.boxes.boxes ? RP.boxes : 0)
+
+		if (F === 'VAT') return Math.floor(0.17 * this.getPrice('TOTAL'))
+	}
+
+	getRoomName(name) {
+		let n = name[0]
+			, add = n === 'r' ? ' ' + name.substr(5) : ''
+			, NAME = this.LNG[this.lng].r2.rt
+
+		return NAME[n] + add
+	}
+
+	showOnMap() {
+		const COORDS = {
+			OLAT: this.request.adress.o.lat,
+			OLNG: this.request.adress.o.lng,
+			DLAT: this.request.adress.d.lat,
+			DLNG: this.request.adress.d.lng
+		}
+		if (this.getAccess()) this.gmap.showMap('R', COORDS)
+	}
+
+	wazeLink(T) {
+		const link = 'waze://?ll=' + this.request.adress[T].lat + ',' + this.request.adress[T].lng + '&navigate=yes'
+		return this.sanitizer.bypassSecurityTrustUrl(link)
+	}
+
+	_edit() {
+		this.edit = !this.edit
+
+		if (!this.edit) this.nullBoxesDateFlag = false // Флаг обнуления даты коробок
+	}
+
+	nullBoxesDate() {
+		let BD = this.request.boxes.date
+			, BT = this.request.boxes.time
+
+		for (let T in BD) BD[T] = undefined
+		for (let T in BT) BT[T] = undefined
+
+		this.nullBoxesDateFlag = true
+	}
+
+	phonePrepare() {
+		let P = this.request.customer.phone
+		return P.split(/[+\s-]/).join('')
+	}
+
+	// classCarton(T) {
+	// 	let X
+	// 		, R = this.request
+	// 		, set = {
+	// 			i: {
+	// 				1: 'box',
+	// 				2: 'box_p',
+	// 				3: 'box_g'
+	// 			},
+	// 			t: {
+	// 				1: 'title--no',
+	// 				2: 'title--pack',
+	// 				3: 'title--box'
+	// 			}
+	// 		}
+
+	// 	if (!R.packing.pack) X = 1
+	// 	if (R.packing.pack) X = 2
+	// 	if (R.boxes.boxes && !R.packing.pack) X = 3
+
+	// 	if (this.repack || this.remove) X = 1
+
+	// 	return set[T][X]
+	// }
+
+	// show(e) {
+	// 	console.log(e.target.value)
+	// }
+
+	getQP() {
+		let qp: any = {}
+		if (this.repack) qp.p = 1
+		if (this.remove) qp.m = 1
+		return qp
+	}
+
+	nextLNG() {
+		let L = this.lng
+			, qp = this.getQP()
+
+		switch (L) {
+			case 'en': L = 'ru'; break
+			case 'ru': L = 'he'; break
+			case 'he': L = 'en'; break
+		}
+		this._router.navigate([L, 'db', this.request.requestID], { queryParams: qp })
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////// LINK
+
+	copyToCB(flag) {
+
+		const add = {
+			f: '',
+			p: '?p=1',
+			m: '?m=1'
+		}
+
+		const str = 'https://tmctestx.firebaseapp.com/en/db/' + this.request.requestID + add[flag[0]]
+
+		const iOS = navigator.platform.match(/ipad|ipod|iphone/i)
+
+		let c____: any = document.createElement('textarea')
+		c____.value = str
+		c____.style = { position: 'absolute', left: '-9999px' }
+		document.body.appendChild(c____)
+
+		// iOS
+		if (iOS) {
+			var editable = c____.contentEditable
+			var readOnly = c____.readOnly
+			c____.contentEditable = true
+			c____.readOnly = true
+
+			var range = document.createRange()
+			range.selectNodeContents(c____)
+
+			var selection = window.getSelection()
+			selection.removeAllRanges()
+			selection.addRange(range)
+			c____.setSelectionRange(0, 999999)
+
+			c____.contentEditable = editable
+			c____.readOnly = readOnly
+		}
+		// Chrome
+		else {
+			c____.select()
+		}
+
+		document.execCommand('copy')
+		document.body.removeChild(c____)
+
+		this.linkCopied(flag[0])
+	}
+
+	linkCopied(T) {
+		this.copy[T] = true
+		setTimeout(() => {
+			this.copy[T] = false
+		}, 2000)
 	}
 
 }

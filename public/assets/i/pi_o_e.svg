@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 80">
-  <defs>
-    <style>
-      .a {
-        fill: #a58f43;
-      }
-    </style>
-  </defs>
-  <title>r1_entrance</title>
-  <path class="a" d="M10,0V80H70V0ZM66,76H50.13V20.25L14,4.19V4H66Z" transform="translate(-10)"/>
+<svg 
+	xmlns="http://www.w3.org/2000/svg" 
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	viewBox="0 0 80 80"
+	>
+	<style type="text/css">
+		.st0 { fill: #A58F43 }
+	</style>
+		<path class="st0" d="M16.7,0v80H80V0H16.7z M72,72H25l27.8-5.7V21.8L24.7,8.2V8H72V72z"/>
+		<rect x="0.2" class="st0" width="8" height="80"/>
 </svg>

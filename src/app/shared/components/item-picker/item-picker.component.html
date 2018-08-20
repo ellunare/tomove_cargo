@@ -1,8 +1,9 @@
-<div class="wrap" [class.hide]="!show_f_list">
+<!-- // PARENT -->
+<div class="wrap" [class.none]="!show_list_P">
 	<div class="furniture" (click)="selectType($event)">
 		<div 
 			class="f_item  type" 
-			*ngFor="let t of FURNITURE" 
+			*ngFor="let t of FURNITURE | slice:1" 
 			attr.data-id="{{t.id}}">
 			
 			<img src="../../../assets/f/{{t.id}}/icon.gif">
@@ -12,30 +13,27 @@
 	<br>
 	<br>
 	<div class="btns">
-		<button class="close" 
-			(click)="showList('F', false)">
-			✕</button>
+		<button class="close"  (click)="showList('P', false)">✕</button>
 	</div>
 	<br>
 	<br>
 </div>
 
-<div class="modal-bg" *ngIf="show_i_list">
-	<div class="furniture-select" (click)="onItemSelected($event)">
+<!-- // ITEM -->
+<div class="modal-bg" *ngIf="show_list_I">
+	<div class="furniture" (click)="onItemSelected($event)">
 		<div 
 			class="f_item  item" 
-			*ngFor="let f of FURNITURE[f_typeId - 1 - 100].types" 
+			*ngFor="let f of FURNITURE[PID % 100].types | slice:1" 
 			attr.data-id="{{f.id}}">
 			
-			<img src="../../../assets/f/{{f_typeId}}/i/{{f.id}}.gif">
+			<img src="../../../assets/f/{{PID}}/i/{{f.id}}.gif">
 		</div>
 	</div>
 
 	<br>
 	<br>
 	<div class="btns">
-		<button class="close" 
-			(click)="showList('I', false)">
-			✕</button>
+		<button class="close"  (click)="showList('I', false)">✕</button>
 	</div>
 </div>

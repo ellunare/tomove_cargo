@@ -3,10 +3,13 @@ import {
 	OnInit,
 	ViewEncapsulation,
 	Output,
-	EventEmitter
-} from '@angular/core';
+	EventEmitter,
+	Input
+} from '@angular/core'
 
-import * as moment from 'moment';
+import { LNG_PACK } from '../../models/LOCALIZATION'
+
+import * as moment from 'moment'
 
 @Component({
 	selector: 'date-picker',
@@ -15,127 +18,135 @@ import * as moment from 'moment';
 })
 export class DatePickerComponent implements OnInit {
 
-	dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+	@Input() lng = undefined
+	LNG = LNG_PACK
 
-	public date;
-	prevMonthDate;
-	public daysArr;
-	public selected_day;
+	dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
-	show_calendar = false;
+	date
+	prevMonthDate
+	daysArr
+	selected_day
 
-	@Output() outOnDateSelect = new EventEmitter();
+	show_calendar = false
+
+	variant = undefined
+
+	@Output() outOnDatePicked = new EventEmitter()
 
 	constructor() { }
 
-	public ngOnInit() {
-		this.date = moment();
+	ngOnInit() {
+		this.date = moment()
 		this.prevMonthDate = this.date.clone()
-		this.daysArr = this.createCalendar(this.date);
+		this.redraw()
 	}
 
-	showDate() {
-		if (this.selected_day) {
-			return this.selected_day.format('DD . MMM . YY');
-		}
-		return 'MM . DD . YY';
+	createCalendar(month) {
+		let firstDay = moment(month).startOf('M')
+			, _weekDay = firstDay.weekday()
+			, _month_length = month.daysInMonth()
+
+			, days = Array.apply(null, { length: _month_length })
+				.map(Number.call, Number)
+				.map(n => moment(firstDay).add(n, 'd'))
+
+		for (let n = 0; n < _weekDay; n++) days.unshift(null)
+
+		return days
 	}
 
-	public createCalendar(month) {
-		let firstDay = moment(month).startOf('M');
-		let _weekDay = firstDay.weekday();
-		let _month_length = month.daysInMonth();
-
-		let days = Array.apply(null, { length: _month_length })
-			.map(Number.call, Number)
-			.map(n => {
-				return moment(firstDay).add(n, 'd');
-			});
-
-		for (let n = 0; n < _weekDay; n++) {
-			days.unshift(null);
-		}
-
-		return days;
+	redraw() {
+		this.daysArr = this.createCalendar(this.date)
 	}
 
-	public monthPager(dir) {
-		if (dir == 'next') {
-			this.date.add(1, 'M');
-		}
-		if (dir == 'prev') {
-			if (this.checkPrev()) {
-				this.date.subtract(1, 'M');
-			}
-		}
-		this.daysArr = this.createCalendar(this.date);
+	monthPager(dir) {
+		if (dir == 'next') this.date.add(1, 'M')
+		if (dir == 'prev') if (this.checkPrev()) this.date.subtract(1, 'M')
+
+		this.redraw()
 	}
 
 	checkPrev() {
-		if (this.prevMonthDate.isSame(this.date)) {
-			return false;
+		const OBJ = {
+			cM: this.date.format('MM'),
+			cY: this.date.format('YYYY'),
+			pM: this.prevMonthDate.format('MM'),
+			pY: this.prevMonthDate.format('YYYY')
 		}
-		return true;
+
+		if (OBJ.cM <= OBJ.pM && OBJ.cY <= OBJ.pY) return false
+		return true
 	}
 
-	public todayCheck(day) {
-		if (!day) {
-			return false;
-		}
-		return moment().format('L') === day.format('L');
+	todayCheck(day) {
+		if (!day) return false
+		return moment().format('L') === day.format('L')
 	}
 
 	isBeforeToday(day) {
-		return moment().isAfter(day, 'D');
+		return moment().isAfter(day, 'D')
 	}
 
-	public isSelected(day) {
-		if (!day) {
-			return false;
-		}
-		else {
-			if (this.selected_day) {
-				if (this.selected_day.format('L') == day.format('L')) {
-					return true;
-				}
-			}
-		}
+	isSelected(day) {
+		if (!day) return false
+		else
+			if (this.selected_day)
+				if (this.selected_day.format('L') == day.format('L')) return true
 	}
 
-	public selectDay(e, day) {
-		if (day == null || e.target.classList.contains('beforetoday')) {
-			return;
-		}
+	selectDay(e, day) {
+		if (day == null || e.target.classList.contains('beforetoday')) return
 
-		this.selected_day = day;
-		setTimeout(() => {
-			this.hideCalendar('emit');
-		}, 200);
+		this.selected_day = day
+		setTimeout(() => this.hideCalendar('emit'), 200);
 	}
 
 	hideCalendar(flag) {
-		if (flag === 'close') {
-			this.showCalendar();
-		}
+		if (flag === 'close') this.open()
+
 		if (flag === 'emit') {
-			let _date = {
-				m: this.selected_day.month() + 1,
-				d: this.selected_day.date(),
-				y: this.selected_day.year()
+			let __send = {
+				data: {
+					m: this.selected_day.month() + 1,
+					d: this.selected_day.date(),
+					y: this.selected_day.year()
+				},
+				flag: this.variant
 			}
-			this.outOnDateSelect.emit(_date);
-			this.showCalendar();
+			this.outOnDatePicked.emit(__send)
+			this.open()
 		}
 	}
 
-	showCalendar() {
-		this.show_calendar = !this.show_calendar;
+	///////////////////////////////////////////////////////////////////////////////// SHOW
+	showWIDGET(X) {
+		this.variant = X.flag
+		const __datestr = `${X.data.m}/${X.data.d}/${X.data.y}`
+
+		// Дата НЕ ВЫБРАНА
+		if (!X.data.d) {
+			this.selected_day = undefined
+			this.date.set('month', new Date().getMonth())
+		}
+		// Дата ВЫБРАНА
+		else {
+			this.selected_day = moment(new Date(__datestr))
+			this.date.set('month', X.data.m - 1)
+		}
+
+		this.redraw()
+		this.open()
+	}
+
+	open() {
+		this.show_calendar = !this.show_calendar
 	}
 
 	modalClick(e) {
-		if (e.target.classList.contains('calendar')) {
-			this.showCalendar();
-		}
+		if (e.target.classList.contains('calendar')) this.open()
 	}
 
 }
+
+// this.selected_day.format('DD . MMM . YY')

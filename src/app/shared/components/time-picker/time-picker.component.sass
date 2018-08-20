@@ -1,20 +1,4 @@
 @import '../../../../styles.sass'
-	
-$n_w: 8rem
-$n_h: 4rem
-$n_bor: 0.2rem
-.null
-	display: inline-block
-	width: $n_w
-	height: $n_h
-	border: $n_bor solid $color_gold
-	border-radius: 0.5rem
-	line-height: $n_h - 2 * $n_bor
-	text-align: center
-	color: #fff
-	cursor: pointer
-	&--correct
-		border-color: $color_green
 
 .time-block
 	position: fixed
@@ -22,10 +6,11 @@ $n_bor: 0.2rem
 	height: 100%
 	top: 0
 	left: 0
-	background-color: transparentize(#000, 0.1)
+	background-color: #000
 	display: flex
 	justify-content: center
 	align-items: center
+	z-index: 9999
 
 $tw_w: 19rem
 .time-wrap
@@ -104,8 +89,8 @@ $mc_row_num: 3
 .minutes
 	+element-width($mc_row_num)
 
-.cell-light
-	background-color: transparentize($color_bg_TR, 0.5)
+.actual
+	background-color: $color_dark_gold
 
 .selected
 	background-color: $color_gold

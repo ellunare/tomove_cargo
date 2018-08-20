@@ -9,7 +9,10 @@ export class RequestService {
 
 	addUrl = {
 		uploadFile: '/upload',
-		getByID: '/get/'
+		getByID: '/get/',
+		getByMY: '/getByMY',
+		deleteRequest: '/delete',
+		updateRequest: '/update'
 	}
 
 	constructor(
@@ -25,6 +28,20 @@ export class RequestService {
 
 	getRequestByID(id) {
 		return this._http.get(this.baseUrl + this.addUrl.getByID + id)
+	}
+
+	getRequestsByMY(query) {
+		return this._http.get(this.baseUrl + this.addUrl.getByMY, { params: query })
+	}
+
+	deleteRequest(ID) {
+		const query = { ID: ID }
+		return this._http.delete(this.baseUrl + this.addUrl.deleteRequest, { params: query })
+	}
+
+	updateRequest(ID, body) {
+		const query = { ID: ID }
+		return this._http.put(this.baseUrl + this.addUrl.updateRequest, body, { params: query })
 	}
 
 }

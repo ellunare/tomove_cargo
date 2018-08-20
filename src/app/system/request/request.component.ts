@@ -1,10 +1,4 @@
-import {
-	Component,
-	OnInit,
-	ViewChild,
-	ElementRef
-	// , HostListener
-} from '@angular/core'
+import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 
 import { DomSanitizer } from '@angular/platform-browser'
@@ -17,17 +11,22 @@ import { LIFT_TYPES } from '../../shared/models/TYPES'
 import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
 import { LNG_PACK } from '../../shared/models/LOCALIZATION'
 
+
 @Component({
 	selector: 'request',
 	templateUrl: './request.component.html',
 	styleUrls: ['./request.component.sass']
 })
-export class RequestComponent implements OnInit {
+export class RequestComponent implements OnInit, AfterViewInit {
 
 	lng = undefined
 	LNG = LNG_PACK
 
 	req_page = 1
+
+	@ViewChild('gmap') private gmap
+	@ViewChild('datePicker') private datePicker
+	@ViewChild('timePicker') private timePicker
 
 	// ---------------------------------------------------------------------- 1
 
@@ -35,12 +34,17 @@ export class RequestComponent implements OnInit {
 	LIFTS = LIFT_TYPES
 
 	///////////////////////////// --- Adress
-	@ViewChild('search_O') public search_O: ElementRef
-	@ViewChild('search_D') public search_D: ElementRef
-	search_O_map_render = false
-	search_D_map_render = false
+	map_render_search = {
+		O: false,
+		D: false,
+		R: true
+	}
 
-	@ViewChild('gmap') private gmap
+	ACI = [
+		{ a: 'o', A: 'O' },
+		{ a: 'd', A: 'D' },
+	]
+	@ViewChildren('aci') acinputs: QueryList<ElementRef>
 
 	// ---------------------------------------------------------------------- 2
 
@@ -72,46 +76,73 @@ export class RequestComponent implements OnInit {
 			time: undefined
 		},
 		date: {
-			day: {
+			date: {
 				d: undefined,
 				m: undefined,
 				y: undefined
 			},
 			time: {
-				m: undefined,
-				h: undefined
+				h: '07',
+				m: '30'
 			}
 		},
 		rooms: [
 			{
-				id: 1,
 				name: "bathroom",
 				tags: [],
 				pictures: [],
+				_p: 0
 			},
 			{
-				id: 2,
 				name: "salon",
 				tags: [],
-				pictures: []
+				pictures: [],
+				_p: 0
 			},
 			{
-				id: 3,
 				name: "kitchen",
 				tags: [],
-				pictures: []
+				pictures: [],
+				_p: 0
 			}
 		],
 		rawh: 0,
-		packing: {
+		boxes: {
 			carton: 0,
 			boxes: false,
-			pack: false
+			date: {
+				d: undefined,
+				m: undefined,
+				y: undefined
+			},
+			time: {
+				h: undefined,
+				m: undefined
+			}
+		},
+		packing: {
+			pack: false,
+			sameday: true,
+			date: {
+				d: undefined,
+				m: undefined,
+				y: undefined
+			},
+			time: {
+				h: undefined,
+				m: undefined
+			}
 		},
 		customer: {
 			name: undefined,
 			phone: undefined
-		}
+		},
+		price: {
+			transportation: undefined,
+			packing: undefined,
+			boxes: undefined
+		},
+		comment: '0'
 	}
 
 	@ViewChild('camera') public camera: ElementRef
@@ -123,21 +154,13 @@ export class RequestComponent implements OnInit {
 	@ViewChild('item_edit') private item_edit
 
 	temp_tag = {
-		name: '',
-		price: 0,
-		idhash: '',
 		tagX: 0,
 		tagY: 0,
-		count: 1,
-		trash: false,
-		da: 0
 	}
 
-	temp_picture_id
+	// temp_picture_id
 
 	itemnumber = 1
-
-	// openModalItemEdit = false
 
 	///////////////////////////// --- Rooms
 	current_room = 1
@@ -149,9 +172,11 @@ export class RequestComponent implements OnInit {
 	// ---------------------------------------------------------------------- 3
 
 	carton_modal = false
+	carton_sameday_show = true
 
 	///////////////////////////// --- Total
-	total_price = 0
+	price_car = 100
+	price_total = 0
 
 	agree_valid = false
 
@@ -193,19 +218,20 @@ export class RequestComponent implements OnInit {
 		this.getLNG()
 		this.initPage()
 
-		this.request.requestID = 'r' + this.generateId()
-		this.request.xx = this.generateXX()
-
-		this.getCarton()
-
-		this.mapFormLoader('o')
-		this.mapFormLoader('d')
-
 		// setTimeout(() => {
 		// 	this.canDeactivate = false
 		// 	console.log('canDeactivate')
 		// }, 5000)
 		// console.log(this.LNG[this.lng])
+	}
+
+	ngAfterViewInit() {
+		let inputs = this.acinputs['_results']
+		for (let i of inputs) {
+			let el = i.nativeElement
+				, t = el.dataset.acit
+			this.mapFormLoader(t, el)
+		}
 	}
 
 	getLNG() {
@@ -219,128 +245,112 @@ export class RequestComponent implements OnInit {
 	initPage() {
 		this._AR.queryParams.subscribe(qp => {
 			if (qp.page) this.req_page = qp.page
-			else this._router.navigate(['/en', 'request'], { queryParams: { page: this.req_page } })
+
+			this._router.navigate([this.lng, 'request'], { queryParams: { page: this.req_page } })
 		})
 	}
 
 	// PAGER
-
 	pager(dir) {
-		if (dir === 'N') {
-			if (this.req_page < 3) {
-				this.req_page++
-			}
-		}
-		if (dir === 'P') {
-			if (this.req_page > 1) {
-				this.req_page--
-			}
-		}
-		this._router.navigate([], { relativeTo: this._AR, queryParams: { page: this.req_page } })
+		let RP = this.req_page
+		if (dir === 'N') if (RP < 3) RP++
+		if (dir === 'B') if (RP > 1) RP--
+
+		this._router.navigate([], { relativeTo: this._AR, queryParams: { page: RP } })
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 1 -----------------------------------------------------------------------------------//
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
-	getLiftText(flag) {
-		let idx = this.request.adress[flag].lift
-		return this.LIFTS[idx].text
+	getLift(T, F) {
+		let L = this.request.adress[T].lift
+			, C = {
+				0: '',
+				1: 'swlift--one',
+				2: 'swlift--two'
+			}
+
+		if (F === 'C') return C[L]
+		if (F === 'T') return this.LNG[this.lng].r1.lift[L]
 	}
 
-	getLiftColor(flag) {
-		const _class = {
-			1: 'c_green',
-			2: 'c_orange'
-		}
-		return _class[this.request.adress[flag].lift]
-	}
-
-	// Initialize search elements for MapAPI
-	mapFormLoader(t) {
+	mapFormLoader(t, el) {   // Initialize search elements for MapAPI
 		const T = t.toUpperCase()
 
-		this._maps.autocomplete(this['search_' + T].nativeElement, T)
+		this._maps.autocomplete(el, T)
 			.subscribe(data => {
 				Object.assign(this.request.adress[t], data)
-				this['search_' + T + '_map_render'] = true
+				this.map_render_search[T] = true
 				this.getDistance()
-
-				// console.log(this.request)
 			})
 	}
 
-	getDistance() {
-		// Save current route data to MapService
-		// this.storeMapData()
-
-		if (this.search_O_map_render && this.search_D_map_render) {
-			// Get distance from MapService
-			this._maps.distanceMatrix()
-				.then((data: any) => {
-					if (data.status === 'ZR') {
-						this.request.route.distance = -999
-					}
-					else {
-						const __dist = Math.floor(data.distance * 10) / 10
-
-						this.request.route.distance = __dist < 1 ? 1 : __dist
-						this.request.route.time = data.time
-					}
-				})
+	COORDS() {
+		return {
+			OLAT: this.request.adress.o.lat,
+			OLNG: this.request.adress.o.lng,
+			DLAT: this.request.adress.d.lat,
+			DLNG: this.request.adress.d.lng
 		}
 	}
 
-	// _toNumber(place) {
-	// 	this.request.adress[place].floor = +this.request.adress[place].floor
-	// }
+	getDistance() {
+		if (this.map_render_search.O && this.map_render_search.D)
+
+			this._maps.distanceMatrix(this.COORDS())   // Get distance from MapService
+				.then((data: any) => {
+					if (data.status === 'ZR') return this.request.route.distance = -999
+
+					const D = Math.floor(data.distance * 10) / 10
+					this.request.route.distance = D < 1 ? 1 : D
+					this.request.route.time = data.time
+				})
+	}
 
 	// Дата / Время
-	evDTSelected(e, type) {
-		this.request.date[type] = e
+	DTpicker(type, obj) {
+		let send = {
+			data: this.request[obj][type],
+			flag: obj
+		}
+		this[type + 'Picker'].showWIDGET(send)
+	}
+
+	evDateTimeSelected(e, type) {
+		this.request[e.flag][type] = e.data
+		this.packingSameDayClose()
 	}
 
 	evPlaceEdited(e, type) {
-		// console.log(e, type)
-		if (e.t === 'store') this.request.adress[type].lift = 0
-
 		this.request.adress[type].info = e
+
+		if (e.t === 'store') this.request.adress[type].lift = 0 // Блокируем лифт
 	}
 
-	showOnMap(type) {
-		if (type === 'O') {
-			if (this.search_O_map_render) {
-				this.gmap.showMap('O')
-				return
-			}
-		}
-		if (type === 'D') {
-			if (this.search_D_map_render) {
-				this.gmap.showMap('D')
-				return
-			}
-		}
-		if (type === 'R') {
-			this.gmap.showMap('R')
-		}
+	showOnMap(T) {
+		if (this.map_render_search[T]) this.gmap.showMap(T, this.COORDS())
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 2 -----------------------------------------------------------------------------------//
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
-	takePhoto(e) {
-		const curFiles = this.camera.nativeElement.files
-		if (curFiles.length) this.request.rooms[this.current_room].pictures.push(curFiles[0])
+	takePhoto() {
+		let curFiles = this.camera.nativeElement.files
+		if (curFiles.length) {
+			let _CR = this.request.rooms[this.current_room]
+			_CR.pictures.push(curFiles[0])
+			_CR._p = 1
+		}
 
-		setTimeout(() => {
-			this._scrollCamFrame()
-		}, 100)
+		setTimeout(() => this._scrollCamFrame(), 100)
 	}
 
 	_scrollCamFrame() {
-		const _photos_width = this.photos.nativeElement.scrollWidth
-		const _last_img = this.photos.nativeElement.children[this.photos.nativeElement.children.length - 1].width
+		let P = this.photos.nativeElement
+			, _photos_width = P.scrollWidth
+			, _last_img = P.children[P.children.length - 1].width
 
 		this.cam_frame.nativeElement.scrollLeft = _photos_width - _last_img - 20
 	}
@@ -350,86 +360,39 @@ export class RequestComponent implements OnInit {
 		return this._sanitizer.bypassSecurityTrustUrl(_url)
 	}
 
-	addTag(e) {
-		// console.log(e.target.scrollHeight, e)
-		// console.log(e.offsetX, e.offsetY)
+	addTag(e) {    // Press on PHOTO
 		e.preventDefault()
 		e.stopPropagation()
 
-		// Press on PHOTO
 		if (e.target.parentElement.classList.contains('photos')) {
-			if (!e.target.classList.contains('tag')) {
+			if (!this.request.rawh) this.request.rawh = e.target.scrollHeight // rawh
 
-				// this.request.rawh = e.target.scrollHeight
-				if (!this.request.rawh) this.request.rawh = e.target.scrollHeight
+			this.temp_tag.tagX = e.layerX
+			this.temp_tag.tagY = e.layerY
 
-				this.temp_picture_id = e.srcElement.parentElement.dataset.id
-				this.temp_tag.tagX = e.layerX
-				this.temp_tag.tagY = e.layerY
-
-				this.item_picker.select()
-			}
-
+			this.item_picker.select()
 		}
 	}
 
 	evItemSelected(e) {
 		const tagParams = {
 			idhash: this.generateId(),
-			name: e.item.name,
-			price: e.item.price,
+			PID: e.PID,
+			IID: e.item.id,
 			count: 1,
 			trash: false,
-			PID: e.id_type,
-			CID: e.item.id,
 
-			da: e.item.da ? 11 : 0,
-			dap: e.item.dap ? e.item.dap : 0
+			da: e.item.dap ? '0' + e.item.dap : '00'
 		}
 
-
 		Object.assign(this.temp_tag, tagParams)
-		// console.log(this.temp_tag)
-		// console.log(e)
-
 		this.drawTag()
 	}
 
-	generateId() {
-		let num = ''
-		const letters = 'abcdefghjiklmnopqrstvwxyz'
-		let steps = 8
-
-		for (let i = 0; i < steps; i++) {
-			if (i % 2 == 0) {
-				let a = Math.floor((Math.random() * 10))
-				num += a
-			}
-			else {
-				let a = Math.floor((Math.random() * letters.length))
-				num += letters[a]
-			}
-		}
-
-		return num
-	}
-
-	generateXX() {
-		let _string = ''
-		const num = '1234567899'
-
-		for (let i = 0; i < 4; i++) {
-			let a = +Math.random().toString()[2]
-			_string += num[a]
-		}
-
-		return +_string
-	}
-
-	itemNumber(flag) {
-		if (flag === "null") {
+	itemNumber(F) {
+		if (F === 'null') {
 			this.itemnumber = 1
-			return ''
+			return
 		}
 		return this.itemnumber++
 	}
@@ -442,11 +405,11 @@ export class RequestComponent implements OnInit {
 	}
 
 	drawTag() {
-		const new_tag = Object.assign({}, this.temp_tag);
-		this.request.rooms[this.current_room].tags.push(new_tag);
+		const new_tag = Object.assign({}, this.temp_tag)
+		this.request.rooms[this.current_room].tags.push(new_tag)
 
-		// console.log(this.request);
-		// console.log(this.temp_tag);
+		// console.log(this.temp_tag)
+		this.priceFurniture()
 	}
 
 	editItem(e) {
@@ -456,7 +419,7 @@ export class RequestComponent implements OnInit {
 
 			for (let _t of this.request.rooms[this.current_room].tags) {
 				if (_t.idhash === _hash) {
-					tagToEdit = _t
+					tagToEdit = JSON.parse(JSON.stringify(_t))
 					break
 				}
 			}
@@ -479,11 +442,11 @@ export class RequestComponent implements OnInit {
 
 				_t[i].count = etag.count
 				_t[i].trash = etag.trash
+				if (_t[i].da) _t[i].da = etag.da
+
 				break
 			}
 		}
-
-		// console.log(this.request)
 	}
 
 	roomPage(page) {
@@ -495,27 +458,37 @@ export class RequestComponent implements OnInit {
 	}
 
 	getRoomTitle(dir) {
-		const _len = this.request.rooms.length
-		const _cr = this.current_room
+		let R = this.request.rooms
+			, _len = R.length
+			, _cr = this.current_room
+			, idx
+			, LNG = this.LNG[this.lng].r2.rt
+			, add
+			, n
 
-		if (dir === 'L') return _cr === 0 ? _len - 1 : _cr - 1
-		if (dir === 'R') return _cr === _len - 1 ? 0 : _cr + 1
+		if (dir === 'C') idx = _cr
+		if (dir === 'L') idx = _cr === 0 ? _len - 1 : _cr - 1
+		if (dir === 'R') idx = _cr === _len - 1 ? 0 : _cr + 1
+
+		n = R[idx].name[0]
+
+		add = n === 'r' ? ' ' + R[idx].name.substr(5) : ''
+
+		return LNG[n] + add
 	}
 
 	addRoom() {
 		const _id = this.request.rooms.length
 
 		let roomToAdd = {
-			id: _id,
 			name: 'room ' + (_id - 2),
 			tags: [],
-			pictures: []
+			pictures: [],
+			_p: 0
 		}
 
 		this.request.rooms.push(roomToAdd)
-
 		this.current_room = _id
-		this.getCarton()
 	}
 
 	delRoom() {
@@ -530,97 +503,71 @@ export class RequestComponent implements OnInit {
 
 		this.current_room--
 		this.room_modal.d = false
-		this.getCarton()
 	}
 
 	resetRoom() {
 		const _cr = this.request.rooms[this.current_room]
 		_cr.pictures = []
 		_cr.tags = []
+		_cr._p = 0
 		this.room_modal.r = false
 	}
 
-	roomModal(type, flag) {
-		if (type === 'r') {
+	roomModal(T, F) {
+		// RESET
+		if (T === 'r') {
 			let _crp = this.request.rooms[this.current_room].pictures
 			if (_crp.length) {
-				if (flag === 'O') this.room_modal.r = true
-				if (flag === 'N') this.room_modal.r = false
-				if (flag === 'R') this.resetRoom()
+				if (F === 'O') this.room_modal.r = true
+				if (F === 'N') this.room_modal.r = false
+				if (F === 'R') this.resetRoom()
 			}
 			else return true
 		}
 
-		if (type === 'd') {
-			if (flag === 'O') this.room_modal.d = true
-			if (flag === 'N') this.room_modal.d = false
-			if (flag === 'D') this.delRoom()
+		// DELETE
+		if (T === 'd') {
+			if (F === 'O') this.room_modal.d = true
+			if (F === 'N') this.room_modal.d = false
+			if (F === 'D') this.delRoom()
 		}
 	}
 
-	getItemsRoom() {
-		let _sum = 0
-		let _item
-		for (let _t of this.request.rooms[this.current_room].tags) {
-			_item = 1 * _t.count
-			_sum += _item
-		}
-		return _sum
-	}
+	getItemsCount(F) {
+		let ROOMS = this.request.rooms
+			, SUM = 0
 
-	getItemsTotal() {
-		let _sum = 0
-		let _item
-		for (let _r of this.request.rooms) {
-			for (let _t of _r.tags) {
-				_item = 1 * _t.count
-				_sum += _item
-			}
-		}
-		return _sum
+		if (F === 'R') for (let t of ROOMS[this.current_room].tags) SUM += (1 * t.count)
+
+		if (F === 'T')
+			for (let R of ROOMS)
+				for (let t of R.tags) SUM += (1 * t.count)
+
+		return SUM
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 3 -----------------------------------------------------------------------------------//
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
-	cartonModal(flag) {
-		if (flag === 'show') this.carton_modal = true
-		if (flag === 'hide') this.carton_modal = false
+	cartonModal(F) {
+		this.carton_modal = F
 	}
 
-	getCarton(flag?) {
+	getCarton(F?) {
 		const _carton = (this.request.rooms.length - 1) * 15
-		if (flag === 'get') return _carton
-		this.request.packing.carton = _carton
+		if (F === 'get') return _carton
 	}
 
-	// requestUpload() {
-	// 	var __arr = [
-	// 		{ name: 'sdas', kk: 's112' },
-	// 		{ name: 'sdas', kk: 's112' },
-	// 		{ name: 'sdas', kk: 's112' },
-	// 		{ name: 'sdas', kk: 's112' }
-	// 	]
-
-	// 	const files: Array<File> = this.request.rooms[1].pictures
-	// 	const formData: any = new FormData()
-
-	// 	for (let f of files) {
-	// 		formData.append("uploads[]", f, f['name'])
-	// 	}
-
-	// 	formData.append("reqID", 'xla29a9s')
-	// 	formData.append("room", 'Salon')
-	// 	formData.append("tags", JSON.stringify(__arr))
-
-	// 	this._request.requestUpload(formData)
-	// }
-
-
+	packingSameDayClose() {
+		if (this.request.packing.date.d && this.request.packing.time.h) setTimeout(() => this.carton_sameday_show = false, 1000)
+	}
 
 	requestUpload(files) {
 		this.xx_upload_msg = 'Отправка заявки'
+
+		this.request.requestID = this.generateRequestID()
+		this.request.xx = this.generateXX()
 
 		const formData: any = new FormData()
 
@@ -630,13 +577,11 @@ export class RequestComponent implements OnInit {
 			formData.append('_file', _f.file, _fname)
 		}
 
-		//// Готовим заявку - удаляем фото
-		let requestToUpload: any = {}
-		requestToUpload = JSON.parse(JSON.stringify(this.request))
+		//////////////////////////////// Готовим заявку
+		let requestToUpload = JSON.parse(JSON.stringify(this.request))
 
-		for (let _r of requestToUpload.rooms) {
-			delete _r.pictures
-		}
+		// - удаляем фото
+		for (let _r of requestToUpload.rooms) delete _r.pictures
 
 		//// Добавляем параметры
 		formData.append('requestObject', JSON.stringify(requestToUpload))
@@ -644,12 +589,12 @@ export class RequestComponent implements OnInit {
 		//// Отправляем
 		this._request.requestUpload(formData)
 			.subscribe((res: any) => {
-				console.log(res)
+				// console.log(res)
 				this.xx_loader = false
 				if (res.success) {
 					this.xx_upload_msg = 'Успешно отправлено'
-					// this.xx_download_msg = 'Ссылка на скачивание'
-					// this.xx_download_link = res.result.Location
+					this.xx_download_msg = 'ПОСМОТРЕТЬ'
+					this.xx_download_link = 'https://tmctestx.firebaseapp.com/en/db/' + this.request.requestID
 					alert('SUCCESS')
 				}
 				else {
@@ -659,6 +604,8 @@ export class RequestComponent implements OnInit {
 	}
 
 	canvasDraw() {
+		// console.log(this.request)
+
 		this.xx_loader = true
 		this.xx_canvas_msg = 'Обработка изображений'
 
@@ -690,6 +637,21 @@ export class RequestComponent implements OnInit {
 
 	}
 
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////// PRICING
+
+	_getFloorM(T) {
+		let isLift = this.request.adress[T].lift
+
+			, count = Math.abs(+this.request.adress[T].info.f) || 0
+			, multiplier = isLift ? 0.005 : 0.025
+			, max = isLift ? 0.05 : 0.125
+
+			, result = count * multiplier
+
+		return result <= max ? result : max
+	}
+
 	priceMod() {
 		let M = {
 			DS: 0,
@@ -698,201 +660,312 @@ export class RequestComponent implements OnInit {
 		}
 
 		// DAY
-		const _d = this.request.date.day.d
+		const _d = this.request.date.date.d
 		if ((_d >= 1 && _d <= 8) || (_d >= 24 && _d <= 31)) M.DS += 0.05
 
 		// SEASON
-		const _m = this.request.date.day.m
+		const _m = this.request.date.date.m
 		if ((_m == 6 && _d >= 11) || (_m >= 7 && _m <= 8) || (_m == 9 && _d < 10)) M.DS += 0.05
 
 		// LIFT
-		let _self = this
-
-		function _getFloorM(T) {
-			const isLift = _self.request.adress[T].lift
-
-			const count = Math.abs(+_self.request.adress[T].info.f)
-			const multiplier = isLift ? 0.005 : 0.025
-			const max = isLift ? 0.05 : 0.1
-
-			const result = count * multiplier
-
-			return result <= max ? result : max
-		}
-		M.LO += _getFloorM('o')
-		M.LD += _getFloorM('d')
+		M.LO += this._getFloorM('o')
+		M.LD += this._getFloorM('d')
 
 		return M
 	}
 
-	priceCarOrder() {
-		const car = 100
-		const _dst = this.request.route.distance
-		let _dst_mod
+	priceDistance() {
+		let D = this.request.route.distance || 0
+			, DM
+			, result
 
-		if (_dst > 0 && _dst <= 10) _dst_mod = 7
-		if (_dst > 10 && _dst <= 25) _dst_mod = 6
-		if (_dst > 25 && _dst <= 50) _dst_mod = 5
-		if (_dst > 50 && _dst <= 100) _dst_mod = 4
-		if (_dst > 100) _dst_mod = 3
+		if (D >= 0 && D <= 10) DM = 7
+		if (D > 10 && D <= 25) DM = 6
+		if (D > 25 && D <= 50) DM = 5
+		if (D > 50 && D <= 100) DM = 4
+		if (D > 100) DM = 3
 
-		const _distance = _dst * _dst_mod * 1.5
-
-		return Math.floor(car + _distance)
+		result = D * DM * 1.5
+		return Math.floor(result)
 	}
 
 	priceFurniture() {
-		const M = this.priceMod()
+		let M = this.priceMod()
+			, furniture = 0
 
-		let _furniture = 0
 		for (let _room of this.request.rooms) {
-			for (let _tag of _room.tags) {
-				_furniture += ((_tag.price * (_tag.trash ? 0.6 : 1) * (1 + M.DS + M.LO + (_tag.trash ? 0 : M.LD))) + (_tag.da === 11 ? _tag.dap : 0)) * _tag.count
+			for (let T of _room.tags) {
+				let _TP = this.FUR[T.PID % 100].types[T.IID].price // PRICE
+					, _TDA = +T.da[0]
+					, _TDAP = +T.da.substring(1)
+
+				furniture += ((_TP * (T.trash ? 0.6 : 1) * (1 + M.DS + M.LO + (T.trash ? 0 : M.LD))) + (_TDA ? _TDAP : 0)) * T.count
 			}
 		}
-		return Math.floor(_furniture)
+		return Math.floor(furniture)
 	}
 
-	pricePacking(flag) {
-		const M = this.priceMod()
+	priceBoxes(F) {
+		let M = this.priceMod()
+			, total
+			, B = this.request.boxes
+			, C = B.carton
+			, P = this.request.packing
 
-		let total = 0
-		const _carton = this.request.packing.carton
+		if (F === 'T') total = C * (1 + M.DS + M.LO + M.LD) * 10
+		if (F === 'P') total = P.pack ? C * 20 : 0
+		if (F === 'B') total = B.boxes ? C * 5 : 0
 
-		if (flag === 'transportation') {
-			total = _carton * (1 + M.DS + M.LO + M.LD) * 10
-			return Math.floor(total)
-		}
-
-		if (flag === 'pack') {
-			total = 0
-			if (this.request.packing.pack) total = _carton * 20
-			if (this.request.packing.boxes) total += _carton * 5
-			return total
-		}
-
+		return Math.floor(total)
 	}
 
 
-	totalPrice() {
+	priceTotal() {
 		let sum = 0
+			, car = this.price_car
+			, distance = this.priceDistance()
+			, transportation_furniture = this.priceFurniture()
+			, transportation_boxes = this.priceBoxes('T')
+			, packing = this.priceBoxes('P')
+			, boxes = this.priceBoxes('B')
+			, P = this.request.price
 
-		// CAR
-		let car = this.priceCarOrder()
-		// TRANSPORTATION
-		let items = this.priceFurniture()
-		// PACKING
-		let packing_transportation = this.pricePacking('transportation')
-		let packing_pack = this.pricePacking('pack')
+		sum = car + distance + transportation_furniture + transportation_boxes + packing + boxes
 
-		sum = car + items + packing_transportation + packing_pack
+		if (sum < 200) sum = 200
 
-		if (sum < 200) {
-			return 200
-		}
-		else {
-			let _remain = Math.floor(sum) % 100
-			return _remain < 50 ? Math.floor(sum / 100) * 100 + 50 : Math.floor(sum / 100) * 100 + 100
-		}
+		// else {
+		// 	let _remain = Math.floor(sum) % 100
+		// 	sum = _remain < 50 ? Math.floor(sum / 100) * 100 + 50 : Math.floor(sum / 100) * 100 + 100
+		// }
+
+		// SAVING
+		P.transportation = car + distance + transportation_furniture + transportation_boxes
+		P.packing = packing
+		P.boxes = boxes
+
+		return sum
 	}
 
 	///////////////////// VALIDATION /////////////////////
 
 	valert(x, place) {
-		const _p = this.request.adress[place]
-		// console.log(_p)
+		let R = this.request
+			, PL = R.adress[place] // PLACE
 
 		// LOCATION
-		if (x === 'R1_SL') if (_p.city && _p.street && _p.number) return true
+		if (x === 'R1_SL') if (PL.city && PL.street && PL.number) return true
 
-		if (x === 'R1_PI') {
-			if (_p.info.t !== undefined) {
-				switch (_p.info.t) {
-					case 'apartment':
-						if (_p.info.f && _p.info.n) return true
-						break
-					case 'office':
-						if (_p.info.f) return true
-						break
-					default:
-						return true
-				}
-			}
+		if (x === 'R1_PI') if (PL.info.t !== undefined) switch (PL.info.t) {
+			case 'apartment':
+				if (PL.info.f && PL.info.n) return true
+			case 'office':
+				if (PL.info.f) return true
+			default:
+				return true
 		}
 
 		// DAY / TIME
-		if (x === 'R1_DAY') if (this.request.date.day.d) return true
+		if (x === 'R1_DAY') if (R.date.date.d) return true
+
+		// DISTANCE
+		if (x === 'R1_DIST') if (R.route.distance && R.route.distance !== -999) return true
+
+		// PACKING SAMEDAY DATE / TIME
+		if (x === 'R3_PSD_DT') {
+			const P = R.packing
+			if (P.pack && !P.sameday) return (P.date.d && P.time.h) ? true : false
+
+			return true
+		}
+
+		// BOXES NOT DEFINED
+		if (x === 'R3_BOX') return (!R.boxes.carton && (R.boxes.boxes || R.packing.pack)) ? false : true
 	}
 
-	validation(flag) {
-		if (flag === 'price') {
-			if (
-				this.valert('R1_SL', 'o') &&
-				this.valert('R1_PI', 'o') &&
-				this.valert('R1_SL', 'd') &&
-				this.valert('R1_PI', 'd') &&
-				this.valert('R1_DAY', null)
-			) {
-				return true
-			}
-		}
+	validation(F) {
+		if (F === 'price') if (true
+			&& this.valert('R1_SL', 'o')
+			&& this.valert('R1_PI', 'o')
+			&& this.valert('R1_SL', 'd')
+			&& this.valert('R1_PI', 'd')
+			&& this.valert('R1_DAY', null)
+			&& this.valert('R1_DIST', null)
+			&& this.valert('R3_PSD_DT', null)
+			&& this.valert('R3_BOX', null)
+		) return true
 
-		if (flag === 'confirm') {
-			if (
-				this.request.customer.name &&
-				this.request.customer.phone &&
-				this.agree_valid
-			) {
-				return true
-			}
-		}
+		if (F === 'confirm') if (true
+			&& this.request.customer.name
+			&& this.phoneValid()
+			&& this.agree_valid
+		) return true
 	}
 
 	confirm() {
-		if (this.validation('confirm')) {
-			// alert('YES')
-			this.canvasDraw()
+		// console.log(this.request)
+		if (this.validation('confirm')) this.canvasDraw()
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+	// MISC - -----------------------------------------------------------------------------------//
+	// ////////////////////////////////////////////////////////////////////////////////////////////
+
+	generateRequestID() {
+		let D = new Date()
+			, y = D.getFullYear().toString().substr(-2)
+
+			, _m = D.getMonth() + 1
+			, m = (_m < 10 ? '0' + _m : _m).toString()
+
+			, _d = D.getDate()
+			, d = (_d < 10 ? '0' + _d : _d).toString()
+
+			, sub1 = y + m + d
+			, sub2 = this.generateXX()
+
+		return sub1 + sub2
+	}
+
+	generateId() {
+		let letters = 'abcdefghjiklmnopqrstvwxyz'
+			, steps = 8
+			, _string = ''
+
+		for (let i = 0; i < steps; i++) {
+			let a = Math.floor((Math.random() * letters.length))
+			_string += letters[a]
+		}
+
+		return _string
+	}
+
+	generateXX() {
+		let num = '1234567899'
+			, _string = ''
+
+		for (let i = 0; i < 4; i++) {
+			let a = +Math.random().toString()[2]
+			_string += num[a]
+		}
+
+		return +_string
+	}
+
+	showDate(T) {
+		let d = this.request[T].date
+
+		if (d.d) {
+			let objDate = new Date(d.m + '/' + d.d + '/' + d.y)
+				, locale = this.lng
+				, D = objDate.toLocaleString(locale, { day: "2-digit" })
+				, M = objDate.toLocaleString(locale, { month: "long" })
+				, Y = objDate.toLocaleString(locale, { year: "2-digit" })
+
+			return `${D} . ${M} . ${Y}`
+		}
+
+		return this.LNG[this.lng].date.datenull
+	}
+
+	showTime(T) {
+		const t = this.request[T].time
+		if (t.h) return t.h + ' : ' + t.m
+		return this.LNG[this.lng].date.timenull
+	}
+
+	nullPack(T) {
+		let PKG = this.request.packing
+			, P = PKG.pack
+			, S = PKG.sameday
+
+		if (T == 'pack') if (!P) PKG.sameday = true
+
+		if (S) {
+			PKG.date.d = undefined
+			PKG.date.m = undefined
+			PKG.date.y = undefined
+			PKG.time.h = undefined
+			PKG.time.m = undefined
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// ////////////////////////////////////////////////////////////////////////////////////////////
-	// MISC - -----------------------------------------------------------------------------------//
+	phoneMask(e) {
+		let C = this.request.customer
+			, P = C.phone || ''
+			, R = /[\d]/gm
+			, key = e.keyCode
 
+		if (key == 8 && P.length >= 3) return
 
-	timeTransform(x) {
-		var sec_num = parseInt(x, 10) // don't forget the second param
+		let _arr = ''
+		for (let c of P) if (c.match(R)) _arr += c
 
-		var hours: any = Math.floor(sec_num / 60)
-		var minutes: any = Math.floor((sec_num - (hours * 60)))
+		let A = _arr.substr(2, 1)
+		let L = '05' + A
 
-		if (hours < 10) { hours = "0" + hours }
-		if (minutes < 10) { minutes = "0" + minutes }
+		/*                 */ C.phone = L
+		if (_arr.length >= 3) C.phone = L + ' ' + _arr.substr(3, 3)
+		if (_arr.length >= 6) C.phone = L + ' ' + _arr.substr(3, 3) + '-' + _arr.substr(6, 4)
 
-		return hours + ':' + minutes
+		return
 	}
 
-	// console() {
-	// 	// this.getDistance();
+	phoneValid() {
+		let P = this.request.customer.phone || ''
+		if (P.length >= 12) return true
+	}
 
-	// 	// console.log(this.rooms);
-	// }
+	emptyTitle(F) {
+		let R = this.request.rooms
+		if (F === 'C') for (let r of R) if (r.pictures.length) return true
+		if (F === 'P') if (R[this.current_room].pictures.length) return true
+		if (F === 'T') if (R[this.current_room].tags.length) return true
+		if (F === 'I') if (R[this.current_room].tags.length > 1) return true
+	}
 
-	// ddd(e) {
-	// 	console.log(e)
+	// timeTransform(x) {
+	// 	var sec_num = parseInt(x, 10) // don't forget the second param
+
+	// 	var hours: any = Math.floor(sec_num / 60)
+	// 	var minutes: any = Math.floor((sec_num - (hours * 60)))
+
+	// 	if (hours < 10) { hours = "0" + hours }
+	// 	if (minutes < 10) { minutes = "0" + minutes }
+
+	// 	return hours + ':' + minutes
 	// }
 
 	nextLNG() {
-		const L = this.lng
+		let L = this.lng
 		switch (L) {
-			case 'en': this.lng = 'ru'
-				break
-			case 'ru': this.lng = 'he'
-				break
-			case 'he': this.lng = 'en'
-				break
+			case 'en': L = 'ru'; break
+			case 'ru': L = 'he'; break
+			case 'he': L = 'en'; break
 		}
-		this._router.navigate([this.lng, 'request'], { queryParams: { page: this.req_page } })
+		this._router.navigate([L, 'request'], { queryParams: { page: this.req_page } })
+	}
+
+	// detectBrowser() {
+	// 	var useragent = navigator.userAgent;
+
+	// 	if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
+	// 		console.log(useragent, 'PHONE')
+	// 	} else {
+	// 		console.log(useragent, 'NO')
+	// 	}
+	// }
+
+	// aRound(X) {
+	// 	return Math.floor(X * 10000) / 10000
+	// }
+
+	show() {
+		console.log(this.request)
 	}
 
 }
+
+
+
+//addTag if (e.target.parentElement.classList.contains('photos')) /* if (!e.target.classList.contains('tag')) */ {

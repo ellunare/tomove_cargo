@@ -1,22 +1,25 @@
-<div class="null"	(click)="showEdit('show')">
+<div class="null"  (click)="showEdit('show')">
+
 	<div class="null-icon">
-		<img src="assets/i/pi_plus.svg" *ngIf="!isEdited()">
-		<img src="assets/i/pi_edit.svg" *ngIf="isEdited()">
+		<img [src]="'assets/i/pi_' + (isEdited() ? 'edit' : 'plus') + '.svg'">
 	</div>
+
 	<div class="null-info" *ngIf="!isEdited()">
-		<p>Location information</p>
+		<p>{{LNG[lng].r1.loc.i}}</p>
 	</div>
+
 	<div class="null-info  null-info--edited" *ngIf="isEdited()">
 		<div class="null-info__item">
 			<img src="{{'assets/i/pi_o_t.svg'}}">
-			<span>{{info.t[0]}}</span>
+			<span>{{LNG[lng].r1.loc.t[info.t[0]][0]}}</span>
 		</div>
 
-		<div *ngFor="let o of _render.params" class="null-info__item"  [class.null-info__item--none]="!info[o.t[0]]">
+		<div class="null-info__item"  *ngFor="let o of _render.params"  [class.null-info__item--none]="!info[o.t[0]]">
 			<img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}">
 			<span>{{info[o.t[0]]}}</span>
 		</div>
 	</div>
+
 </div>
 
 
@@ -25,7 +28,7 @@
 
 	<div class="pi-type">
 
-		<p>{{"Location type"}}</p>
+		<p>{{LNG[lng].r1.loc.t.t}}</p>
 
 		<div class="types">
 			<div class="type"  *ngFor="let p of _render.types">
@@ -37,23 +40,28 @@
 					(change)="onTypeChange()"
 					>
 
-				<label class="radio" [for]='p.t'>{{p.t}}</label>
+				<label class="radio" [for]='p.t'>{{LNG[lng].r1.loc.t[p.t[0]]}}</label>
 			</div>
 		</div>
 
 	</div>
 
 	<div class="pi-wrap">
-		<div class="pi-item" *ngFor="let o of _render.params" [class.pi-item--disabled]="disabled('inputs')" [class.pi-item--required]="required(o.t)">
-			<p>{{o.t}}</p>
+		<div class="pi-item" *ngFor="let o of _render.params" 
+			[class.pi-item--disabled]="disabled('inputs')" 
+			[class.pi-item--required]="required(o.t)">
+
+			<p>{{LNG[lng].r1.loc.b[o.t[0]]}}</p>
+
 			<div class="pi-item-wrap">
-				<div class="pi-item-wrap__icon">
-					<img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}">
-				</div>
+
+				<div class="pi-item-wrap__icon"><img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}"></div>
+
 				<div class="pi-item-wrap__input">
-					<input [type]="o.t === 'entrance' ? 'text' : 'number'" [(ngModel)]="info[o.t[0]]" [disabled]="disabled('inputs')"
-						[placeholder]="required(o.t) ? 'required' : ''"
-					>
+					<input [type]="o.t === 'entrance' ? 'text' : 'number'" 
+						[(ngModel)]="info[o.t[0]]" 
+						[disabled]="disabled('inputs')"
+						[placeholder]="required(o.t) ? LNG[lng].c.required : ''">
 				</div>
 			</div>
 		</div>
@@ -63,4 +71,9 @@
 		</div>
 
 	</div>
+</div>
+
+<div style="display: none">
+	<img height="0" src="assets/i/pi_plus.svg">
+	<img height="0" src="assets/i/pi_edit.svg">
 </div>

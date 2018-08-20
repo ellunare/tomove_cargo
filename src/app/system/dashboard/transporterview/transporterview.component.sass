@@ -1,0 +1,252 @@
+@import '../../../../styles.sass'
+
+$tw_accent: $color_purple
+
+$c_w: 100%
+$day_w: $c_w / 7
+$day_h: 8rem
+
+.calendar
+	background-color: #000
+	width: 100%
+	height: 100%
+	position: fixed
+	left: 0
+	top: 0
+	z-index: 100
+	&--loading
+		border-top: 6px solid red
+	&-wrap
+		width: $c_w
+		text-align: center
+	&-month
+		width: 100%
+		height: 4rem
+		line-height: 4rem
+		color: #fff
+		text-transform: uppercase
+	&-table
+		width: 100%
+	&-days
+		display: flex
+		flex-wrap: wrap
+		width: 100%
+		align-content: flex-start
+		&--week
+			background-color: $color_gold
+			height: 3rem
+		&--month
+			height: calc(100vh - 20rem)
+	&-day
+		width: $day_w
+		height: calc(100% / 6)
+		background-color: #171717//0f0f0f
+		color: #fff
+		text-align: center
+		cursor: pointer
+		padding-top: 1rem
+		&--name
+			cursor: default
+			background-color: $color_gold
+			color: #fff
+			height: 100%
+			padding: 0
+			line-height: 3rem
+	&-btns
+		width: 100%
+		display: flex
+		justify-content: space-between
+		.btn
+			display: inline-block
+			height: 3rem
+			border-radius: 0.5rem
+			border: 0.2rem solid $color_gold
+			color: #fff
+			cursor: pointer
+			line-height: 2.6rem
+			border-radius: 0.5rem
+			padding: 0 2rem
+		.close
+			+buttonok
+			text-align: center
+			height: 3rem
+			line-height: 2.5rem
+		.new
+			height: 3rem
+			img
+				height: 100%
+				padding: 0.2rem
+
+.inactive
+	cursor: default
+	opacity: 0.2
+
+.today
+	color: $color_gold
+	padding-top: 0.5rem
+	border-top: 0.5rem solid $color_gold
+	font-weight: 700
+	// background-color: #1d1d1d
+
+.beforetoday
+	cursor: default
+	// opacity: 0.7
+	p
+		opacity: 0.2
+	div
+		opacity: 0.2
+
+.selected
+	background: $color_gold
+	color: #fff
+
+.hidden
+	opacity: 0
+
+
+.language
+	margin-left: 1rem
+	color: $color_gold
+	text-transform: uppercase
+
+
+.req
+	&-daytitle
+		position: absolute
+		top: -2.8rem
+		left: 2rem
+		font-weight: 500
+		color: $color_green
+	&-group
+		width: 100%
+		border-radius: 1rem
+		padding: 0 0.3rem
+	&-dot
+		background-color: $color_green
+		width: 100%
+		height: 4px
+		margin-bottom: 0.5rem
+		&--under3000
+			width: 50%
+		&--notsameday
+			background-color: $tw_accent
+			// width: 1rem
+		&--pack
+			&:after
+				content: ''
+				display: block
+				width: 6px
+				height: 100%
+				// background-color: $tw_accent
+		&--sameday
+			&:after
+				background-color: $tw_accent
+		&--box
+			background-color: grey
+
+	&-dayview
+		position: fixed
+		z-index: 200
+		width: 100%
+		left: 0
+		top: 4rem
+		height: calc(100% - 4rem)
+		background-color: #000
+
+	&-one
+		width: 100%
+		background-color: $color_dark_gold
+		margin-bottom: 1rem
+		padding: 1rem 2rem
+
+		position: relative
+		&--pack
+			background-color: #080808
+		&--box
+			background-color: #444444
+		&-leftline
+			width: 0.8rem
+			height: 100%
+			background-color: $color_green
+			position: absolute
+			left: 0
+			top: 0
+			&--p
+				background-color: $tw_accent
+			&--b
+				background-color: grey
+			&--sameday
+				&::after
+					content: ''
+					// display: block
+					position: absolute
+					width: 100%
+					height: 4.3rem
+					background-color: $tw_accent
+
+		&-adress
+			width: calc(100% - 11rem)
+
+		&-line
+			margin-bottom: 0.5rem
+			span
+				text-transform: uppercase
+				text-overflow: ellipsis
+				overflow: hidden
+				white-space: nowrap
+				max-width: calc(100% - 2rem)
+				display: inline-block
+				// background-color: green
+			&--circle
+				width: 1rem
+				height: 1rem
+				border-radius: 100%
+				border: 0.2rem solid $color_green
+				display: inline-block
+				margin-right: 0.5rem
+				margin-bottom: 0.5rem
+				&-pack
+					background-color: $tw_accent
+					border: none
+				&-box
+					background-color: grey
+					border: none
+				&-sameday
+					border-color: $tw_accent
+		&-type
+			text-transform: uppercase
+			padding-left: 2rem
+			font-size: 1.2rem
+			margin-bottom: 1rem
+			img
+				height: 1rem
+		
+		&-right
+			float: right
+			text-align: right
+		&-link
+			img
+				height: 4.1rem
+
+		&-box
+			position: absolute
+			right: 2rem
+			bottom: 1.5rem
+			img
+				height: 3rem
+
+		&-distance
+			position: absolute
+			right: 2rem
+			bottom: 1rem
+			&-d
+				font-weight: 500
+			&-t
+				font-weight: 300
+				color: #a58f43
+				margin: 0 1rem
+
+	&-dayprice
+		position: absolute
+		right: 2rem
+		bottom: 0.5rem

@@ -1,3 +1,59 @@
+// Vars
+
+// #1e1c16
+// #dfd7ba
+
+$color_bg_TR: #000
+$color_bg_BL: #010e1d
+
+$bglg: linear-gradient(to bottom left, $color_bg_TR, $color_bg_BL)
+
+$color_gold: #a58f43
+$color_dark_gold: #1e1c16
+$color_green: #24bc68
+$color_orange: #ffa500
+$color_red: #bc2424
+$color_blue: #0a45f9
+$color_purple: #7a24bc
+
+
+// Services
+$color_2_TR: #246cbc
+$color_2_BL: #7a24bc
+
+
+$BR: 1.6rem
+
+
+// Fonts
+
+// @font-face
+// 	font-family: 'Rubik'
+// 	src: url('/assets/fonts/RR.ttf')
+// 	font-style: normal
+// 	font-weight: 400
+
+// @font-face
+// 	font-family: 'Rubik'
+// 	src: url('/assets/fonts/RL.ttf')
+// 	font-style: normal
+// 	font-weight: 300
+
+// // @font-face
+// // 	font-family: 'Lato'
+// // 	src: url("/assets/fonts/LLI.ttf")
+// // 	font-style: italic
+// // 	font-weight: 300
+
+// @font-face
+// 	font-family: 'Rubik'
+// 	src: url('/assets/fonts/RM.ttf')
+// 	font-style: normal
+// 	font-weight: 700
+
+$main-font: 'Rubik', sans-serif
+
+
 // Reset
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -19,7 +75,12 @@ time, mark, audio, video, input, select, textarea
 	font: inherit
 	vertical-align: baseline
 	box-sizing: border-box
-	// -webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0)
+
+	-webkit-border-radius: 0
+	border-radius: 0
+	-webkit-box-shadow: none
+	box-shadow: none
 	&:focus
 		outline: none !important
 
@@ -48,64 +109,20 @@ table
 
 a
 	text-decoration: none
+	-webkit-tap-highlight-color: transparentize(#fff, 1)
+	&:link
+		color: #fff
+	&:visited
+		color: $color_gold
+	&:hover
+		color: $color_orange
+	&:active 
+		color: $color_blue
 
 button, textarea:focus, input:focus
 	outline: none
+	font-family: inherit
 
-
-// Fonts
-
-@font-face
-	font-family: 'Lato'
-	src: url("/assets/fonts/LR.ttf")
-	font-style: normal
-	font-weight: 400
-
-@font-face
-	font-family: 'Lato'
-	src: url("/assets/fonts/LL.ttf")
-	font-style: normal
-	font-weight: 300
-
-@font-face
-	font-family: 'Lato'
-	src: url("/assets/fonts/LLI.ttf")
-	font-style: italic
-	font-weight: 300
-
-@font-face
-	font-family: 'Lato'
-	src: url("/assets/fonts/LB.ttf")
-	font-style: normal
-	font-weight: 700
-
-// Vars
-
-$main-font: 'Lato'
-
-// #1e1c16
-// #dfd7ba
-
-// $color_bg_TR: #010e1d
-// $color_bg_BL: #131737
-
-$color_bg_TR: #000
-$color_bg_BL: #010e1d
-
-$cccc: #212039
-
-$bglg: linear-gradient(to bottom left, $color_bg_TR, $color_bg_BL)
-
-$color_gold: #a58f43
-$color_dark_gold: #1e1c16
-$color_green: #24bc68
-$color_red: #bc2424
-$color_blue: #0a45f9
-$color_orange: orange
-
-// Services
-$color_2_TR: #246cbc
-$color_2_BL: #7a24bc
 
 // Setup
 html
@@ -131,8 +148,9 @@ body
 	width: 100%
 	height: 100%
 	@media screen and (min-width: 480px)
-		background-color: green
+		// background-color: #0d1b2b
 		width: 48rem
+		margin: 0 auto
 
 
 /* COMMON */
@@ -143,8 +161,11 @@ body
 .flex
 	display: flex
 
-.jcsb
-	justify-content: space-between
+.jc
+	&sb
+		justify-content: space-between
+	&c
+		justify-content: center !important
 
 .aic
 	align-items: center
@@ -160,15 +181,24 @@ body
 	&r
 		text-align: right !important
 
+.ttu
+	text-transform: uppercase
+
 .mh4
 	min-height: 4rem
 
 .hidden
-	visibility: hidden
+	visibility: hidden !important
+
+.none
+	display: none !important
+
+.dnone
+	display: none !important
 
 .fw_
 	&eb
-		font-weight: 700
+		font-weight: 500
 	&l
 		font-weight: 300
 
@@ -176,11 +206,15 @@ body
 	&white
 		color: #fff
 	&gold
-		color: $color_gold
+		color: $color_gold !important
 	&green
 		color: $color_green
 	&orange
 		color: $color_orange
+	&purple
+		color: $color_purple
+	&grey
+		color: grey
 
 /* Renderer */
 
@@ -199,3 +233,21 @@ $cl_size: 5rem
 	outline: none
 	border: $cl_bor solid $color_gold
 	cursor: pointer
+
+
+$dtp_h: 4rem
+$dtp_bor: 0.2rem
+=dtpicker
+	display: inline-block
+	height: $dtp_h
+	padding: 0 1.2rem
+	border: $dtp_bor solid $color_gold
+	border-radius: 0.5rem
+	line-height: $dtp_h - 2 * $dtp_bor
+	text-align: center
+	color: #fff
+	text-transform: capitalize
+	cursor: pointer
+	text-transform: uppercase
+	&--correct
+		border-color: $color_green

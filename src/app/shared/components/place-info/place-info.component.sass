@@ -10,12 +10,12 @@ $pi_wrap_w: 15rem
 	background-color: $color_gold
 	border-radius: 0.5rem
 	display: flex
+	margin-bottom: $BR
 	&-icon
 		width: 4rem
 		height: 100%
 		padding: 0.4rem
 		text-align: center
-		// background-color: $color_gold
 		img
 			height: 100%
 	&-info
@@ -92,6 +92,9 @@ $pi_wrap_w: 15rem
 					color: #fff
 					font-size: 1.8rem
 					text-align: center
+					&::placeholder
+						font-size: 1.4rem
+						font-weight: 300
 		&--required
 			div
 				border-color: $color_orange
@@ -146,7 +149,8 @@ $rd_radius: 0.8rem
 	text-transform: uppercase
 	font-weight: 400
 	transition: all .5s 
-	&:hover, &:focus, &:active
+	// &:hover, &:focus, 
+	&:active
 		border-color: $color_green
 
 .typetoggle
@@ -158,4 +162,4 @@ $rd_radius: 0.8rem
 			border-color: $color_green
 			background-color: $color_green
 			// color: $color_bg_TR
-			font-weight: 700
+			font-weight: 500

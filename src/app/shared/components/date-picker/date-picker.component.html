@@ -1,15 +1,8 @@
-<div class="null"
-	(click)="showCalendar()"
-	[class.null--correct]="selected_day"
-	>
-	<p>{{showDate()}}</p>
-</div>
-
 <div class="calendar" *ngIf="show_calendar" (click)="modalClick($event)">
 
 	<div class="calendar-wrap">
 		
-		<p class="calendar-date">{{date.format('MMMM ')}} {{date.format('YYYY ')}}</p>
+		<p class="calendar-date">{{date.locale(lng).format('MMMM ')}} {{date.format('YYYY ')}}</p>
 		
 		<div class="calendar-table">
 			<div class='calendar-days  calendar-days--week'>
@@ -19,22 +12,22 @@
 			
 			<div class='calendar-days'>
 				<div *ngFor="let day of daysArr"
-				class='calendar-day' 
-				(click)="selectDay($event, day)" 
-				[ngClass]="{
-					'inactive ': !day, 
-					'today': todayCheck(day),
-					'selected': isSelected(day),
-					'beforetoday': isBeforeToday(day)
-				}">
-				{{day?.date()}}</div>
+					class='calendar-day' 
+					(click)="selectDay($event, day)" 
+					[ngClass]="{
+						'inactive ': !day, 
+						'today': todayCheck(day),
+						'selected': isSelected(day),
+						'beforetoday': isBeforeToday(day)
+					}"
+				>{{day?.date()}}</div>
 			</div>
 		</div>
 
 		<div class="calendar-btns  p2">
-			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">PREV</div>
+			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">{{LNG[lng].c.back}}</div>
 			<button class="close" (click)="hideCalendar('close')">OK</button>
-			<div class="btn" (click)="monthPager('next')">NEXT</div>
+			<div class="btn" (click)="monthPager('next')">{{LNG[lng].c.next}}</div>
 		</div>
 		
 		

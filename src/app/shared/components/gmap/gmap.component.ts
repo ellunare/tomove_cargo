@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core'
 
-import { MapsGoogleService } from '../../services/maps-google.service';
+import { LNG_PACK } from '../../models/LOCALIZATION'
+
+import { MapsGoogleService } from '../../services/maps-google.service'
 
 @Component({
 	selector: 'gmap',
@@ -9,12 +11,13 @@ import { MapsGoogleService } from '../../services/maps-google.service';
 })
 export class GmapComponent implements OnInit {
 
-	@ViewChild('map') map: ElementRef;
+	@Input() lng = undefined
+	LNG = LNG_PACK
+
+	@ViewChild('map') map: ElementRef
 
 	showMode = {
-		map: false,
-		// O: false,
-		// D: false
+		map: false
 	}
 
 	constructor(
@@ -23,25 +26,21 @@ export class GmapComponent implements OnInit {
 
 	ngOnInit() { }
 
-	initMap(type) {
-		this._maps.showOnMap(this.map.nativeElement, type);
+	initMap(type, COORDS) {
+		this._maps.showOnMap(this.map.nativeElement, type, COORDS)
 	}
 
-	modalClick(e) {
-		this.showMode.map = false;
+	modalClick() {
+		this.showMode.map = false
 	}
 
-	showMap(type) {
-		this.showMode.map = true;
-		setTimeout(() => {
-			if (this.map) {
-				this.initMap(type);
-			}
-		}, 1000);
+	showMap(type, COORDS) {
+		this.showMode.map = true
+		setTimeout(() => { if (this.map) this.initMap(type, COORDS) }, 1000)
 	}
 
-	showMe() {
-		this._maps.showOnMap(this.map.nativeElement, 'ME');
-	}
+	// showMe() {
+	// 	this._maps.showOnMap(this.map.nativeElement, 'ME');
+	// }
 
 }

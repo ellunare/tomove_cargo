@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Router, Resolve, ActivatedRouteSnapshot, } from '@angular/router';
+import { Injectable } from '@angular/core'
+import { Router, Resolve, ActivatedRouteSnapshot } from '@angular/router'
 
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
-import { take } from 'rxjs/operators/take';
+import { Observable } from 'rxjs/Observable'
+import { map } from 'rxjs/operators/map'
+// import { take } from 'rxjs/operators/take'
 
-import { RequestService } from './request.service';
+import { RequestService } from './request.service'
+
+// import { fakeR } from '../models/REQUEST'
 
 @Injectable()
 export class REQResolver implements Resolve<any | false> {
+
+	// RRR = fakeR
 
 	constructor(
 		private _request: RequestService,
@@ -18,6 +22,7 @@ export class REQResolver implements Resolve<any | false> {
 	resolve(route: ActivatedRouteSnapshot): Observable<any | false> {
 		const id = route.params['id']
 		// const lng = route.params['lng']
+		// console.log(window.location.pathname.substring(1, 3))
 		const lng = 'en'
 
 		return this._request.getRequestByID(id)
@@ -31,6 +36,12 @@ export class REQResolver implements Resolve<any | false> {
 					return false
 				}
 			}))
+
+		// return new Observable((o) => {
+		// 	console.log(o)
+		// 	o.next(this.RRR)
+		// 	o.complete()
+		// })
 	}
 
 }

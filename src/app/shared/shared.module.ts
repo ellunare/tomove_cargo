@@ -15,7 +15,7 @@ import { DatePickerComponent } from './components/date-picker/date-picker.compon
 import { TimePickerComponent } from './components/time-picker/time-picker.component'
 import { ItemPickerComponent } from './components/item-picker/item-picker.component'
 import { ItemEditComponent } from './components/item-edit/item-edit.component'
-import { GmapComponent } from './components/gmap/gmap.component'
+import { GmapComponent } from './components/gmap/gmap.component';
 
 
 @NgModule({
@@ -25,7 +25,8 @@ import { GmapComponent } from './components/gmap/gmap.component'
 		// ReactiveFormsModule,
 		AgmCoreModule.forRoot({
 			apiKey: CONFIG.googleMapsKey,
-			libraries: ["places"]
+			libraries: ["places"],
+			language: 'en'
 		}),
 	],
 	exports: [

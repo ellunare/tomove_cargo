@@ -9,3 +9,7 @@ interface REQUEST {
 	name?: string,
 	adr: [object],
 }
+
+export const fakeR = {
+ 
+}

@@ -1,0 +1,15 @@
+<br>
+
+<div class="access" [class.access--denied]="!temp_correct_code">
+	<input type="text" [attr.maxlength]="4" [attr.size]="4" placeholder="····" (keyup)="checkAccess($event)">
+	<div>
+		<!-- <p>To unlock <img class="lock--code" src="assets/i/lock.svg"></p> -->
+		<p>enter the code</p>
+	</div>
+</div>
+
+	<br>
+
+<div class="p2  flex  jcc">
+	<!-- <div class="buttonok" [class.success]="success" (click)="setAdmin()">LOGIN</div> -->
+</div>

@@ -199,9 +199,9 @@ export class CanvasService {
 
 			}
 			/////////////////////////////
-			ctx.font = "160px Arial";
-			ctx.fillStyle = "red";
-			ctx.fillText(p.orientation, start + 50, 150);
+			// ctx.font = "160px Arial";
+			// ctx.fillStyle = "red";
+			// ctx.fillText(p.orientation, start + 50, 150);
 			/////////////////////////////
 
 			start += p.addwidth;

@@ -1,65 +1,104 @@
 export interface F_ITEM {
 	id: number,
-	name: string,
+	name?: [string],
 	price: number,
-	da?: number,
+	// da?: number,
 	dap?: number
 }
 
 export interface FURNITURE {
 	id: number,
 	name: string,
-	types: F_ITEM[]
+	types: [F_ITEM]
 }
 
-export const FURNITURE_LIST: FURNITURE[] = [
+export const FURNITURE_LIST: {} | [FURNITURE] = [
+	{ en: 1, ru: 2, he: 3 },
+
 	{
+		// 01 ////////////////////////////////////////////// Холодильники
 		id: 101,
 		name: 'fridge',
-		types: [
+		types: [,
 			{
 				id: 1,
-				name: 'Fridge 3-Door',
+				name: [
+					, 'Fridge 3-Door'
+					, 'Холод. 3-Двери'
+					, 'zczxc 3-Door'
+				],
 				price: 200
 			},
 			{
 				id: 2,
-				name: 'Fridge 2-Door',
+				name: [
+					, 'Fridge 2-Door'
+					, 'Холод. 2-Двери'
+					, 'qweqe 2-Door'
+				],
 				price: 200
 			},
 			{
 				id: 3,
-				name: 'Fridge 600L',
+				name: [
+					, 'Fridge 600l'
+					, 'Холод. 600л'
+					, 'werwer 600L'
+				],
 				price: 200
 			},
 			{
 				id: 4,
-				name: 'Fridge 400L',
+				name: [
+					, 'Fridge 400l'
+					, 'Холод. 400л'
+					, 'xcvxcv 400L'
+				],
 				price: 200
 			},
 			{
 				id: 5,
-				name: 'Fridge 250L',
+				name: [
+					, 'Fridge 250l'
+					, 'Холод. 250л'
+					, 'qweqwe 250L'
+				],
 				price: 200
 			},
 			{
 				id: 6,
-				name: 'Fridge Office',
+				name: [
+					, 'Fridge Office'
+					, 'Fridge Office'
+					, 'Fridge Office'
+				],
 				price: 200
 			},
 			{
 				id: 7,
-				name: 'Freezer Large',
+				name: [
+					, 'Freezer Large'
+					, 'Freezer Large'
+					, 'Freezer Large'
+				],
 				price: 200
 			},
 			{
 				id: 8,
-				name: 'Freezer Small',
+				name: [
+					, 'Freezer Small'
+					, 'Freezer Small'
+					, 'Freezer Small'
+				],
 				price: 200
 			},
 			{
 				id: 9,
-				name: 'Wine Cooler',
+				name: [
+					, 'Wine Cooler'
+					, 'Wine Cooler'
+					, 'Wine Cooler'
+				],
 				price: 200
 			}
 		]
@@ -67,66 +106,103 @@ export const FURNITURE_LIST: FURNITURE[] = [
 	{
 		id: 102,
 		name: 'stove',
-		types: []
+		types: [,
+		
+		]
 	},
 	{
 		id: 103,
 		name: 'table',
-		types: []
+		types: [,
+		
+		]
 	},
 	{
 		id: 104,
 		name: 'Sofa',
-		types: [
+		types: [,
 			{
 				id: 1,
-				name: 'Sofa 3',
+				name: [
+					, 'Sofa 3'
+					, 'Диван 3'
+					, 'Sofa 3'
+				],
 				price: 100,
-				da: 1,
 				dap: 30
 			},
 			{
 				id: 2,
-				name: 'Sofa 2',
+				name: [
+					, 'Sofa 2'
+					, 'Диван 2'
+					, 'Sofa 2'
+				],
 				price: 100,
-				da: 1,
 				dap: 20
 			},
 			{
 				id: 3,
-				name: 'Sofa 1',
+				name: [
+					, 'Sofa 1'
+					, 'Диван 1'
+					, 'Sofa 1'
+				],
 				price: 100,
-				da: 1,
 				dap: 10
 			},
 			{
 				id: 4,
-				name: 'Sofa Corner',
+				name: [
+					, 'Sofa Corner'
+					, 'Диван Угловой'
+					, 'Sofa Corner'
+				],
 				price: 100
 			},
 			{
 				id: 5,
-				name: 'Armchair TV',
+				name: [
+					, 'Armchair TV'
+					, 'Armchair TV'
+					, 'Armchair TV'
+				],
 				price: 100
 			},
 			{
 				id: 6,
-				name: 'Armchair',
+				name: [
+					, 'Armchair'
+					, 'Armchair'
+					, 'Armchair'
+				],
 				price: 100
 			},
 			{
 				id: 7,
-				name: 'Sofa 3 Recliner',
+				name: [
+					, 'Sofa 3 Recliner'
+					, 'Sofa 3 Recliner'
+					, 'Sofa 3 Recliner'
+				],
 				price: 100
 			},
 			{
 				id: 8,
-				name: 'Sofa 2 Recliner',
+				name: [
+					, 'Sofa 2 Recliner'
+					, 'Sofa 2 Recliner'
+					, 'Sofa 2 Recliner'
+				],
 				price: 100
 			},
 			{
 				id: 9,
-				name: 'Armchair Massage',
+				name: [
+					, 'Armchair Massage'
+					, 'Armchair Massage'
+					, 'Armchair Massage'
+				],
 				price: 100
 			}
 		]
@@ -154,15 +230,23 @@ export const FURNITURE_LIST: FURNITURE[] = [
 	{
 		id: 109,
 		name: 'washer',
-		types: [
+		types: [,
 			{
 				id: 1,
-				name: 'Washer Simple',
+				name: [
+					, 'Washer Simple'
+					, 'Стиральная Маш.'
+					, 'Washer Simple'
+				],
 				price: 300
 			},
 			{
 				id: 1,
-				name: 'Washer Simple',
+				name: [
+					, 'Washer Simple'
+					, 'Washer Simple'
+					, 'Washer Simple'
+				],
 				price: 300
 			}
 		]
@@ -175,10 +259,14 @@ export const FURNITURE_LIST: FURNITURE[] = [
 	{
 		id: 111,
 		name: 'tv',
-		types: [
+		types: [,
 			{
 				id: 1,
-				name: 'TV 42',
+				name: [
+					, 'TV 42'
+					, 'ТВ 42'
+					, 'TV 42'
+				],
 				price: 300
 			}
 		]
@@ -201,50 +289,86 @@ export const FURNITURE_LIST: FURNITURE[] = [
 	{
 		id: 115,
 		name: 'wardrobe',
-		types: [
+		types: [,
 			{
 				id: 1,
-				name: 'Wardrobe 1-Door',
+				name: [
+					, 'Wardrobe 1 Door'
+					, 'Гардероб 1 Дверь'
+					, 'Wardrobe 1Door'
+				],
 				price: 300
 			},
 			{
 				id: 2,
-				name: 'Wardrobe 2-Door',
+				name: [
+					, 'Wardrobe 2-Door'
+					, 'Wardrobe 2-Door'
+					, 'Wardrobe 2-Door'
+				],
 				price: 300
 			},
 			{
 				id: 3,
-				name: 'Wardrobe 3-Door',
+				name: [
+					, 'Wardrobe 3-Door'
+					, 'Wardrobe 3-Door'
+					, 'Wardrobe 3-Door'
+				],
 				price: 300
 			},
 			{
 				id: 4,
-				name: 'Wardrobe 4-Door',
+				name: [
+					, 'Wardrobe 4-Door'
+					, 'Wardrobe 4-Door'
+					, 'Wardrobe 4-Door'
+				],
 				price: 300
 			},
 			{
 				id: 5,
-				name: 'Wardrobe 5-Door',
+				name: [
+					, 'Wardrobe 5-Door'
+					, 'Wardrobe 5-Door'
+					, 'Wardrobe 5-Door'
+				],
 				price: 300
 			},
 			{
 				id: 6,
-				name: 'Wardrobe 6-Door',
+				name: [
+					, 'Wardrobe 6-Door'
+					, 'Wardrobe 6-Door'
+					, 'Wardrobe 6-Door'
+				],
 				price: 300
 			},
 			{
 				id: 7,
-				name: 'Closet 2-Door',
+				name: [
+					, 'Closet 2-Door'
+					, 'Шкаф Купе 2 Двери'
+					, 'Closet 2-Door'
+				],
 				price: 300
 			},
 			{
 				id: 8,
-				name: 'Closet 3-Door',
+				name: [
+					, 'Closet 3-Door'
+					, 'Closet 3-Door'
+					, 'Closet 3-Door'
+				],
 				price: 300
 			},
 			{
 				id: 9,
-				name: 'Closet 4-Door',
+				name: [
+					, 'Closet 4-Door'
+					, 'Closet 4-Door'
+					, 'Closet 4-Door'
+				],
 				price: 300
 			}
 		]
@@ -285,70 +409,3 @@ export const FURNITURE_LIST: FURNITURE[] = [
 		types: []
 	},
 ]
-
-
-// export const rooms = [
-// 	{
-// 		id: 1,
-// 		name: "bathroom",
-// 		items: [
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '01 - Washer',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 3,
-// 			// 	name: '02 - Table',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '03 - Shelf',
-// 			// 	price: 200
-// 			// },
-// 		]
-// 	},
-// 	{
-// 		id: 2,
-// 		name: "salon",
-// 		items: [
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '01 - TV 32',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 3,
-// 			// 	name: '02 - Sofa 2',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '03 - Table',
-// 			// 	price: 200
-// 			// },
-// 		]
-// 	},
-// 	{
-// 		id: 3,
-// 		name: "kitchen",
-// 		items: [
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '01 - Microwave',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 3,
-// 			// 	name: '02 - Table',
-// 			// 	price: 200
-// 			// },
-// 			// {
-// 			// 	id: 2,
-// 			// 	name: '03 - Fridge 400',
-// 			// 	price: 200
-// 			// },
-// 		]
-// 	}
-// ]

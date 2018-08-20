@@ -1,8 +1,11 @@
 import {
 	Component,
+	Input,
 	Output,
-	EventEmitter
+	EventEmitter,
 } from '@angular/core'
+
+import { LNG_PACK } from '../../models/LOCALIZATION'
 
 @Component({
 	selector: 'place-info',
@@ -11,31 +14,20 @@ import {
 })
 export class PlaceInfoComponent {
 
+	@Input() lng = undefined
+	LNG = LNG_PACK
+
 	_render = {
 		types: [
-			{
-				t: 'apartment'
-			},
-			{
-				t: 'office'
-			},
-			{
-				t: 'house'
-			},
-			{
-				t: 'store'
-			}
+			{ t: 'apartment' },
+			{ t: 'office' },
+			{ t: 'house' },
+			{ t: 'store' }
 		],
 		params: [
-			{
-				t: 'entrance'
-			},
-			{
-				t: 'floor'
-			},
-			{
-				t: 'number'
-			}
+			{ t: 'entrance' },
+			{ t: 'floor' },
+			{ t: 'number' }
 		]
 	}
 
@@ -43,9 +35,9 @@ export class PlaceInfoComponent {
 	show_modal: boolean = false
 
 	info: any = {
-		e: '',
-		f: '',
-		n: '',
+		e: undefined,
+		f: undefined,
+		n: undefined,
 		t: 'apartment'
 	}
 
@@ -65,9 +57,7 @@ export class PlaceInfoComponent {
 	}
 
 	disabled(flag) {
-		if (flag === 'inputs') {
-			if (this.info.t === 'house' || this.info.t === 'store') return true
-		}
+		if (flag === 'inputs') if (this.info.t === 'house' || this.info.t === 'store') return true
 	}
 
 	required(O) {
@@ -76,15 +66,14 @@ export class PlaceInfoComponent {
 
 	onTypeChange() {
 		if (this.disabled('inputs')) {
-			this.info.e = ''
-			this.info.f = ''
-			this.info.n = ''
+			this.info.e = undefined
+			this.info.f = undefined
+			this.info.n = undefined
 		}
 	}
 
 	isEdited() {
-		// if (this.info.e || this.info.f || this.info.n) return true
-		if (!this.first_open) return true
+		return !this.first_open
 	}
 
 	onPlaceEdited() {
