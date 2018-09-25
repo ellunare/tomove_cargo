@@ -43,8 +43,8 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		{ a: 'o', A: 'O' },
 		{ a: 'd', A: 'D' },
 	]
-	@ViewChildren('aci') acinputs: QueryList<ElementRef>  //  Autocomplete Inputs
 
+	// @ViewChildren('aci') acinputs: QueryList<ElementRef>  //  Autocomplete Inputs
 	@ViewChildren('plie') plies  //  Place Info Edits
 
 	// ---------------------------------------------------------------------- 2
@@ -238,12 +238,12 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit() {
-		let inputs = this.acinputs['_results']
-		for (let i of inputs) {
-			let el = i.nativeElement
-				, t = el.dataset.atype
-			this.mapFormLoader(t, el)
-		}
+		// let inputs = this.acinputs['_results']
+		// for (let i of inputs) {
+		// 	let el = i.nativeElement
+		// 		, t = el.dataset.atype
+		// 	this.mapFormLoader(t, el)
+		// }
 	}
 
 	getLNG() {
@@ -295,18 +295,18 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		if (F === 'T') return this.LNG[this.lng].r1.lift[L]
 	}
 
-	mapFormLoader(t, el) {   // Initialize search elements for MapAPI
-		const T = t.toUpperCase()
+	// mapFormLoader(t, el) {   // Initialize search elements for MapAPI
+	// 	const T = t.toUpperCase()
 
-		this._maps.autocomplete(el, T)
-			.subscribe(data => {
-				Object.assign(this.request.adress[t], data)
-				this.map_render_search[T] = true
+	// 	this._maps.autocomplete(el, T)
+	// 		.subscribe(data => {
+	// 			Object.assign(this.request.adress[t], data)
+	// 			this.map_render_search[T] = true
 
-				this.getDistance()
-				if (this.valert('R1_SL', t)) this.editPlaceInfo(t)  //  Открываем Place Info
-			})
-	}
+	// 			this.getDistance()
+	// 			if (this.valert('R1_SL', t)) this.editPlaceInfo(t)  //  Открываем Place Info
+	// 		})
+	// }
 
 	COORDS() {
 		return {
@@ -359,6 +359,18 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	showOnMap(T) {
 		if (this.map_render_search[T]) this.gmap.showMap(T, this.COORDS())
+	}
+
+	selectLocation(T) {
+		let INFO = JSON.parse(JSON.stringify(this.request.adress[T]))
+		delete INFO.info
+		delete INFO.lift
+
+		this.gmap.selectLocation(T, INFO)
+	}
+
+	evLocationSelected(e) {
+		Object.assign(this.request.adress[e.T], e.info)
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////

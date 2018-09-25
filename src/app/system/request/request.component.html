@@ -7,7 +7,7 @@
 
 <date-picker  #datePicker  [lng]="lng"  (outOnDatePicked)="evDateTimeSelected($event, 'date')"></date-picker>
 <time-picker  #timePicker  [lng]="lng"  (outOnTimePicked)="evDateTimeSelected($event, 'time')"></time-picker>
-<gmap  #gmap  [lng]="lng"></gmap>
+<gmap  #gmap  [lng]="lng"  (outLocationSelected)="evLocationSelected($event)"></gmap>
 
 
 <!-- STEP 1 ---------------------------------------------------------------------------------- -->
@@ -32,17 +32,22 @@
 
 			<div class="location-adress" 
 				[class.valid--Y-loc]="valert('R1_SL', a.a)" 
-				[class.valid--N-loc]="(!valert('R1_SL', a.a)  &&  request.adress[a.a].city)  ||  (!valert('R1_SL', a.a)  &&  !first_page_valid)">
+				[class.valid--N-loc]="(!valert('R1_SL', a.a)  &&  request.adress[a.a].city)  ||  (!valert('R1_SL', a.a)  &&  !first_page_valid)"
+				(click)="selectLocation(a.a)"
+				>
 
 				<div class="place-type" (click)="showOnMap(a.A)"><img src="assets/i/marker.svg" *ngIf="map_render_search[a.A]"></div>
 
-				<input type="text"
+				<!-- <input type="text"
 					class="adress-line"
 					[placeholder]="LNG[lng].r1.loc.sph2"
 					autocorrect="off"
 					autocapitalize="off"
 					spellcheck="off"
-					#aci  [attr.data-atype]="a.a">
+					#aci  [attr.data-atype]="a.a"> -->
+					<span>{{request.adress[a.a].street || '--'}}</span>, 
+					<span>{{request.adress[a.a].number || '--'}}</span>, 
+					<span>{{request.adress[a.a].city || '--'}}</span>
 			</div>
 
 

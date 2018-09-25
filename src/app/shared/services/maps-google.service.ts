@@ -127,8 +127,59 @@ export class MapsGoogleService {
 			lng: (COORDS.OLNG + COORDS.DLNG) / 2
 		}
 
-		return Promise.resolve(_center)
+		if (mode === 'X') _center = {
+			lat: COORDS.lat || 32.086,
+			lng: COORDS.lng || 34.788
+		}
 
+		return Promise.resolve(_center)
+	}
+
+	centerMap(MAP, T, COORDS) {
+		console.log(COORDS)
+		let CENTER = { lat: COORDS.lat || 32.086, lng: COORDS.lng || 34.768 }
+
+		this._mapsAPILoader
+			.load()
+			.then(() => {    // После этого рисуем его на карте
+
+				let _map_options = {
+					center: CENTER,
+					zoom: 16,
+					disableDefaultUI: true,
+					styles: this.agm.style
+					// mapTypeId: 'roadmap'
+				}
+
+				let _MAP = new google.maps.Map(MAP, _map_options)
+
+				// if (T === 'R') {    // ОПЦИИ для маршрута
+				// 	let bounds = new google.maps.LatLngBounds()
+				// 		, loc = new google.maps.LatLng(center.lat, center.lng)
+
+				// 	bounds.extend(loc)
+				// 	_MAP.panToBounds(bounds)
+				// 	_MAP.fitBounds(bounds)
+				// }
+
+				if (T !== 'R') {    // МАРКЕР для одиночной карты
+					let marker = new google.maps.Marker({
+						position: CENTER,
+						map: _MAP,
+						icon: {
+							url: 'assets/i/marker41.png',
+							size: new google.maps.Size(50, 50),
+							origin: new google.maps.Point(0, 0),
+							anchor: new google.maps.Point(25, 50)
+						},
+						animation: google.maps.Animation.DROP
+					})
+				}
+
+				// РЕНДЕР КАРТЫ
+				var directionsDisplay = new google.maps.DirectionsRenderer
+				directionsDisplay.setMap(_MAP)
+			})
 	}
 
 	showOnMap(map_element, mode, COORDS) {
