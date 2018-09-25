@@ -4,10 +4,10 @@ import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module'
 
-import { AuthModule } from './auth/auth.module'
+// import { AuthModule } from './auth/auth.module'
 
 import { AppComponent } from './app.component'
-import { SystemModule } from './system/system.module'
+// import { SystemModule } from './system/system.module'
 
 
 @NgModule({
@@ -17,8 +17,8 @@ import { SystemModule } from './system/system.module'
 	imports: [
 		BrowserModule,
 		HttpClientModule,
-		AuthModule,
-		SystemModule,
+		// AuthModule,
+		// SystemModule,
 		AppRoutingModule
 	],
 	providers: [],

@@ -1,47 +1,63 @@
-@import '../../../../styles.sass'
-
-.time-block
-	position: fixed
-	width: 100%
-	height: 100%
-	top: 0
-	left: 0
-	background-color: #000
-	display: flex
-	justify-content: center
-	align-items: center
-	z-index: 9999
+@import '~src/styles.sass'
 
 $tw_w: 19rem
-.time-wrap
-	width: $tw_w
-
-$tw_spacer: 1rem
-.spacer
-	width: $tw_spacer
-
-.time-select
-	width: 100%
-	display: flex
-
-$cp_bor: 0.1rem
-$cp_h: 5rem
-.cell-parent
-	width: calc((100% - #{$tw_spacer}) / 2)
-	height: $cp_h
-	background-color: $color_gold
-	border-radius: 0.5rem
-	text-align: center
-	line-height: $cp_h
-	color: #fff
-	cursor: pointer
 
 .time
+	&--mb
+		margin-bottom: $BR
+	&-block
+		position: fixed
+		width: 100%
+		height: 100%
+		top: 0
+		left: 0
+		background-color: #000
+		display: flex
+		justify-content: center
+		align-items: center
+		z-index: 9999
+	&-wrap
+		width: $tw_w
+	&-select
+		width: 100%
+		display: flex
 	&-btns
 		width: 100%
 		text-align: center
 		.close
 			+buttonok
+
+
+
+$cp_bor: 0.1rem
+$cp_h: 5rem
+$cp_spacer: 1rem
+$c_w: 6rem
+$c_h: 5rem
+$c_spacing: 1rem
+$c_bor: 0.1rem
+
+.cell
+	display: inline-block
+	width: $c_w
+	height: $c_h
+	border-radius: 0.5rem
+	border: $c_bor solid $color_gold
+	color: #fff
+	line-height: $c_h - 2 * $c_bor
+	text-align: center
+	margin-bottom: $c_spacing
+	cursor: pointer
+	&-parent
+		width: calc((100% - #{$cp_spacer}) / 2)
+		height: $cp_h
+		background-color: $color_gold
+		border-radius: 0.5rem
+		text-align: center
+		line-height: $cp_h
+		color: #fff
+	&-spacer
+		width: $cp_spacer
 
 .element
 	position: absolute
@@ -55,28 +71,15 @@ $cp_h: 5rem
 	align-items: center
 	&-wrap
 		text-align: center
+	&-title
+		text-transform: uppercase
+		margin-bottom: $BR
 
 .box
 	display: flex
 	flex-wrap: wrap
 	justify-content: space-between
 
-$c_w: 6rem
-$c_h: 5rem
-$c_spacing: 1rem
-$c_bor: 0.1rem
-.cell
-	display: inline-block
-	width: $c_w
-	height: $c_h
-	// background-color: $color_bg_bottom_left
-	border-radius: 0.5rem
-	border: $c_bor solid $color_gold
-	color: #fff
-	line-height: $c_h - 2 * $c_bor
-	text-align: center
-	margin-bottom: $c_spacing
-	cursor: pointer
 
 =element-width($_num)
 	width: calc(#{$c_w} * #{$_num} + #{$c_spacing} * (#{$_num} - 1))
@@ -94,3 +97,7 @@ $mc_row_num: 3
 
 .selected
 	background-color: $color_gold
+
+
+.hebrew
+	// direction: rtl

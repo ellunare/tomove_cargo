@@ -1,9 +1,21 @@
-<div class="wrap" *ngIf="showMode.map">
+<div class="wrap"  [class.none]="!showMode.map">   <!-- *ngIf="showMode.map" -->
 
 	<div class="gmap">
-		<div class="gmap_map" #map></div>
+		<div class="gmap_map"  #map></div>
+
+		<div class="gmap-info"  *ngIf="showMode.drag">
+			<div class="gmap-info-address">
+				<p>{{getValue('city')}}</p>
+				<p><span class="gmap-info-address--street">{{getValue('street')}}</span><span style="margin-left: 1rem">{{getValue('number')}}</span></p>
+			</div>
+			<div class="gmap-info-ok"  [class.none]="!addressValid()">{{LNG[lng].r1.loc.drset}}</div>
+		</div>
+
+		<div class="gmap-drag-loading"  *ngIf="showMode.dragLoading"></div>
+
 		<div class="gmap_close" (click)="modalClick()">{{LNG[lng].c.close}}</div>
 		<!-- <div class="gmap_me" (click)="showMe()">ME</div> -->
+		<div class="gmap-aim"></div>
 	</div>
 
 </div>

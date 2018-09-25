@@ -3,6 +3,13 @@
 // #1e1c16
 // #dfd7ba
 
+// #13181e
+// #00ffa1
+// #ff2d2d
+// #b48e44
+// #959271
+// #2a2825
+
 $color_bg_TR: #000
 $color_bg_BL: #010e1d
 
@@ -23,6 +30,25 @@ $color_2_BL: #7a24bc
 
 
 $BR: 1.6rem
+
+
+// GRID //////////////////////////////////////////////////////////////
+
+$uxxs: "(min-width: 320px)"
+
+$_ui7: "(max-width: 370px)"
+
+$uxs:  "(min-width: 479px)"
+$_uxs: "(max-width: 479px)"
+
+$usm:  "(min-width: 767px)"
+$_usm: "(max-width: 767px)"
+
+$umd:  "(min-width: 1023px)"
+$_umd: "(max-width: 1023px)"
+
+$ulg:  "(min-width: 1279px)"
+$_ulg: "(max-width: 1279px)"
 
 
 // Fonts
@@ -125,19 +151,57 @@ button, textarea:focus, input:focus
 
 
 // Setup
-html
-	font-size: 10px
-	font-family: $main-font
-	width: 100%
-	height: 100%
 
+html,
 body
 	width: 100%
 	height: 100%
+	min-height: 100%
+
+html
+	font-size: 10px
+	font-family: $main-font
+	@media #{$_ui7}
+		font-size: 8px
+
+body
 	font-size: 1.6rem
 	color: #fff
-	// background: $bglg
 	background-color: $color_bg_BL
+	// overscroll-behavior-y: none
+	// touch-action: pan-down
+
+
+.orientation
+	position: fixed
+	z-index: 99999
+	background-color: $color_bg_BL
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	div
+		width: 100%
+		height: 100%
+		display: flex
+		align-items: center
+		justify-content: center
+		span
+			width: 40%
+			text-transform: uppercase
+			text-align: center
+			color: $color_gold
+			position: relative
+			img
+				position: absolute
+				width: 3rem
+				height: 3rem
+				left: 50%
+				bottom: -4rem
+				transform: translateX(-50%)
+	@media screen and (orientation: landscape)
+		display: block !important
+
 
 .app-main
 	position: absolute
@@ -148,12 +212,11 @@ body
 	width: 100%
 	height: 100%
 	@media screen and (min-width: 480px)
-		// background-color: #0d1b2b
 		width: 48rem
 		margin: 0 auto
 
 
-/* COMMON */
+/*  COMMON  */
 
 .p2
 	padding: 0 2rem
@@ -225,11 +288,11 @@ $cl_size: 5rem
 =buttonok
 	width: $cl_size + 2rem
 	height: $cl_size
-	font-size: 2rem
+	font-size: 1.8rem
 	background-color: transparentize(#000, 1)
 	color: $color_gold
 	line-height: $cl_size - $cl_bor * 2
-	border-radius: 2rem
+	border-radius: 1rem
 	outline: none
 	border: $cl_bor solid $color_gold
 	cursor: pointer
@@ -251,3 +314,5 @@ $dtp_bor: 0.2rem
 	text-transform: uppercase
 	&--correct
 		border-color: $color_green
+	&--incorrect
+		border-color: $color_red

@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 })
 export class AuthComponent implements OnInit {
 
+  // number
+
   constructor(
     private router: Router
   ) { }
@@ -16,4 +18,9 @@ export class AuthComponent implements OnInit {
     // this.router.navigate(['/login']);
   }
 
+  
+  // returnNumber() {
+  //   console.log(this.number)
+  //   return '+' + (this.number || '')
+  // }
 }

@@ -1,15 +1,29 @@
-@import '../../../styles.sass'
+@import '~src/styles.sass'
 
 \:host
+	width: 100% !important
 	height: 100% !important
+
+
+.navigation
+	position: absolute
+	bottom: 1rem
+	width: 100%
+	max-width: 48rem
+	@media screen and (max-height: 450px)  // FIX android keyboard
+		visibility: hidden
+	&-wrap
+		display: flex
+		justify-content: space-between
 
 .req-step
 	width: 100%
-	height: calc(100% - 4rem)
+	height: 100% // calc(100% - 4rem)
 	display: none
 
 .show-page
 	display: block
+	position: relative
 
 .btn-page
 	height: 3rem
@@ -35,18 +49,23 @@
 		color: #555
 
 .settings
-	width: 2rem
+	// width: 2rem
 	height: 2rem
-	// background-color: red
 	position: absolute
 	left: 50%
 	transform: translateX(-50%)
-	bottom: 1.5rem
+	bottom: 0.25rem
+	// bottom: 1rem
 	img
 		width: 100%
 	&-lng
 		text-transform: uppercase
 		color: $color_gold
+		margin: 0 0.2rem
+		&--side
+			font-size: 1.1rem
+			opacity: 0.35
+			vertical-align: middle
 
 .dtpicker
 	+dtpicker
@@ -61,7 +80,8 @@
 	font-weight: 500
 	padding: 1rem
 	margin-bottom: 2rem
-	background-color: #09284b
+	// background-color: #09284b
+	color: $color_gold
 
 
 .circle
@@ -84,6 +104,12 @@
 			border-left: 1px dashed $color_gold
 			z-index: -1
 			transform: translateX(-50%)
+		&--valid-Y
+			&:after
+				border-color: $color_green
+		&--valid-N
+			&:after
+				border-color: $color_red
 	&--finish
 		div
 			border-color: #fff !important
@@ -96,7 +122,9 @@
 		text-transform: uppercase
 	&-adress
 		display: flex
-		margin-bottom: $BR
+		border: 0.2rem solid $color_gold
+		border-radius: 0.5rem
+		margin-bottom: 1rem // $BR
 	&-place-info
 		margin-bottom: $BR
 
@@ -111,10 +139,6 @@ $al_bor_rad: 0.5rem
 	background-color: $color_gold
 	width: $al_h
 	height: $al_h
-	border-radius: $al_bor_rad
-	border-top-right-radius: 0
-	border-bottom-right-radius: 0
-
 	line-height: $al_h - 2 * $al_bor
 	text-align: center
 	color: $color_bg_TR
@@ -135,33 +159,26 @@ $al_bor_rad: 0.5rem
 		background: none
 		flex-grow: 2
 		height: $al_h
-		border-radius: $al_bor_rad
-		border: $al_bor solid $color_gold
-		border-left: none
-		border-bottom-left-radius: 0
-		border-top-left-radius: 0
-
 		line-height: $al_h - 2 * $al_bor
-		font-size: 1.6rem
+		font-size: 1.5rem
 		padding-left: 1rem
 		color: #fff
 
 
-.floor
-	width: $al_fl_w + 2rem
-	height: $al_h - 1rem
-	background: none
-	border: $al_bor solid $color_gold
-	color: #fff
-	text-align: center
-	line-height: $al_h - 1rem
-	//  - 2 * $al_bor - 
-	border-radius: $al_bor_rad
-	outline: 0px
-	option
-		background-color: $color_bg_TR
-		border: 0px
-		outline: 0px
+// .floor
+// 	width: $al_fl_w + 2rem
+// 	height: $al_h - 1rem
+// 	background: none
+// 	border: $al_bor solid $color_gold
+// 	color: #fff
+// 	text-align: center
+// 	line-height: $al_h - 1rem
+// 	border-radius: $al_bor_rad
+// 	outline: 0px
+// 	option
+// 		background-color: $color_bg_TR
+// 		border: 0px
+// 		outline: 0px
 
 
 
@@ -225,6 +242,8 @@ $sw_trans: all .6s
 				transform: translateX($sw_width - $sw_height)
 				background-color: $sw_tg_on
 
+
+.lift
 
 // 3 STATE SWITCH
 $swl_bord: 0.2rem
@@ -294,7 +313,6 @@ $swl_marg: $swl_gap + $swl_bord - $swl_bord
 		&--disabled
 			& > div
 				opacity: 0.4
-				// span
 
 
 		label
@@ -338,10 +356,11 @@ $swl_marg: $swl_gap + $swl_bord - $swl_bord
 	&__title
 		font-size: 1.2rem
 		margin-top: 0.9rem
-		margin-right: 1rem
 		text-transform: uppercase
+		span
+			display: inline-block
 		&--name
-			margin-left: 1rem
+			margin: 0 1rem
 			transition: 0.4s linear
 	&--no
 	&--one
@@ -369,6 +388,9 @@ $swl_marg: $swl_gap + $swl_bord - $swl_bord
 	text-transform: uppercase
 	font-size: 1.2rem
 	margin-bottom: 0.5rem
+	&-m
+		margin: 0 0.3rem
+
 
 // ////////////////////////////////////////////////////////////////////////////////////////
 // ------------------------------------------------------------------------------------- R2
@@ -381,6 +403,7 @@ $r_btn_bor: 0.2rem
 .room
 	&-page
 		height: 3rem
+		// animation: animroompage linear 0.5s infinite alternate
 		img
 			height: 100%
 	&-dots
@@ -434,7 +457,7 @@ $r_btn_bor: 0.2rem
 			width: 7rem
 			color: #909090
 			font-weight: 500
-			line-height: 2.8rem
+			// line-height: 2.8rem
 
 	&-modal
 		position: fixed
@@ -475,6 +498,16 @@ $r_btn_bor: 0.2rem
 		text-align: center
 		text-transform: uppercase
 
+// @keyframes animroompage
+// 	0%
+// 		// opacity: 1
+// 		// transform: scale(1)
+// 		transform: translateX(0)
+// 	100%
+// 		// opacity: 0.5
+// 		// transform: scale(0.8)
+// 		transform: translateX(-5px)
+
 .close
 	+buttonok
 	&--room
@@ -487,7 +520,8 @@ $r_btn_bor: 0.2rem
 		color: #fff
 		border-color: #fff
 
-$r2il_h: calc((100% - 8rem)*0.2)
+// $r2il_h: calc((100% - 8rem)*0.2)
+$r2il_h: calc((100% - 12rem)*0.2)
 .item
 	&-list
 		height: $r2il_h
@@ -497,23 +531,25 @@ $r2il_h: calc((100% - 8rem)*0.2)
 			display: flex
 			flex-direction: column
 			flex-wrap: wrap
-			justify-content: flex-start
-			align-content: flex-start
+			// justify-content: flex-start
+			// align-content: flex-start
 			padding-bottom: 0.3rem
-	// &--preview
-	// 	min-height: 13rem
-	// 	ul
-	// 		max-height: 13rem
 	&-name
 		height: 2rem
 		line-height: 2rem
 		margin-right: 2rem
+		white-space: nowrap
 	&-number
 		font-family: sans-serif
 		opacity: 0.5
 	&--count
 		color: $color_gold
-		margin-left: 0.2rem
+		// margin-left: 0.2rem
+		display: inline-block
+		span
+			display: inline-block
+			margin: 0 0.3rem
+			font-weight: 300
 	&--trash
 		color: $color_red
 		font-weight: 500
@@ -523,7 +559,8 @@ $r2il_h: calc((100% - 8rem)*0.2)
 
 
 
-$cam_h: calc((100% - 8rem)*0.8)
+// $cam_h: calc((100% - 8rem)*0.8)
+$cam_h: calc((100% - 12rem)*0.8)
 .cam
 	&-wrap
 		text-align: center
@@ -569,6 +606,7 @@ $rtag_bgm: 0 // 0.4
 	&-trash
 		background-color: $color_red
 
+
 #camera_icon
 	display: block
 	width: 5rem
@@ -589,13 +627,14 @@ $rtag_bgm: 0 // 0.4
 		max-width: 80%
 	&-cam
 		opacity: 1
-		animation: camblink 0.5s ease infinite alternate
+		animation: camblink 1s infinite alternate ease // cubic-bezier(0.92,-0.09, 0.63, 0.91) // ease
 
 @keyframes camblink
 	0%
 		opacity: 1
 	100%
-		opacity: 0.5
+		opacity: 0.1
+
 
 // ////////////////////////////////////////////////////////////////////////////////////////
 // ------------------------------------------------------------------------------------- R3
@@ -607,6 +646,9 @@ $rtag_bgm: 0 // 0.4
 	background-color: $color_dark_gold
 	padding-top: 1rem
 	padding-bottom: 1rem
+	margin-bottom: $BR
+
+	// position: relative  // ? ? ?
 	&-icon
 		width: 6rem
 		padding-right: 2rem
@@ -648,7 +690,7 @@ $rtag_bgm: 0 // 0.4
 
 	&-pack
 		width: 100%
-		height: 4.5rem
+		height: 0rem // 4.5rem
 		background-color: $color_dark_gold
 		position: absolute
 		left: 0
@@ -659,23 +701,25 @@ $rtag_bgm: 0 // 0.4
 		font-weight: 300
 		opacity: 1
 		overflow: hidden
-		&--closed_up
-			height: 0 !important
-		&--closed_down
-			height: 13rem !important
+		// &--closed_up
+			// height: 0 !important
+		&--sameday
+			height: 4.5rem // 3rem
+		&--notsameday
+			height: 13rem
 		&--close
 			height: 0 !important
-		&--sameday
-			height: 3rem
-			margin-top: 0.5rem
-			margin-bottom: 1rem
+
+		&-sameday
+			height: 4.5rem
+
 		&-date
 			width: 100%
 			height: 10rem
 			overflow: hidden
 			&--date
 				height: 3rem
-				line-height: 2.4rem
+				line-height: 2.6rem
 
 		&-showbtn
 			width: 4rem
@@ -728,6 +772,7 @@ $rtag_bgm: 0 // 0.4
 	width: 26rem
 	margin: 0 auto
 	text-transform: uppercase
+	margin-bottom: $BR
 
 	&-part
 		color: $color_gold
@@ -737,9 +782,9 @@ $rtag_bgm: 0 // 0.4
 		font-size: 2.8rem
 		text-align: right
 		&--title
-			margin-right: 1rem
 			float: left
 			font-size: 1.6rem
+			// margin-right: 1rem
 		&--vat
 			color: #a58f43
 			font-size: 1.1rem
@@ -754,7 +799,8 @@ $rtag_bgm: 0 // 0.4
 
 .agree
 	display: flex
-	// align-items: center
+	&--mb
+		margin-bottom: $BR
 	p
 		padding-left: 2rem
 
@@ -786,23 +832,31 @@ $rtag_bgm: 0 // 0.4
 		border-color: $color_green
 
 .customer
-	&-message
-		width: 100%
-		height: 8vh
+	&-line
+		display: flex
 		border: 2px solid $color_gold
-		background: none
-		color: #fff
-		padding: 0.5rem 1rem
 		border-radius: 0.5rem
+		img
+			padding: 0.4rem
+		&:first-child
+			margin-bottom: $BR
+	// &-message
+	// 	width: 100%
+	// 	height: 8vh
+	// 	border: 2px solid $color_gold
+	// 	background: none
+	// 	color: #fff
+	// 	padding: 0.5rem 1rem
+	// 	border-radius: 0.5rem
 
 .valert
 	color: $color_red
 	font-weight: 500
 	font-size: 1.4rem
 	text-transform: uppercase
-	// padding-top: 13rem
 	p
 		margin-bottom: 0.5rem
+		cursor: pointer
 	&-title
 		font-size: 1.8rem
 		margin-bottom: 2rem !important
@@ -811,19 +865,138 @@ $rtag_bgm: 0 // 0.4
 		text-align: center
 
 
+.send
+	position: absolute
+	top: 0
+	right: 0
+	bottom: 0
+	left: 0
+	z-index: 99999
+	background-color: transparentize(#000, 0.1)
+	display: flex
+	align-items: center
+	&-wrap
+		width: 100%
+		&-inner
+			width: 100%
+			height: 5rem
+			position: relative
+			overflow: hidden 
+	&-car
+		position: absolute
+		top: 0
+		height: 4rem
+		animation: animsendcar 5s linear infinite
+
+	&-road
+		position: absolute
+		bottom: 0
+		width: 100%
+		height: 0.5rem
+		background-color: $color_gold
+		animation: animsendroad 5s linear infinite
+
+	&-title
+		text-align: center
+		text-transform: uppercase
+		padding-top: 2rem
+		font-size: 2rem
+		animation: animsendtitle 1s infinite alternate ease
+
+	&-done
+		position:  absolute
+		top: 0
+		bottom: 0
+		left: 0
+		right: 0
+		z-index: 900
+		display: flex
+		justify-content: center
+		align-items: center
+		overflow: hidden
+		&-bg
+			position: absolute
+			background-color: $color_gold
+			width: 100%
+			height: 200%
+			left: 0
+			transform-origin: 0
+			transform: skewY(-45deg)
+			z-index: -1
+			top: -200vh
+			&--done
+				top: 0vh
+				transition: top 3s
+		&--suc
+			background-color: $color_green
+		&--err
+			background-color: $color_red
+		&-wrap
+			opacity: 0
+			text-align: center
+			img
+				height: 5rem
+				margin-bottom: 3rem
+			p
+				&:nth-child(2)
+					text-transform: uppercase
+					font-size: 2.2em
+					margin-bottom: 1rem
+				&:nth-child(3)
+					width: 80%
+					margin: 0 auto
+					margin-bottom: 7rem
+					font-size: 1.2em
+			div
+				border: 2px solid #fff
+				padding: 1rem
+				width: 9rem
+				margin: 0 auto
+				border-radius: 1rem
+			&--done
+				opacity: 1
+				transition: opacity 1s 1s
+
+@keyframes animsendcar
+	0%
+		left: -20vw
+	10%
+		left: -20vw
+	100%
+		left: 110vw
+
+@keyframes animsendroad
+	0%
+		left: -110vw
+	30%
+		left: 0
+	70%
+		left: 0
+	100%
+		left: 110vw
+
+@keyframes animsendtitle
+	0%
+		color: #fff
+	100%
+		color: $color_gold
+
+
 // ----------------------------------------------------------------------------------- VALIDATION
 
 =valid($color)
 	&-pi
 		::ng-deep 
 			.null
-				background-color: $color
 				border-color: $color
+				&-icon,
+				&-info--null
+					background-color: $color
 	&-loc
+		border-color: $color
 		div 
 			background-color: $color
-		input 
-			border-color: $color
+		// input 
 
 .valid
 	&--Y
@@ -866,6 +1039,50 @@ $rtag_bgm: 0 // 0.4
 
 /////// MISC
 
+.debugprice
+	width: 100%
+	position: fixed
+	top: 13rem
+	background-color: $color_bg_BL
+	padding: 1rem 2rem
+	bottom: 5rem
+	z-index: 10
+	&-wrap
+		height: 100%
+	&-close
+		height: 3rem
+		bottom: 2rem
+		position: absolute
+	&-coef
+		height: 3rem
+		bottom: 2rem
+		right: 2rem
+		position: absolute
+		display: flex
+		align-items: center
+		transition: all 1s ease
+		img
+			height: 100%
+			margin-left: 1rem
+		&--refresh
+			color: $color_green
+			img
+				transform: rotateZ(360deg)
+				transition: all 1s ease
+	&-list
+		max-height: calc(100vh - 51rem)
+		overflow-y: auto
+		ul
+			margin-bottom: 1rem
+
+	&-show
+		position: absolute
+		bottom: 5rem
+		left: 2rem
+		background-color: $color_gold
+		padding: 0.5rem 1rem
+		border-radius: 0.5rem
+
 
 
 .button_big
@@ -887,6 +1104,151 @@ $rtag_bgm: 0 // 0.4
 		max-width: 0px
 		max-height: 0px
 
+
 .hebrew
+	.navigation-wrap
+		direction: rtl
+
+	/////////////////////////////////////////////////////////////////////////// R1
+
 	.hamovil
-		background-color: red
+		background: none
+	.adress
+		direction: rtl
+		.location-adress
+			input
+				padding-left: 0
+				padding-right: 1rem
+		.circle--line
+			&:after
+				right: 2.8rem
+				left: auto
+		.lift
+			direction: ltr
+			.swlift__title
+				order: 2
+				direction: rtl
+
+	.swlift
+		label
+			&:nth-child(4)
+				left: 66.66% !important
+			&:nth-child(6)
+				left: 0 !important
+		// .lifttoggle
+		// 	&:checked
+		// 		&:nth-child(3) ~ .swlift__bg
+		// 			background: none
+		.lifttoggle
+			&:checked
+				&:nth-child(1) ~ div > .swlift__thumb
+					left: 7.3rem
+				&:nth-child(3) ~ div > .swlift__thumb
+					left: 0.3rem
+		.swlift__bg
+			&:after
+				left: 1.1rem
+
+	.dt
+		direction: rtl
+	.dt-widgets
+		.dtpicker
+			&:first-child
+				order: 2
+				direction: rtl
+
+	/////////////////////////////////////////////////////////////////////////// R2
+
+	.room-title
+		&--current
+			transform: translateY(-2px)
+	// 	direction: rtl
+	// .room-page
+	// 	transform: rotateZ(180deg)
+	.room-itemcount
+		direction: rtl
+		p
+			&:last-child
+				span
+					margin: 0
+					margin-left: 0.5rem
+	.room-modal__wrap-btns
+		direction: rtl
+	.item-list
+		// height: calc((100% - 32rem)*0.2)
+		// direction: rtl
+		ul
+			// direction: rtl
+			// align-content: flex-end
+			.item-name
+				direction: rtl
+				align-self: flex-end
+				margin: 0
+				margin-left: 2rem
+				img
+					margin: 0
+					margin-right: 0.5rem
+				.item--count
+					margin: 0
+					// margin-right: 0.2rem
+			.empty-itemedit
+				align-self: flex-end
+	.room-btns
+		direction: rtl
+
+	/////////////////////////////////////////////////////////////////////////// R3
+
+	.carton
+		direction: rtl
+		.carton-icon
+			padding-left: 2rem
+			padding-right: 0
+		.carton-modal__title
+			img
+				float: left
+		.switch-group
+			label
+				div
+					&:before
+						transform: translateX(3rem)
+				input:checked + div
+					&:before
+						transform: translateX(0)
+		.carton-pack-showbtn
+			right: 2rem
+			left: auto
+			&--closed
+				transform: rotateZ(180deg)
+	.carton-pack
+		direction: rtl
+		padding: 0 2rem
+		padding-right: 8rem
+	
+	.valert
+		direction: rtl
+
+	.price
+		direction: rtl
+		&-total
+			text-align: left
+			&--title
+				float: right
+			&--vat
+				text-align: left
+
+	.agree
+		direction: rtl
+		p
+			padding-right: 2rem
+			padding-left: 0
+
+	.customer
+		direction: rtl
+		input
+			padding: 0
+			padding-right: 1rem
+		&-line
+			&:last-child
+				input
+					direction: ltr
+					text-align: right

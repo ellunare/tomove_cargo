@@ -1,38 +1,50 @@
-<!-- // PARENT -->
-<div class="wrap" [class.none]="!show_list_P">
+<!-- /////////////////////////////////////////////////////////////////////////////////////// PARENT -->
+<div class="wrap" [class.none]="!show_list.P">  <!-- (touchstart)="TS($event)"  (touchmove)="TM($event)" -->
 	<div class="furniture" (click)="selectType($event)">
 		<div 
-			class="f_item  type" 
-			*ngFor="let t of FURNITURE | slice:1" 
+			class="f_item  f_item--type  type" 
+			*ngFor="let t of FUR | slice:1" 
 			attr.data-id="{{t.id}}">
-			
-			<img src="../../../assets/f/{{t.id}}/icon.gif">
+
+			<!-- <img src="assets/f/{{t.id}}/i.png"  alt=""> -->
+			<!-- <img src="https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/{{t.id}}/i.png"  alt=""> -->
+			<img src="assets/f/e.png"
+				[style.background]="'url(https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + t.id + '.png)'"
+				[style.background-size]="'cover'"
+				[style.background-position-x]="0"
+				alt=""
+			>
+			<!-- <p>{{t.name}}</p> -->
 		</div>
 	</div>
 
-	<br>
-	<br>
 	<div class="btns">
 		<button class="close"  (click)="showList('P', false)">✕</button>
 	</div>
+
 	<br>
 	<br>
 </div>
 
-<!-- // ITEM -->
-<div class="modal-bg" *ngIf="show_list_I">
+<!-- /////////////////////////////////////////////////////////////////////////////////////// ITEM -->
+<div class="modal-bg" *ngIf="show_list.I">  <!-- (touchstart)="TS($event)"  (touchmove)="TM($event)" -->
 	<div class="furniture" (click)="onItemSelected($event)">
 		<div 
 			class="f_item  item" 
-			*ngFor="let f of FURNITURE[PID % 100].types | slice:1" 
+			*ngFor="let f of FUR[PID % 100].types | slice:1" 
 			attr.data-id="{{f.id}}">
 			
-			<img src="../../../assets/f/{{PID}}/i/{{f.id}}.gif">
+			<!-- <img src="assets/f/{{PID}}/i/{{f.id}}.png"  alt=""> -->
+			<img src="assets/f/e.png"
+				[style.background]="'url(https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + PID + '.png)'"
+				[style.background-size]="'cover'"
+				[style.background-position-x]="(f.id * 11.11) + '%'"
+				alt=""
+			>
+			<p>{{f.name[FUR[0].lng[lng]]}}</p>
 		</div>
 	</div>
 
-	<br>
-	<br>
 	<div class="btns">
 		<button class="close"  (click)="showList('I', false)">✕</button>
 	</div>

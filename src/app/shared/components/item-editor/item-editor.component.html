@@ -1,0 +1,83 @@
+<div class="edit-block" *ngIf="show_modal"  [class.hebrew]="lng === 'he'">
+
+	<div class="edit-wrap">
+		<div class="edit-item">
+			<p>{{getItemInfo('name')}}</p>
+			<!-- <img src="assets/f/{{tag.PID}}/i/{{tag.IID}}.png"> -->
+			<img src="assets/f/e.png"
+				[style.background]="'url(https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + tag.PID + '.png)'"
+				[style.background-size]="'cover'"
+				[style.background-position-x]="(tag.IID * 11.11) + '%'"
+				alt=""
+			>
+		</div>
+
+		<div class="edit-count">
+			<div class="edit-count__block  edit-count--btn" (click)="countChange('m')">—</div>
+			<div class="edit-count__block">{{tag.count}}</div>
+			<div class="edit-count__block  edit-count--btn" (click)="countChange('p')">+</div>
+		</div>
+
+		<div class="edit-options">
+
+			<div class="edit-trash" (click)="trashItem()" [class.edit-trash--true]="tag.trash">
+				<div>
+					<img src="assets/i/trash_{{tag.trash ? 't' : 'f'}}.svg">
+				</div>
+				<div>
+					<p>{{LNG[lng].r2.ie.tr1}}</p>
+					<p>{{LNG[lng].r2.ie.tr2}}</p>
+				</div>
+			</div>
+
+			<div class="edit-trash" (click)="daChange()" [class.edit-da--true]="tag.da !== undefined  &&  tag.da" [class.edit-da--disabled]="tag.da === undefined">
+				<div>
+					<img src="assets/i/da_{{tag.da ? 't' : 'f'}}.svg">
+				</div>
+				<div>  <!-- РАЗОБРАТЬ / СНЯТЬ / С ПОТОЛКА -->
+					<p>{{LNG[lng].r2.ie[optionType() + '1']}}</p>
+					<p>{{LNG[lng].r2.ie[optionType() + '2']}}</p>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="edit-delete" (click)="deleteItem()">
+			<img src="assets/i/close_x2.svg">
+			<div>
+				<p>{{LNG[lng].r2.rm.delete}}</p>
+			</div>
+		</div>
+
+		<div class="edit-btns">
+			<button class="close" (click)="showModal(false)">OK</button>
+		</div>
+
+	</div>
+
+
+
+
+	<div class="priceedit"  *ngIf="admin">
+		<div class="priceedit-inputs">
+			<div  class="save"  [class.save--success]="flag_newprice"  [class.hidden]="!newpriceeditflag">
+				<p>Price</p>
+				<div class="save-wrap">
+					<input type="number"  value="{{getItemInfo('price')}}"  #inputNew_price>
+					<img src="assets/i/save.svg"  (click)="saveNewItemPrice('price')">
+				</div>
+			</div>
+
+			<img  class="priceedit-img"  src="assets/i/edit.svg"  (click)="newpriceeditflag = !newpriceeditflag">
+
+			<div  class="save"  [class.save--success]="flag_newprice"  [class.hidden]="!newpriceeditflag  ||  tag.da === undefined">
+				<p>D/A</p>
+				<div class="save-wrap">
+					<input type="number"  value="{{getItemInfo('dap')}}"  #inputNew_dap>
+					<img src="assets/i/save.svg"  (click)="saveNewItemPrice('dap')">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

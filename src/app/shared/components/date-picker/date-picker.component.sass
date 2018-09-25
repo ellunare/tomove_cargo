@@ -1,4 +1,4 @@
-@import '../../../../styles.sass'
+@import '~src/styles.sass'
 
 $c_w: 100%
 $day_w: $c_w / 7
@@ -24,6 +24,8 @@ $day_h: 5rem
 		line-height: 4rem
 		color: #fff
 		text-transform: uppercase
+		span
+			display: inline-block
 	&-table
 		width: 100%
 		height: $day_h * 7 + 1rem
@@ -82,3 +84,8 @@ $day_h: 5rem
 
 .hidden
 	opacity: 0
+
+
+.hebrew
+	.calendar-wrap
+		direction: rtl

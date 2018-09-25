@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, ElementRef, QueryList } from '@angular/core'
+import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, ElementRef, QueryList, HostListener } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 
 import { DomSanitizer } from '@angular/platform-browser'
@@ -8,9 +8,8 @@ import { MapsGoogleService } from '../../shared/services/maps-google.service'
 import { RequestService } from '../../shared/services/request.service'
 
 import { LIFT_TYPES } from '../../shared/models/TYPES'
-import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
+// import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
 import { LNG_PACK } from '../../shared/models/LOCALIZATION'
-
 
 @Component({
 	selector: 'request',
@@ -44,7 +43,9 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		{ a: 'o', A: 'O' },
 		{ a: 'd', A: 'D' },
 	]
-	@ViewChildren('aci') acinputs: QueryList<ElementRef>
+	@ViewChildren('aci') acinputs: QueryList<ElementRef>  //  Autocomplete Inputs
+
+	@ViewChildren('plie') plies  //  Place Info Edits
 
 	// ---------------------------------------------------------------------- 2
 
@@ -122,7 +123,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		},
 		packing: {
 			pack: false,
-			sameday: true,
+			sameday: false,
 			date: {
 				d: undefined,
 				m: undefined,
@@ -142,8 +143,18 @@ export class RequestComponent implements OnInit, AfterViewInit {
 			packing: undefined,
 			boxes: undefined
 		},
-		comment: '0'
+		comment: '0',
+		timestamp: undefined,
+		closed: false,
+		responsible: {
+			transportation: undefined,
+			packing: undefined
+		}
 	}
+
+	FUR // = FURNITURE_LIST
+
+	@ViewChild('item_list') public item_list: ElementRef
 
 	@ViewChild('camera') public camera: ElementRef
 	@ViewChild('cam_frame') public cam_frame: ElementRef
@@ -151,16 +162,12 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	curFiles_arr = []
 
 	@ViewChild('item_picker') private item_picker
-	@ViewChild('item_edit') private item_edit
+	@ViewChild('item_editor') private item_editor
 
-	temp_tag = {
-		tagX: 0,
-		tagY: 0,
+	temp_tag: any = {
+		// tagX: 0,
+		// tagY: 0
 	}
-
-	// temp_picture_id
-
-	itemnumber = 1
 
 	///////////////////////////// --- Rooms
 	current_room = 1
@@ -178,7 +185,12 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	price_car = 100
 	price_total = 0
 
+	debugpriceModal = false
+	adminMode = false
+	coef_refresh = false
+
 	agree_valid = false
+	first_page_valid = true
 
 	@ViewChild('canvasSS') public canvaSS: ElementRef
 	xx_canvas_msg: string = ''
@@ -186,8 +198,9 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	xx_download_link: string = ''
 	xx_download_msg: string = ''
 	xx_loader = false
+	xx_done = false
+	xx_result = 'suc'
 
-	FUR = FURNITURE_LIST
 
 	/////////////////// CAN DEACTIVATE ///////////////////
 	// canDeactivate: boolean = true
@@ -203,6 +216,8 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// 	}
 	// }
 
+	prevent = false
+
 	// ---------------------------------------------------------------------- MISC
 
 	constructor(
@@ -211,34 +226,31 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		private _sanitizer: DomSanitizer,
 		private _canvas: CanvasService,
 		private _router: Router,
-		private _AR: ActivatedRoute
+		private _AR: ActivatedRoute,
 	) { }
 
 	ngOnInit() {
 		this.getLNG()
 		this.initPage()
+		this.getFurniture(null)
 
-		// setTimeout(() => {
-		// 	this.canDeactivate = false
-		// 	console.log('canDeactivate')
-		// }, 5000)
-		// console.log(this.LNG[this.lng])
+		this.__initAdmin()
 	}
 
 	ngAfterViewInit() {
 		let inputs = this.acinputs['_results']
 		for (let i of inputs) {
 			let el = i.nativeElement
-				, t = el.dataset.acit
+				, t = el.dataset.atype
 			this.mapFormLoader(t, el)
 		}
 	}
 
 	getLNG() {
-		this._AR.params.subscribe(params => {
+		this._AR.parent.params.subscribe(params => {
 			this.lng = params.lng
 			// Язык не существует
-			if (!this.LNG[this.lng]) this._router.navigate(['/en', 'request'])
+			if (!this.LNG[this.lng]) setTimeout(() => this._router.navigate(['/en', 'request']), 1)
 		})
 	}
 
@@ -250,13 +262,21 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		})
 	}
 
+	getFurniture(flag) {
+		this._request.getFurniture(flag)
+			.subscribe((res: any) => {
+				if (res.success) this.FUR = res.data.furniture
+			})
+	}
+
 	// PAGER
 	pager(dir) {
-		let RP = this.req_page
-		if (dir === 'N') if (RP < 3) RP++
-		if (dir === 'B') if (RP > 1) RP--
+		let PAGE = this.req_page
+		if (dir === 'N') if (PAGE < 3) PAGE++
+		if (dir === 'B') if (PAGE > 1) PAGE--
 
-		this._router.navigate([], { relativeTo: this._AR, queryParams: { page: RP } })
+		this.first_page_valid = false
+		this._router.navigate([], { relativeTo: this._AR, queryParams: { page: PAGE } })
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +302,9 @@ export class RequestComponent implements OnInit, AfterViewInit {
 			.subscribe(data => {
 				Object.assign(this.request.adress[t], data)
 				this.map_render_search[T] = true
+
 				this.getDistance()
+				if (this.valert('R1_SL', t)) this.editPlaceInfo(t)  //  Открываем Place Info
 			})
 	}
 
@@ -308,8 +330,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 				})
 	}
 
-	// Дата / Время
-	DTpicker(type, obj) {
+	DTpicker(type, obj) {   // Дата / Время
 		let send = {
 			data: this.request[obj][type],
 			flag: obj
@@ -322,10 +343,18 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		this.packingSameDayClose()
 	}
 
-	evPlaceEdited(e, type) {
-		this.request.adress[type].info = e
+	editPlaceInfo(T) {
+		let widgets = this.plies.toArray()
+		for (let w of widgets) {
+			let t = w.ADDRESS_TYPE
+			if (t == T) return w.showEdit(true)
+		}
+	}
 
-		if (e.t === 'store') this.request.adress[type].lift = 0 // Блокируем лифт
+	evPlaceEdited(e, T) {
+		this.request.adress[T].info = e
+
+		if (e.t === 'store') this.request.adress[T].lift = 0   // Блокируем лифт
 	}
 
 	showOnMap(T) {
@@ -337,14 +366,17 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
 	takePhoto() {
-		let curFiles = this.camera.nativeElement.files
-		if (curFiles.length) {
-			let _CR = this.request.rooms[this.current_room]
-			_CR.pictures.push(curFiles[0])
-			_CR._p = 1
-		}
+		let _FILE = this.camera.nativeElement.files[0]
+			, ROOM = this.request.rooms[this.current_room]
 
-		setTimeout(() => this._scrollCamFrame(), 100)
+		if (_FILE) {
+			this._canvas.prepareCanvas([_FILE], null/*this.canvaSS.nativeElement*/, 'SINGLEFILE')
+				.then(e => {
+					ROOM.pictures.push(e.file)
+					ROOM._p = 1
+					setTimeout(() => this._scrollCamFrame(), 300)
+				})
+		}
 	}
 
 	_scrollCamFrame() {
@@ -374,33 +406,34 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		}
 	}
 
-	evItemSelected(e) {
-		const tagParams = {
+	evItemSelected(item) {
+		let tagParams: any = {
 			idhash: this.generateId(),
-			PID: e.PID,
-			IID: e.item.id,
+			PID: item.PID,
+			IID: item.IID,
 			count: 1,
 			trash: false,
-
-			da: e.item.dap ? '0' + e.item.dap : '00'
 		}
+
+		if (item.da !== undefined) tagParams.da = item.da
 
 		Object.assign(this.temp_tag, tagParams)
 		this.drawTag()
 	}
 
-	itemNumber(F) {
-		if (F === 'null') {
-			this.itemnumber = 1
-			return
+	tagNumber(t) {
+		let H = t.idhash
+			, CR = this.request.rooms[this.current_room].tags
+			, i = 0
+
+		for (let T of CR) {
+			i++
+			if (T.idhash === H) return i
 		}
-		return this.itemnumber++
 	}
 
 	itemCount(tag) {
-		if (tag.count > 1) {
-			return ` X ${tag.count}`
-		}
+		if (tag.count > 1) return `${tag.count}`
 		return ''
 	}
 
@@ -408,116 +441,133 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		const new_tag = Object.assign({}, this.temp_tag)
 		this.request.rooms[this.current_room].tags.push(new_tag)
 
-		// console.log(this.temp_tag)
-		this.priceFurniture()
+		this.temp_tag = {} // Обнуляем TEMP Tag
+
+		this.scrollItemList('add')
+	}
+
+	scrollItemList(F) {
+		let IL = this.item_list.nativeElement
+			, scrollAmount = 0
+
+		if (F === 'page') return setTimeout(() => IL.scrollLeft += 9999, 1)
+
+		if (F === 'add') {
+			let slideTimer: any = setInterval(() => {
+				scrollAmount += 100
+				IL.scrollLeft += scrollAmount
+				if (scrollAmount >= 1200) window.clearInterval(slideTimer)
+			}, 50)
+		}
+
 	}
 
 	editItem(e) {
-		if (e.target.dataset.id) {
+		let ID = e.target.parentElement.dataset.id
+		if (ID) {
 			let tagToEdit = {}
-			const _hash = e.target.dataset.id
+				, HASH = ID
+				, ROOM = this.request.rooms[this.current_room]
 
-			for (let _t of this.request.rooms[this.current_room].tags) {
-				if (_t.idhash === _hash) {
-					tagToEdit = JSON.parse(JSON.stringify(_t))
+			for (let T of ROOM.tags)
+				if (T.idhash === HASH) {
+					tagToEdit = JSON.parse(JSON.stringify(T))
 					break
 				}
-			}
 
-			this.item_edit.editItem(tagToEdit)
+			this.item_editor.editItem(tagToEdit)
 		}
 	}
 
 	evItemEdited(etag) {
-		const _hash = etag.idhash
-		const _t = this.request.rooms[this.current_room].tags
+		const HASH = etag.idhash
+		const RT = this.request.rooms[this.current_room].tags
 
-		for (let i = 0; i < _t.length; i++) {
-			if (_t[i].idhash === _hash) {
+		for (let i = 0; i < RT.length; i++)
+			if (RT[i].idhash === HASH) {
 
-				if (etag.delete) {
-					this.request.rooms[this.current_room].tags.splice(i, 1)
-					break
-				}
+				if (etag.delete) return this.request.rooms[this.current_room].tags.splice(i, 1)
 
-				_t[i].count = etag.count
-				_t[i].trash = etag.trash
-				if (_t[i].da) _t[i].da = etag.da
-
-				break
+				RT[i].count = etag.count
+				RT[i].trash = etag.trash
+				if (RT[i].da !== undefined) RT[i].da = etag.da
+				return
 			}
-		}
+	}
+
+	evNewPriceSaved(e) {
+		let T = e.type
+		return this.FUR[e.PID].types[e.IID][T] = e.newprice   // Сохраняем локально
 	}
 
 	roomPage(page) {
-		const _len = this.request.rooms.length
-		let _cr = this.current_room
+		let LEN = this.request.rooms.length
+			, CR = this.current_room
 
-		if (page === 'prev') this.current_room = _cr > 0 ? _cr - 1 : _len - 1
-		if (page === 'next') this.current_room = _cr < _len - 1 ? _cr + 1 : 0
+		if (page === 'prev') this.current_room = CR > 0 ? CR - 1 : LEN - 1
+		if (page === 'next') this.current_room = CR < LEN - 1 ? CR + 1 : 0
+
+		this.scrollItemList('page')
 	}
 
 	getRoomTitle(dir) {
 		let R = this.request.rooms
-			, _len = R.length
-			, _cr = this.current_room
-			, idx
+			, LEN = R.length
+			, CR = this.current_room
 			, LNG = this.LNG[this.lng].r2.rt
+			, idx
 			, add
 			, n
 
-		if (dir === 'C') idx = _cr
-		if (dir === 'L') idx = _cr === 0 ? _len - 1 : _cr - 1
-		if (dir === 'R') idx = _cr === _len - 1 ? 0 : _cr + 1
+		if (dir === 'C') idx = CR
+		if (dir === 'L') idx = CR === 0 ? LEN - 1 : CR - 1
+		if (dir === 'R') idx = CR === LEN - 1 ? 0 : CR + 1
 
 		n = R[idx].name[0]
 
-		add = n === 'r' ? ' ' + R[idx].name.substr(5) : ''
+		add = n === 'r' ? ' ' + R[idx].name.substr(5) : ''   // Вырезаем номер комнаты
 
 		return LNG[n] + add
 	}
 
 	addRoom() {
-		const _id = this.request.rooms.length
-
-		let roomToAdd = {
-			name: 'room ' + (_id - 2),
-			tags: [],
-			pictures: [],
-			_p: 0
-		}
+		let LEN = this.request.rooms.length
+			, roomToAdd = {
+				name: 'room ' + (LEN - 2),
+				tags: [],
+				pictures: [],
+				_p: 0
+			}
 
 		this.request.rooms.push(roomToAdd)
-		this.current_room = _id
+		this.current_room = LEN
 	}
 
 	delRoom() {
 		this.request.rooms.splice(this.current_room, 1)
 
-		let _r = this.request.rooms
-		if (_r.length > 2) {
-			for (let i = 3; i < _r.length; i++) {
-				_r[i].name = 'room ' + (i - 2)
-			}
-		}
+		let ROOMS = this.request.rooms
+		if (ROOMS.length > 2)
+			for (let i = 3; i < ROOMS.length; i++)
+				ROOMS[i].name = 'room ' + (i - 2)
 
 		this.current_room--
 		this.room_modal.d = false
 	}
 
 	resetRoom() {
-		const _cr = this.request.rooms[this.current_room]
-		_cr.pictures = []
-		_cr.tags = []
-		_cr._p = 0
+		let CR = this.request.rooms[this.current_room]
+		CR.pictures = []
+		CR.tags = []
+		CR._p = 0
 		this.room_modal.r = false
 	}
 
 	roomModal(T, F) {
 		// RESET
 		if (T === 'r') {
-			let _crp = this.request.rooms[this.current_room].pictures
-			if (_crp.length) {
+			let CRP = this.request.rooms[this.current_room].pictures
+			if (CRP.length) {
 				if (F === 'O') this.room_modal.r = true
 				if (F === 'N') this.room_modal.r = false
 				if (F === 'R') this.resetRoom()
@@ -537,7 +587,8 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		let ROOMS = this.request.rooms
 			, SUM = 0
 
-		if (F === 'R') for (let t of ROOMS[this.current_room].tags) SUM += (1 * t.count)
+		if (F === 'R')
+			for (let t of ROOMS[this.current_room].tags) SUM += (1 * t.count)
 
 		if (F === 'T')
 			for (let R of ROOMS)
@@ -545,6 +596,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 		return SUM
 	}
+
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// STEP 3 -----------------------------------------------------------------------------------//
@@ -559,6 +611,16 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		if (F === 'get') return _carton
 	}
 
+	cartonNumber(F) {
+		let B = this.request.boxes
+			, C = +B.carton
+			, R = /[\d]/gm
+
+		if (F === 'F') if (!C) B.carton = undefined
+		if (F === 'B') if (!C || C < 0 || !(C.toString().match(R))) B.carton = 0
+	}
+
+
 	packingSameDayClose() {
 		if (this.request.packing.date.d && this.request.packing.time.h) setTimeout(() => this.carton_sameday_show = false, 1000)
 	}
@@ -568,6 +630,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 		this.request.requestID = this.generateRequestID()
 		this.request.xx = this.generateXX()
+		this.request.timestamp = new Date().toUTCString()
 
 		const formData: any = new FormData()
 
@@ -590,15 +653,18 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		this._request.requestUpload(formData)
 			.subscribe((res: any) => {
 				// console.log(res)
-				this.xx_loader = false
+				// this.xx_loader = false
 				if (res.success) {
-					this.xx_upload_msg = 'Успешно отправлено'
-					this.xx_download_msg = 'ПОСМОТРЕТЬ'
-					this.xx_download_link = 'https://tmctestx.firebaseapp.com/en/db/' + this.request.requestID
-					alert('SUCCESS')
+					// this.xx_upload_msg = 'Успешно отправлено'
+					// this.xx_download_msg = 'ПОСМОТРЕТЬ'
+					// this.xx_download_link = 'https://tmctestx.firebaseapp.com/' + this.lng + '/db/' + this.request.requestID
+					// alert('SUCCESS')
+					this.xx_result = 'suc'
+					this.xx_done = true
 				}
 				else {
-					alert('error')
+					// alert('error')
+					this.xx_result = 'err'
 				}
 			})
 	}
@@ -607,7 +673,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		// console.log(this.request)
 
 		this.xx_loader = true
-		this.xx_canvas_msg = 'Обработка изображений'
+		// this.xx_canvas_msg = 'Обработка изображений'
 
 		// Передаем файлы и канвас
 		// this._canvas.prepareCanvas(
@@ -623,15 +689,12 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		let canvas_arr = []
 		for (let _c of this.request.rooms) {
 			if (_c.pictures.length) {
-				let _promise = this._canvas.prepareCanvas(_c.pictures, null, _c.name)
+				let _promise = this._canvas.prepareCanvas(_c.pictures, /*this.canvaSS.nativeElement*/null, _c.name)
 				canvas_arr.push(_promise)
 			}
 		}
 
 		Promise.all(canvas_arr).then(result_files => {
-			// console.log(result_files)
-			// this.requestUpload(result_files)
-
 			this.requestUpload(result_files)
 		})
 
@@ -645,7 +708,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 			, count = Math.abs(+this.request.adress[T].info.f) || 0
 			, multiplier = isLift ? 0.005 : 0.025
-			, max = isLift ? 0.05 : 0.125
+			, max = isLift ? 0.05 : 0.2
 
 			, result = count * multiplier
 
@@ -674,10 +737,16 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		return M
 	}
 
+	roundPrice(P) {
+		let T = Math.round(P / 10) * 10
+			, D = T % 10
+		return T + (D == 0 ? 0 : 10)
+	}
+
 	priceDistance() {
 		let D = this.request.route.distance || 0
 			, DM
-			, result
+			, price
 
 		if (D >= 0 && D <= 10) DM = 7
 		if (D > 10 && D <= 25) DM = 6
@@ -685,38 +754,39 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		if (D > 50 && D <= 100) DM = 4
 		if (D > 100) DM = 3
 
-		result = D * DM * 1.5
-		return Math.floor(result)
+		price = D * DM * 1.5
+		return this.roundPrice(price)
 	}
 
 	priceFurniture() {
 		let M = this.priceMod()
 			, furniture = 0
+			, COEF = 1 + this.FUR[0].misc.coef / 100
 
-		for (let _room of this.request.rooms) {
+		for (let _room of this.request.rooms)
 			for (let T of _room.tags) {
 				let _TP = this.FUR[T.PID % 100].types[T.IID].price // PRICE
-					, _TDA = +T.da[0]
-					, _TDAP = +T.da.substring(1)
+					, _TDA = +T.da
+					, _TDAP = this.FUR[T.PID % 100].types[T.IID].dap
 
-				furniture += ((_TP * (T.trash ? 0.6 : 1) * (1 + M.DS + M.LO + (T.trash ? 0 : M.LD))) + (_TDA ? _TDAP : 0)) * T.count
+				furniture += ((_TP * (T.trash ? 0.6 : 1) * (1 + M.DS + M.LO + (T.trash ? 0 : M.LD))) + (_TDA ? _TDAP : 0)) * T.count * COEF
 			}
-		}
-		return Math.floor(furniture)
+
+		return this.roundPrice(furniture)
 	}
 
 	priceBoxes(F) {
 		let M = this.priceMod()
 			, total
 			, B = this.request.boxes
-			, C = B.carton
+			, C = B.carton || 0
 			, P = this.request.packing
 
-		if (F === 'T') total = C * (1 + M.DS + M.LO + M.LD) * 10
+		if (F === 'T') total = this.roundPrice(C * (1 + M.DS + M.LO + M.LD) * 10)
 		if (F === 'P') total = P.pack ? C * 20 : 0
 		if (F === 'B') total = B.boxes ? C * 5 : 0
 
-		return Math.floor(total)
+		return total
 	}
 
 
@@ -734,11 +804,6 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 		if (sum < 200) sum = 200
 
-		// else {
-		// 	let _remain = Math.floor(sum) % 100
-		// 	sum = _remain < 50 ? Math.floor(sum / 100) * 100 + 50 : Math.floor(sum / 100) * 100 + 100
-		// }
-
 		// SAVING
 		P.transportation = car + distance + transportation_furniture + transportation_boxes
 		P.packing = packing
@@ -747,22 +812,36 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		return sum
 	}
 
+	__showPriceDebug() {
+		this.debugpriceModal = !this.debugpriceModal
+	}
+
+	__coefRefresh() {
+		this.coef_refresh = true
+		this._request.getFurniture('coef')
+			.subscribe((res: any) => {
+				if (res.success) this.FUR[0].misc.coef = res.data
+				this.coef_refresh = false
+			})
+	}
+
 	///////////////////// VALIDATION /////////////////////
 
 	valert(x, place) {
 		let R = this.request
-			, PL = R.adress[place] // PLACE
+			, PL = R.adress[place]  // PLACE
 
 		// LOCATION
 		if (x === 'R1_SL') if (PL.city && PL.street && PL.number) return true
 
-		if (x === 'R1_PI') if (PL.info.t !== undefined) switch (PL.info.t) {
-			case 'apartment':
-				if (PL.info.f && PL.info.n) return true
-			case 'office':
-				if (PL.info.f) return true
-			default:
-				return true
+		// PLACE INFO
+		if (x === 'R1_PI') {
+			let I = PL.info
+				, T = I.t ? I.t[0] : undefined  // First letter
+
+			if (T === 'a') if (I.f && I.n) return true
+			if (T === 'o' || T === 'h') if (I.f) return true
+			if (T === 's') return true
 		}
 
 		// DAY / TIME
@@ -773,7 +852,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 		// PACKING SAMEDAY DATE / TIME
 		if (x === 'R3_PSD_DT') {
-			const P = R.packing
+			let P = R.packing
 			if (P.pack && !P.sameday) return (P.date.d && P.time.h) ? true : false
 
 			return true
@@ -781,6 +860,12 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 		// BOXES NOT DEFINED
 		if (x === 'R3_BOX') return (!R.boxes.carton && (R.boxes.boxes || R.packing.pack)) ? false : true
+	}
+
+	backToValidate() {
+		this.first_page_valid = false
+		this.req_page = 1
+		this._router.navigate([this.lng, 'request'], { queryParams: { page: this.req_page } })
 	}
 
 	validation(F) {
@@ -803,8 +888,22 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	confirm() {
+		// this.xx_loader = true
+		// this.xx_result = 'suc'
+		// setTimeout(() => this.xx_done = true, 3000)
 		// console.log(this.request)
 		if (this.validation('confirm')) this.canvasDraw()
+	}
+
+	sendOK() {
+		if (this.xx_result == 'err') window.location.assign('https://tomove.co/')
+
+		if (this.xx_done && this.xx_result != 'err') {
+			// this.xx_loader = false
+			// this.xx_done = false
+			// this.xx_result = 'err'
+			window.location.assign('https://tomove.co/')
+		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
@@ -852,20 +951,34 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		return +_string
 	}
 
-	showDate(T) {
-		let d = this.request[T].date
+	// showDate(T) {
+	// 	let d = this.request[T].date
 
-		if (d.d) {
-			let objDate = new Date(d.m + '/' + d.d + '/' + d.y)
-				, locale = this.lng
-				, D = objDate.toLocaleString(locale, { day: "2-digit" })
-				, M = objDate.toLocaleString(locale, { month: "long" })
-				, Y = objDate.toLocaleString(locale, { year: "2-digit" })
+	// 	if (d.d) {
+	// 		let objDate = new Date(d.m + '/' + d.d + '/' + d.y)
+	// 			, locale = this.lng
+	// 			, D = objDate.toLocaleString(locale, { day: "2-digit" })
+	// 			, M = objDate.toLocaleString(locale, { month: "long" })
+	// 			, Y = objDate.toLocaleString(locale, { year: "2-digit" })
 
-			return `${D} . ${M} . ${Y}`
-		}
+	// 		return D + ' . ' + M + ' . ' + Y
+	// 	}
 
-		return this.LNG[this.lng].date.datenull
+	// 	return this.LNG[this.lng].date.datenull
+	// }
+
+	showDatePart(T, X) {
+		return this.request[T].date[X] || this.LNG[this.lng].date.datenull[X]
+	}
+
+	showMonth(T) {
+		if (!this.request[T].date.d) return this.LNG[this.lng].date.datenull.m
+
+		let objDate = new Date(this.request[T].date.m + '/' + this.request[T].date.d + '/' + this.request[T].date.y)
+			, locale = this.lng
+			, M = objDate.toLocaleString(locale, { month: "short" })
+
+		return M
 	}
 
 	showTime(T) {
@@ -879,15 +992,19 @@ export class RequestComponent implements OnInit, AfterViewInit {
 			, P = PKG.pack
 			, S = PKG.sameday
 
-		if (T == 'pack') if (!P) PKG.sameday = true
+		if (T == 'pack') {
+			if (!P) PKG.sameday = false // true
+			this.carton_sameday_show = P
+		}
 
-		if (S) {
+		if (!S) {
 			PKG.date.d = undefined
 			PKG.date.m = undefined
 			PKG.date.y = undefined
 			PKG.time.h = undefined
 			PKG.time.m = undefined
 		}
+		else setTimeout(() => { if (this.request.packing.sameday) this.carton_sameday_show = false }, 1500)
 	}
 
 	phoneMask(e) {
@@ -936,6 +1053,17 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// 	return hours + ':' + minutes
 	// }
 
+	sideLNG(dir) {
+		let L = this.lng
+			, OBJ = {
+				'en': 1,
+				'ru': 2,
+				'he': 3
+			}
+			, A = ['he', 'en', 'ru', 'he', 'en']
+		return A[OBJ[L] + dir]
+	}
+
 	nextLNG() {
 		let L = this.lng
 		switch (L) {
@@ -956,12 +1084,35 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// 	}
 	// }
 
-	// aRound(X) {
-	// 	return Math.floor(X * 10000) / 10000
-	// }
+	__initAdmin() {
+		if (localStorage.getItem('_xad')) this.adminMode = true
+	}
+
+	__isAdmin() {
+		return this.adminMode
+	}
+
+	aRound(X) {
+		return Math.round(X * 10000) / 10000
+	}
 
 	show() {
-		console.log(this.request)
+		console.log(this.request.rooms)
+	}
+
+	TS(e) {
+		if (e.touches.length !== 1) return
+
+		var scrollY = window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop
+		this.prevent = (scrollY === 0)
+	}
+
+	TM(e) {
+		if (this.prevent) {
+			this.prevent = false
+			e.preventDefault()
+			return
+		}
 	}
 
 }

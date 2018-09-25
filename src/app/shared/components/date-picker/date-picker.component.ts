@@ -21,7 +21,11 @@ export class DatePickerComponent implements OnInit {
 	@Input() lng = undefined
 	LNG = LNG_PACK
 
-	dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+	dayNames = {
+		en: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+		ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+		he: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'],
+	}
 
 	date
 	prevMonthDate
@@ -79,27 +83,25 @@ export class DatePickerComponent implements OnInit {
 		return true
 	}
 
+	isBeforeToday(day) {
+		return moment().isAfter(day, 'D')
+	}
+
 	todayCheck(day) {
 		if (!day) return false
 		return moment().format('L') === day.format('L')
 	}
 
-	isBeforeToday(day) {
-		return moment().isAfter(day, 'D')
-	}
-
 	isSelected(day) {
 		if (!day) return false
-		else
-			if (this.selected_day)
-				if (this.selected_day.format('L') == day.format('L')) return true
+		if (this.selected_day) return this.selected_day.format('L') == day.format('L')
 	}
 
 	selectDay(e, day) {
 		if (day == null || e.target.classList.contains('beforetoday')) return
 
 		this.selected_day = day
-		setTimeout(() => this.hideCalendar('emit'), 200);
+		setTimeout(() => this.hideCalendar('emit'), 200)
 	}
 
 	hideCalendar(flag) {
@@ -145,6 +147,12 @@ export class DatePickerComponent implements OnInit {
 
 	modalClick(e) {
 		if (e.target.classList.contains('calendar')) this.open()
+	}
+
+	showDate(F) {
+		let D = this.date.clone()
+		if (F === 'M') return D.locale(this.lng).format('MMMM ')
+		if (F === 'Y') return D.format('YYYY ')
 	}
 
 }

@@ -4,7 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 @Injectable()
 export class RequestService {
 
-	baseUrl = 'https://tmctestx.herokuapp.com/api/request'
+	baseUrl = 'https://api.hamovil-sheli.co.il/api/request'
+	// baseUrl = 'https://tmctestx.herokuapp.com/api/request'
 	// baseUrl = 'http://localhost:8080/api/request'
 
 	addUrl = {
@@ -12,7 +13,11 @@ export class RequestService {
 		getByID: '/get/',
 		getByMY: '/getByMY',
 		deleteRequest: '/delete',
-		updateRequest: '/update'
+		updateRequest: '/update',
+		closeRequest: '/close',
+		getFurniture: '/getFurniture',
+		saveNewItemPrice: '/saveNewItemPrice',
+		saveNewCoefficient: '/saveNewCoefficient'
 	}
 
 	constructor(
@@ -42,6 +47,27 @@ export class RequestService {
 	updateRequest(ID, body) {
 		const query = { ID: ID }
 		return this._http.put(this.baseUrl + this.addUrl.updateRequest, body, { params: query })
+	}
+
+	closeRequest(ID, body) {
+		let query = { ID: ID }
+		return this._http.put(this.baseUrl + this.addUrl.closeRequest, body, { params: query })
+	}
+
+	getFurniture(FLAG) {
+		let query = undefined
+		if (FLAG !== null) query = { flag: FLAG }
+
+		return this._http.get(this.baseUrl + this.addUrl.getFurniture, { params: query })
+	}
+
+	saveNewItemPrice(body) {
+		return this._http.put(this.baseUrl + this.addUrl.saveNewItemPrice, body)
+	}
+
+	saveNewCoefficient(newcoef) {
+		const body = { coef: newcoef }
+		return this._http.put(this.baseUrl + this.addUrl.saveNewCoefficient, body)
 	}
 
 }

@@ -1,17 +1,30 @@
+<!-- <div class="orientation"  style="display: none">
+	<div>
+		<span>{{LNG[lng].misc.srotate}}<img src="assets/i/rotate_screen.svg"></span>
+	</div>
+</div> -->
+
 
 <date-picker  #datePicker  [lng]="lng"  (outOnDatePicked)="evDateTimeSelected($event, 'date')"></date-picker>
 <time-picker  #timePicker  [lng]="lng"  (outOnTimePicked)="evDateTimeSelected($event, 'time')"></time-picker>
 <gmap  #gmap  [lng]="lng"></gmap>
 
+
 <!-- STEP 1 ---------------------------------------------------------------------------------- -->
-<div class="req-step"  [class.show-page]="req_page == 1" [class.hebrew]="lng === 'he'">
+<div class="req-step"  [class.show-page]="req_page == 1"  (touchstart)="TS($event)"  (touchmove)="TM($event)"  [class.hebrew]="lng === 'he'">
 
 	<p class="hamovil">HaMovil - Sheli</p>
+
 
 	<!--  ///////////////////////////////////////////////////////////////////////////////////////////////////  ADRESS  -->
 	<div  *ngFor="let a of ACI"  class="p2  adress"  [class.adress--origin]="a.a === 'o'">
 
-		<div class="circle"  [class.circle--finish]="a.a === 'd'"  [class.circle--line]="a.a === 'o'"><div></div></div>
+		<div class="circle"  [class.circle--finish]="a.a === 'd'"
+			[class.circle--line]="a.a === 'o'"
+			[class.circle--line--valid-Y]="valert('R1_DIST', null)"
+			[class.circle--line--valid-N]="!valert('R1_DIST', null)  &&  !first_page_valid"
+			><div></div>
+		</div>
 
 		<div class="location">
 
@@ -19,29 +32,34 @@
 
 			<div class="location-adress" 
 				[class.valid--Y-loc]="valert('R1_SL', a.a)" 
-				[class.valid--N-loc]="!valert('R1_SL', a.a) && request.adress[a.a].city">
+				[class.valid--N-loc]="(!valert('R1_SL', a.a)  &&  request.adress[a.a].city)  ||  (!valert('R1_SL', a.a)  &&  !first_page_valid)">
 
 				<div class="place-type" (click)="showOnMap(a.A)"><img src="assets/i/marker.svg" *ngIf="map_render_search[a.A]"></div>
 
 				<input type="text"
 					class="adress-line"
-					[placeholder]="LNG[lng].r1.loc.sph"
+					[placeholder]="LNG[lng].r1.loc.sph2"
 					autocorrect="off"
 					autocapitalize="off"
 					spellcheck="off"
-					#aci  [attr.data-acit]="a.a">
+					#aci  [attr.data-atype]="a.a">
 			</div>
+
 
 			<place-info [lng]="lng"
 				class="location-place-info"
+				(click)="editPlaceInfo(a.a)"
 				(outPlaceEdited)="evPlaceEdited($event, a.a)" 
 				[class.valid--Y-pi]="valert('R1_PI', a.a)" 
-				[class.valid--N-pi]="!valert('R1_PI', a.a) && request.adress[a.a].info.t">
+				[class.valid--N-pi]="(!valert('R1_PI', a.a)  &&  request.adress[a.a].info.t)  ||  (!valert('R1_PI', a.a)  &&  !first_page_valid)"
+				#plie  [ADDRESS_TYPE]="a.a">
 			</place-info>
 
-			<div class="flex  jcsb">
 
-				<span class="swlift__title">{{LNG[lng].r1.lift.t}}:
+			<div class="flex  jcsb  lift">
+
+				<span class="swlift__title">
+					<span>{{LNG[lng].r1.lift.t}}</span>:
 					<span class="swlift__title--name"  [ngClass]="getLift(a.a, 'C')">{{getLift(a.a, 'T')}}</span>
 				</span>
 
@@ -57,6 +75,7 @@
 							[(ngModel)]="request.adress[a.a].lift"
 							[disabled]="request.adress[a.a].info.t === 'store'"
 							>
+
 						<label *ngFor="let L of LIFTS"  [style.left]="L.style + '%'"  [for]="'lift' + a.a + '-' + L.id"></label>
 
 						<div class="swlift__bg"><span class="swlift__thumb"></span></div>
@@ -71,20 +90,27 @@
 	<!--  ///////////////////////////////////////////////////////////////////////////////////////////////////  ADRESS  -->
 
 
-	<div class="p2  distance" [class.hidden]="!request.route.distance || request.route.distance === -999" (click)="showOnMap('R')">
+	<!-- <div class="p2  distance" [class.hidden]="!request.route.distance || request.route.distance === -999" (click)="showOnMap('R')">
 		<img src="assets/i/map.svg">
 		<span class="distance--title">{{LNG[lng].c.distance}}:</span>
-		<span>{{request.route.distance <= 1 ? '~' : ''}} {{request.route.distance}} {{LNG[lng].c.km}}</span>
-	</div>
+		<span><span style="font-family: sans-serif">{{request.route.distance <= 1 ? '~' : ''}}</span> {{request.route.distance}} {{LNG[lng].c.km}}</span>
+	</div> -->
 
 
-	<div class="p2  flex  jcsb  dt">
+	<div class="p2  flex  jcsb  dt"                    style="padding-top: 3rem">
 		<span>{{LNG[lng].date.date}}</span>
 		<span>{{LNG[lng].date.time}}</span>
 	</div>
 
-	<div class="p2  flex  jcsb">
-		<div class="dtpicker"  (click)="DTpicker('date', 'date')"  [class.dtpicker--correct]="request.date.date.d">{{showDate('date')}}</div>
+	<div class="p2  flex  jcsb  dt-widgets">
+		<div class="dtpicker"  (click)="DTpicker('date', 'date')"
+			[class.dtpicker--correct]="request.date.date.d"
+			[class.dtpicker--incorrect]="!request.date.date.d  &&  !first_page_valid"
+			>
+			<span class="dt-d">{{showDatePart('date', 'd')}}</span>
+			<span class="dt-m">{{showMonth('date')}}</span>
+			<span class="dt-y">{{showDatePart('date', 'y')}}</span>
+		</div>
 		<div class="dtpicker"  (click)="DTpicker('time', 'date')"  [class.dtpicker--correct]="request.date.time.h">{{showTime('date')}}</div>
 	</div>
 
@@ -92,7 +118,7 @@
 
 
 <!-- STEP 2 ---------------------------------------------------------------------------------- -->
-<div class="req-step"  [class.show-page]="req_page == 2">
+<div class="req-step"  [class.show-page]="req_page == 2"  (touchstart)="TS($event)"  (touchmove)="TM($event)"  [class.hebrew]="lng === 'he'">
 
 	<div class="p2 flex  jcsb  w100  room-title">
 		<div class="room-page" (click)="roomPage('prev')"><img src="assets/i/R2_arrow_L.svg"></div>
@@ -109,7 +135,7 @@
 	</div>
 
 
-	<div class="p2  flex  jcsb  aic  w100"  style="margin-bottom: 1rem">
+	<div class="p2  flex  jcsb  aic  w100  room-btns"  style="margin-bottom: 1rem">
 		<div class="room-btn  room-btn--reset" [class.room-btn--disabled]="roomModal('r', null)" (click)="roomModal('r', 'O')">{{LNG[lng].r2.rm.reset}}</div>
 		<div class="room-btn  room-btn--del" [class.hidden]="current_room < 3" (click)="roomModal('d', 'O')">— {{LNG[lng].r2.rm.room}}</div>
 		<div class="room-btn  room-btn--add" (click)="addRoom()">+ {{LNG[lng].r2.rm.room}}</div>
@@ -142,17 +168,16 @@
 		<p class="empty-title"  *ngIf="!emptyTitle('P')">{{LNG[lng].r2.cam.takep}}</p>
 		<p class="empty-title"  *ngIf="!emptyTitle('T') && emptyTitle('P')">{{LNG[lng].r2.cam.touch}}</p>
 
-		<ul>
+		<ul #item_list>
 			<li class="item-name"  *ngFor="let t of request.rooms[current_room].tags; let i = index"
 				attr.data-id="{{t.idhash}}"
-				(click)="editItem($event)"
-				[class.item--trash]="t.trash">
+				(click)="editItem($event)">
 
-				<span class="item-number">{{i + 1 + ' ·'}}</span>
-				{{FUR[t.PID % 100].types[t.IID].name[FUR[0][lng]]}}
-				<img class="item--icon"  *ngIf="t.da[1] * 1"  [src]="'assets/i/da_' + (t.da[0] * 1 ? 't' : 'fl') + '.svg'">
+				<span class="item-number">{{tagNumber(t) + ' ·'}}</span>
+				<span [class.item--trash]="t.trash">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}}</span>
+				<img class="item--icon"  *ngIf="t.da !== undefined"  src="assets/i/da_{{t.da ? 't' : 'fl'}}.svg">
 				<img class="item--icon"  *ngIf="t.trash"  src="assets/i/trash_t.svg">
-				<span class="item--count">{{itemCount(t)}}</span>
+				<span class="item--count"><span *ngIf="itemCount(t) > 1">X</span>{{itemCount(t)}}</span>
 			</li>
 
 			<li class="empty-itemedit"  *ngIf="!emptyTitle('I') && emptyTitle('T') && emptyTitle('P')">{{LNG[lng].r2.cam.pressi}}</li>
@@ -164,14 +189,14 @@
 	<section class="cam-wrap">
 
 		<div class="cam-main">
-			<div class="cam-frame"  #cam_frame>  {{itemNumber('null')}}  <!-- ОБНУЛЕНИЕ СЧЕТЧИКА ПРЕДМЕТОВ ПРИ ПЕРЕРИСОВКЕ -->
+			<div class="cam-frame"  #cam_frame>
 
 				<div class="tags">
 					<div class="tag"  *ngFor="let t of request.rooms[current_room].tags; let idx = index" 
 						[style.left.px]="t.tagX - 10"
 						[style.top.px]="t.tagY - 10"
 						[class.tag-trash]="t.trash">
-						{{itemNumber()}}
+						{{tagNumber(t)}}
 					</div>
 				</div>
 
@@ -188,7 +213,7 @@
 				<p><span class="c_gold  fw_eb">{{getItemsCount('R')}}</span>{{LNG[lng].r2.rm.items}}</p>
 			</div>
 
-			<label id="camera_icon" for="camera"  [class.empty-cam]="!emptyTitle('C')">
+			<label id="camera_icon" for="camera"  [class.empty-cam]="!emptyTitle('C')  ||  true">
 				<img src="assets/i/camera.svg">
 			</label>
 			<input type="file"
@@ -209,15 +234,15 @@
 	</section>
 
 
-	<item-picker 
+	<item-picker  [lng]="lng"  [FUR]="FUR"
 		#item_picker
 		(outItemSelected)="evItemSelected($event)">
 	</item-picker>
 
-	<item-edit  [lng]="lng"
-		#item_edit
-		(outItemEdited)="evItemEdited($event)">
-	</item-edit>
+	<item-editor  [lng]="lng"  [FUR]="FUR"  [admin]="adminMode"
+		#item_editor
+		(outItemEdited)="evItemEdited($event)"  (outNewPriceSaved)="evNewPriceSaved($event)">
+	</item-editor>
 
 	<!-- // //////////////////////////////////////////////////////////// -->
 	
@@ -225,10 +250,10 @@
 
 
 <!-- STEP 3 ---------------------------------------------------------------------------------- -->
-<div class="req-step"  [class.show-page]="req_page == 3">
+<div class="req-step"  [class.show-page]="req_page == 3"  (touchstart)="TS($event)"  (touchmove)="TM($event)"  [class.hebrew]="lng === 'he'">
 
-<!-- ///////////////////////////////////wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww//////////////////////////////////////////// -->
 
+	<!-- ///////////////////////////////////wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww//////////////////////////////////////////// -->
 
 	<div class="p2 flex carton">
 
@@ -249,19 +274,18 @@
 					autocapitalize="off" 
 					spellcheck="off" 
 					[(ngModel)]="request.boxes.carton"
-					[attr.min]="0"
-					>
+					(focus)="cartonNumber('F')"
+					(blur)="cartonNumber('B')"
+					[attr.min]="0">
 
 			</div>
 
-			<div class="flex  jcsb  aic" style="margin-bottom: 1rem">
+			<div class="flex  jcsb  aic" style="margin-bottom: 1rem">  <!-- КОРОБКИ -->
 
 				<p class="carton-title">{{LNG[lng].r3.c.need}}</p>
 				<div class="switch-group">
 					<label class="switch">
-						<input type="checkbox"
-						[(ngModel)]="request.boxes.boxes" 
-						>
+						<input type="checkbox"  [(ngModel)]="request.boxes.boxes">
 						<div></div>
 					</label>
 				</div>
@@ -273,10 +297,7 @@
 				<p class="carton-title">{{LNG[lng].r3.c.pack}}</p>
 				<div class="switch-group">
 					<label class="switch">
-						<input type="checkbox"
-						[(ngModel)]="request.packing.pack" 
-						(change)="nullPack('pack')"
-						>
+						<input type="checkbox"  [(ngModel)]="request.packing.pack"  (change)="nullPack('pack')">  <!-- УПАКОВКА -->
 						<div></div>
 					</label>
 				</div>
@@ -288,8 +309,7 @@
 			*ngIf="request.packing.pack" 
 			(click)="carton_sameday_show = !carton_sameday_show" 
 			[class.carton-pack-showbtn--closed]="!carton_sameday_show" 
-			[style.opacity]="carton_modal ? 0 : 1"
-			>
+			[style.opacity]="carton_modal ? 0 : 1">
 			<img src="assets/i/packshow.svg">
 		</div>
 
@@ -298,7 +318,7 @@
 				<span>{{LNG[lng].r3.c.i.t}}</span>
 				<img src="assets/i/close_x.svg" (click)="cartonModal(false)">
 			</div>
-			<p>{{LNG[lng].r3.c.t}}:</p>
+			<p>{{LNG[lng].r3.c.t}}<span>:</span></p>
 			<p>{{LNG[lng].r3.c.i[1]}}</p>
 			<p>{{LNG[lng].r3.c.need}}:</p>
 			<p>{{LNG[lng].r3.c.i[2]}}</p>
@@ -308,8 +328,15 @@
 
 	</div>
 
-	<div class="p2 carton-pack" [class.carton-pack--closed_up]="!request.packing.pack" [class.carton-pack--closed_down]="!request.packing.sameday && request.packing.pack" [class.carton-pack--close]="!carton_sameday_show">
-		<div class="agree  carton-pack--sameday">
+
+	<!-- <div class="p2 carton-pack" [class.carton-pack--closed_up]="!request.packing.pack" [class.carton-pack--closed_down]="!request.packing.sameday && request.packing.pack" [class.carton-pack--close]="!carton_sameday_show"> -->
+	<div class="p2 carton-pack"
+		[class.carton-pack--sameday]="request.packing.pack  &&  request.packing.sameday"
+		[class.carton-pack--notsameday]="request.packing.pack  &&  !request.packing.sameday"
+		[class.carton-pack--close]="!carton_sameday_show"
+		>
+
+		<div class="agree  carton-pack-sameday">
 			<div class="swcheck">
 				<input type="checkbox" id="packsameday" [(ngModel)]="request.packing.sameday" (change)="nullPack(null)"/>
 				<label for="packsameday"></label>
@@ -327,41 +354,40 @@
 			<div class="flex  jcsb">
 				<div class="dtpicker  carton-pack-date--date"
 					(click)="DTpicker('date', 'packing')"
-					[class.dtpicker--correct]="request.packing.date.d"
-					>
-					<p>{{showDate('packing')}}</p>
+					[class.dtpicker--correct]="request.packing.date.d">
+					<span class="dt-d">{{showDatePart('packing', 'd')}}</span>
+					<span class="dt-m">{{showMonth('packing')}}</span>
+					<span class="dt-y">{{showDatePart('packing', 'y')}}</span>
 				</div>
 
 				<div class="dtpicker  carton-pack-date--date"
 					(click)="DTpicker('time', 'packing')"
-					[class.dtpicker--correct]="request.packing.time.h"
-					>
+					[class.dtpicker--correct]="request.packing.time.h">
 					<p>{{showTime('packing')}}</p>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<br>
 
 
 	<div class="p2  valert">
 
-		<p class="valert-title" *ngIf="!validation('price')">{{LNG[lng].r3.v.t}}</p>
+		<p class="valert-title" *ngIf="!validation('price')">{{LNG[lng].r3.v.t}}<span>:</span></p>
 
-		<p *ngIf="!valert('R1_SL', 'o')">· {{LNG[lng].r3.v.R1_SL_o}}</p>
-		<p *ngIf="!valert('R1_PI', 'o')">· {{LNG[lng].r3.v.R1_PI_o}}</p>
+		<p *ngIf="!valert('R1_SL', 'o')"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_SL_o}}</p>
+		<p *ngIf="!valert('R1_PI', 'o')"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_PI_o}}</p>
 
-		<p *ngIf="!valert('R1_SL', 'd')">· {{LNG[lng].r3.v.R1_SL_d}}</p>
-		<p *ngIf="!valert('R1_PI', 'd')">· {{LNG[lng].r3.v.R1_PI_d}}</p>
+		<p *ngIf="!valert('R1_SL', 'd')"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_SL_d}}</p>
+		<p *ngIf="!valert('R1_PI', 'd')"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_PI_d}}</p>
 
-		<p *ngIf="!valert('R1_DAY', null)">· {{LNG[lng].r3.v.R1_DAY}}</p>
+		<p *ngIf="!valert('R1_DAY', null)"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_DAY}}</p>
 
 		<p *ngIf="!valert('R3_PSD_DT', null)">· {{LNG[lng].r3.v.R3_PSD_DT}}</p>
 		
 		<p *ngIf="!valert('R3_BOX', null)">· {{LNG[lng].r3.v.R3_BOX}}</p>
 		
-		<p *ngIf="!valert('R1_DIST', null)">· {{LNG[lng].r3.v.R1_DIST}}</p>
+		<p *ngIf="!valert('R1_DIST', null)"  (click)="backToValidate()">· {{LNG[lng].r3.v.R1_DIST}}</p>
 	</div>
 
 
@@ -373,44 +399,65 @@
 
 
 
+	<div class="debugprice"  *ngIf="debugpriceModal  &&  __isAdmin()">
+		<div class="debugprice-wrap">
+			<p>M Сезон: {{aRound(priceMod().DS)}}</p>
+			<p>M Лифт С: {{aRound(priceMod().LO)}}</p>
+			<p>M Лифт Ф: {{aRound(priceMod().LD)}}</p>
+			<p>M: {{aRound(1 + priceMod().DS + priceMod().LO + priceMod().LD)}}</p>
+			<br>
+			<div class="debugprice-list">
+				<ul *ngFor="let r of request.rooms"  [class.none]="!r.tags.length">
+					<li *ngFor="let t of r.tags">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}} - {{FUR[t.PID % 100].types[t.IID].price}} - {{FUR[t.PID % 100].types[t.IID].dap}}</li>
+				</ul>
+			</div>
+			<br>
+			<p>Машина: {{price_car}}</p>
+			<p>Дистанция: {{priceDistance()}}</p>
+			<p>Перевозка. Мебель: {{priceFurniture()}}</p>
+			<p>Перевозка. Коробки: {{priceBoxes('T')}}</p>
+			<p>Упаковка: {{priceBoxes('P')}}</p>
+			<p>Коробки: {{priceBoxes('B')}}</p>
+			<br>
+			<p>{{LNG[lng].r3.p.car}}<span>:</span> ₪ {{price_car}}</p>
 
+			<p>{{LNG[lng].r3.p.trn}}<span>:</span> ₪ {{priceDistance() + priceFurniture() + priceBoxes('T')  + (!request.packing.pack ? priceBoxes('B') : 0)}}</p>
 
+			<p>{{LNG[lng].r3.p.pck}}<span>:</span> ₪ {{priceBoxes('P')  + (request.packing.pack ? priceBoxes('B') : 0)}}</p>
+		</div>
 
+		<img  class="debugprice-close"  src="assets/i/close_x.svg"  (click)="__showPriceDebug()">
 
-	<div class="p2" *ngIf="validation('price')                || false">
+		<div  class="debugprice-coef"  (click)="__coefRefresh()"  [class.debugprice-coef--refresh]="coef_refresh">
+			<span>COEF REFRESH {{FUR[0].misc.coef}}</span>
+			<img src="assets/i/refresh.svg">
+		</div>
+	</div>
+
+	<div class="debugprice-show"  (click)="__showPriceDebug()"  *ngIf="!debugpriceModal  &&  __isAdmin()">SHOW</div>
+
+	<!-- <button (click)="show()">SHOW</button> -->
+
+	<div class="p2" *ngIf="validation('price')                ||  false">
 
 		<div class="price">
-			<!-- <div>
-				<p>M Сезон: {{aRound(priceMod().DS)}}</p>
-				<p>M Лифт С: {{aRound(priceMod().LO)}}</p>
-				<p>M Лифт Ф: {{aRound(priceMod().LD)}}</p>
-				<p>M: {{aRound(1 + priceMod().DS + priceMod().LO + priceMod().LD)}}</p>
-				<br>
-				<p>Машина: {{price_car}}</p>
-				<p>Дистанция: {{priceDistance()}}</p>
-				<p>Перевозка. Мебель: {{priceFurniture()}}</p>
-				<p>Перевозка. Коробки: {{priceBoxes('T')}}</p>
-				<p>Упаковка: {{priceBoxes('P')}}</p>
-				<p>Коробки: {{priceBoxes('B')}}</p>
-				<br>
-			</div> -->
 
 			<div class="price-part">
-				<p>{{LNG[lng].r3.p.car}} ₪ {{price_car}}</p>
+				<p>{{LNG[lng].r3.p.car}}<span>:</span> ₪ {{price_car}}</p>
 			</div>
 
 			<div class="price-part">
-				<p>{{LNG[lng].r3.p.trn}} ₪ {{priceDistance() + priceFurniture() + priceBoxes('T')  + (!request.packing.pack ? priceBoxes('B') : 0)}}</p>
+				<p>{{LNG[lng].r3.p.trn}}<span>:</span> ₪ {{priceDistance() + priceFurniture() + priceBoxes('T')  + (!request.packing.pack ? priceBoxes('B') : 0)}}</p>
 			</div>
 
 			<div class="price-part">
-				<p>{{LNG[lng].r3.p.pck}} ₪ {{priceBoxes('P')  + (request.packing.pack ? priceBoxes('B') : 0)}}</p>
+				<p>{{LNG[lng].r3.p.pck}}<span>:</span> ₪ {{priceBoxes('P')  + (request.packing.pack ? priceBoxes('B') : 0)}}</p>
 			</div>
 
 			<div class="price-divider"></div>
 
 			<div class="price-total">
-				<span class="price-total--title">{{LNG[lng].r3.p.total}}</span>
+				<span class="price-total--title">{{LNG[lng].r3.p.total}}<span>:</span></span>
 				<span class="fw_l">₪</span>
 				<span class="fw_eb" style="letter-spacing: -1px">{{priceTotal()}}</span>
 			</div>
@@ -418,9 +465,8 @@
 			<span class="price-total--vat">+ {{LNG[lng].r3.p.vat}} 17%</span>
 		</div>
 
-		<br>
 
-		<div class="agree">
+		<div class="agree  agree--mb">
 			<div class="swcheck">
 				<input type="checkbox" id="separate_items" [(ngModel)]="agree_valid"/>
 				<label for="separate_items"></label>
@@ -428,25 +474,24 @@
 			<p>{{LNG[lng].r3.customer.agree}}</p>
 		</div>
 
-		<br>
 
-		<div class="cutomer">
-			
-			<div class="flex"  [class.valid--Y-loc]="request.customer.name">
+		<div class="customer">
+
+			<div class="customer-line"  [class.valid--Y-loc]="request.customer.name">
 				<div class="place-type">
-					<img src="assets/i/user.svg" style="padding: 0.4rem">
+					<img src="assets/i/user.svg">
 				</div>
 				<input type="text" class="adress-line" [placeholder]="LNG[lng].r3.customer.nameph" [(ngModel)]="request.customer.name">
 			</div>
-			<br>
-			<div class="flex"  [class.valid--Y-loc]="phoneValid()">
+
+			<div class="customer-line"  [class.valid--Y-loc]="phoneValid()">
 				<div class="place-type">
-					<img src="assets/i/phone.svg" style="padding: 0.4rem">
+					<img src="assets/i/phone.svg">
 				</div>
 				<input type="text" class="adress-line" [placeholder]="'05X XXX-XXXX'" [(ngModel)]="request.customer.phone" (keyup)="phoneMask($event)">
 			</div>
-			<!-- <br>
-			<div>
+
+			<!-- <div>
 				<textarea name="" id="" class="customer-message" placeholder="Message"></textarea>
 			</div> -->
 
@@ -469,46 +514,82 @@
 	<!-- <button class="button_big" (click)="canvasDraw()">CANVAS</button> -->
 
 
-	<p class="w100  tac">{{xx_canvas_msg}}</p>
+	<!-- <p class="w100  tac">{{xx_canvas_msg}}</p>
 	<p class="w100  tac">{{xx_upload_msg}}</p>
 	<div class="loader" *ngIf="xx_loader">
 		<div class="loader_circle"></div>
 	</div>
-	<a class="w100  tac" style="display: block" [href]="xx_download_link">{{xx_download_msg}}</a>
+	<a class="w100  tac" style="display: block" [href]="xx_download_link">{{xx_download_msg}}</a> -->
 
-	<br>
-	<br>
+	<!-- <br> -->
+	<!-- <br> -->
 
 	<!-- <button (click)="canvasDraw()">SEND</button>  -->
 	<!-- ////////////////////////////////////// -->
-	<!-- <button (click)="show()">SHOW</button> -->
-
 
 </div>
+<!-- <canvas class="deleteCanvas" #canvasSS></canvas> -->
 
 
 <!-- STEP 4 ---------------------------------------------------------------------------------- -->
+<!-- <button (click)="show()">SHOW</button> -->
+
 
 <!-- COMMON AFTER ---------------------------------------------------------------------------------- -->
 
-<div class="p2  flex  jcsb">
-	<div class="settings" (click)="nextLNG()">
-		<!-- <img src="assets/i/menu.svg"> -->
-		<span class="settings-lng">{{lng}}</span>
+<div class="p2  navigation"  [class.hebrew]="lng === 'he'">
+	<div class="navigation-wrap">
+
+		<div class="settings" (click)="nextLNG()">
+			<span class="settings-lng  settings-lng--side">{{sideLNG(-1)}}</span>
+			<span class="settings-lng">{{lng}}</span>
+			<span class="settings-lng  settings-lng--side">{{sideLNG(1)}}</span>
+		</div>
+
+		<div class="btn-page" (click)="pager('B')"  [class.hidden]="req_page == 1">{{LNG[lng].c.back}}</div>
+		<div class="btn-page" (click)="pager('N')"  [class.hidden]="req_page == 3">{{LNG[lng].c.next}}</div>
+
+		<div class="btn-page  btn-page--confirm" [class.btn-page--invalid]="!validation('confirm')" *ngIf="req_page == 3" (click)="confirm()">{{LNG[lng].c.confirm}}</div>
+	</div>
+</div>
+
+
+
+<div class="send"  *ngIf="xx_loader">
+	<div class="send-wrap">
+		<div class="send-wrap-inner">
+			<img class="send-car" src="assets/i/truck.svg">
+			<div class="send-road"></div>
+		</div>
+		<p class="send-title">{{LNG[lng].send.sending}}</p>
 	</div>
 
-	<div class="btn-page" (click)="pager('B')"  [class.hidden]="req_page == 1">{{LNG[lng].c.back}}</div>
-	<div class="btn-page" (click)="pager('N')"  [class.hidden]="req_page == 3">{{LNG[lng].c.next}}</div>
+	<div class="send-done">
+		<div class="send-done-wrap"  [class.send-done-wrap--done]="xx_done">
+			<img src="assets/i/box.svg">
+			<p>{{LNG[lng].send[xx_result]}}</p>
+			<p>{{LNG[lng].send[xx_result + 'msg']}}</p>
 
-	<div class="btn-page  btn-page--confirm" [class.btn-page--invalid]="!validation('confirm')" *ngIf="req_page == 3" (click)="confirm()">{{LNG[lng].c.confirm}}</div>
+			<div class="send-done-ok"  (click)="sendOK()">OK</div>
+		</div>
+		<div class="send-done-bg"  [class.send-done-bg--done]="xx_done"
+			[class.send-done--suc]="xx_result == 'suc'"
+			[class.send-done--err]="xx_result == 'err'"
+			>
+		</div>
+	</div>
 </div>
+
 
 
 <!-- PRELOAD IMGS -->
 <div class="furniture_preload">
-	<div *ngFor="let fur of FUR | slice:1">
-		<img src="{{'/assets/f/' + fur.id + '/i/' + f.id + '.gif'}}" *ngFor="let f of fur.types | slice:1">
-	</div>
+	<img src="{{'https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + fur.id + '.png'}}"  *ngFor="let fur of FUR | slice:1">
+
+		<!-- https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/101/i/2.png -->
+		<!-- <img src="{{'/assets/f/' + fur.id + '/i.png'}}"> -->
+		<!-- <img src="{{'/assets/f/' + fur.id + '/i/' + f.id + '.png'}}" *ngFor="let f of fur.types | slice:1"> -->
+		<!-- <img src="{{'https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + fur.id + '/i/' + f.id + '.png'}}" *ngFor="let f of fur.types | slice:1"> -->
 
 	<img src="assets/i/map.svg">
 	<img src="assets/i/trash_t.svg">
@@ -525,11 +606,15 @@
 	<img src="assets/i/pi_o_e.svg">
 	<img src="assets/i/pi_o_f.svg">
 	<img src="assets/i/pi_o_n.svg">
-	<img src="assets/i/pi_o_t.svg">
+	<img src="assets/i/pi_o_ta.svg">
+	<img src="assets/i/pi_o_to.svg">
+	<img src="assets/i/pi_o_th.svg">
+	<img src="assets/i/pi_o_ts.svg">
 
 	<img src="assets/i/phone.svg">
 	<img src="assets/i/user.svg">
 	<img src="assets/i/r3_info.svg">
+	<img src="assets/i/truck.svg">
 
 	<img src="assets/i/packshow.svg">
 </div>

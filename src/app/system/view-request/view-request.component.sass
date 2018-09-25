@@ -1,4 +1,4 @@
-@import '../../../styles.sass'
+@import '~src/styles.sass'
 
 .root
 	width: 100%
@@ -30,6 +30,10 @@
 		line-height: 3rem
 		color: $color_gold
 		text-transform: uppercase
+		span
+			display: inline-block
+			&:last-child
+				margin: 0 0.5rem
 	&--repack
 		background-color: #251046
 	&--remove
@@ -60,6 +64,7 @@
 .dt
 	text-transform: uppercase
 	letter-spacing: -1px
+	&-title
 	&--main
 		font-size: 2rem
 	&-d
@@ -123,6 +128,8 @@
 			text-transform: uppercase
 			color: $color_gold
 			font-size: 1.6rem
+			display: flex
+			align-items: center
 			img
 				display: inline
 				height: 1.4rem
@@ -134,6 +141,9 @@
 		display: flex
 		width: 100%
 		margin-bottom: 2rem
+		&--hidden
+			height: 0rem
+			visibility: hidden
 		&-item
 			width: 22%
 			height: 3rem
@@ -149,6 +159,14 @@
 				text-transform: uppercase
 			&--translucent
 				opacity: 0.3 !important
+				&:after
+					content: ''
+					position: absolute
+					width: 70%
+					height: 1px
+					background-color: #a58f43
+				img
+					visibility: hidden
 			&--lift
 				font-size: 1.3rem
 				text-align: left !important
@@ -217,6 +235,7 @@
 	width: 100%
 	background-color: $color_dark_gold
 	margin-bottom: 2rem
+	position: relative
 	&-img
 		width: 100%
 		height: 30rem
@@ -225,6 +244,15 @@
 		position: relative
 		img
 			height: 100%
+		&-swipe
+			position: absolute
+			bottom: 0.5rem
+			width: 5rem
+			left: 50%
+			transform: translateX(-50%)
+			pointer-events: none
+			opacity: 0.85
+			// animation: animroomimgswipe 1s infinite alternate ease
 
 		&--none
 			height: 0.1rem
@@ -234,18 +262,27 @@
 		padding: 1rem 2rem
 		background-color: $color_gold
 		text-transform: uppercase
+		&--count
+			font-size: 1.6rem
+			font-weight: 300
+			float: right
 		&--empty
 			background: none
 			color: grey
 	&-items
 		padding: 1rem 0
-		p
-			margin-bottom: 0.5rem
-			font-weight: 300
+		// p
+		// 	font-weight: 300
 	&-item
-		font-weight: 400
+		display: flex
+		margin-bottom: 0.5rem
 		&-number
 			font-family: sans-serif
+			opacity: 0.5
+			white-space: nowrap
+			margin-right: 0.5rem
+		&-name
+			font-weight: 400
 		&--icon
 			padding-left: 0.2rem
 			height: 1.2rem
@@ -254,6 +291,16 @@
 		&--count
 			color: $color_gold
 			font-weight: 500
+			span
+				display: inline-block
+				font-weight: 300
+				margin: 0 0.3rem
+
+@keyframes animroomimgswipe
+	0%
+		opacity: 1
+	100%
+		opacity: 0.2
 
 
 $rtag_w: 2rem
@@ -287,6 +334,7 @@ $rtag_bgm: 0
 	&-icon
 		width: 3rem
 		margin-right: 2rem
+
 
 $vr_ac_h: 4rem
 .access
@@ -322,6 +370,7 @@ $vr_ac_h: 4rem
 		justify-content: center
 		flex-wrap: wrap
 		align-content: center
+		flex-direction: column
 		p
 			line-height: 1.4rem
 			font-size: 1rem
@@ -342,6 +391,9 @@ $vr_ac_h: 4rem
 	text-transform: uppercase
 	&--yes
 		color: $color_green
+		font-weight: 500
+	&--no
+		color: $color_red
 		font-weight: 500
 	&-carton
 		display: flex
@@ -382,24 +434,40 @@ $vr_ac_h: 4rem
 		img
 
 .price
-	display: inline-block
+	margin-bottom: $BR
 	&-line
+		display: inline-block
 		text-transform: uppercase
 		font-size: 2rem
 		padding: 0.5rem 1.5rem
 		padding-left: 7rem
 		background-color: #a58f43
+		margin-bottom: 0.5rem
 	&-transportation
 		text-transform: uppercase
 		padding-left: 7rem
 		margin-bottom: 1rem
 	&-vat
-		float: right
-		padding-right: 1.5rem
-		padding-top: 0.5rem
+		padding-left: 7rem
 		font-size: 1.4rem
 		color: #a58f43
 		font-weight: 300
+
+.responsible
+	padding-left: 7rem
+	text-transform: uppercase
+	display: flex
+	align-items: center
+	color: $color_gold
+	img
+		height: 1.5rem
+	span
+		margin: 0 1rem
+	input
+		margin: 0 1rem
+	&--packing
+		padding: 0
+		padding-top: 0.5rem
 
 .comment
 	font-weight: 200
@@ -418,6 +486,62 @@ $vr_ac_h: 4rem
 		color: #fff
 		border-left: 0.5rem solid $color_gold
 		font-weight: 200
+
+.agree
+	position: relative
+	display: flex
+	margin-bottom: $BR
+	&-check
+		position: absolute
+		left: 2.5rem
+
+		width: 1rem
+		height: 3rem
+		border: 2px solid #a58f43
+		border-left-width: 0
+		border-top-width: 0
+		border-color: #24bc68
+		animation: swcheck 0.5s ease infinite alternate
+		transform: rotate(45deg) translateX(-4px) translateY(-2px)
+		margin-left: 1rem
+	p
+		padding-left: 5rem
+		font-size: 1.4rem
+
+@keyframes swcheck
+	0%
+		border-color: #fff
+	100%
+		border-color: $color_green
+
+
+.closed
+	line-height: 3rem
+	text-transform: uppercase
+	color: $color_green
+	&--open
+		font-weight: 300
+		color: #fff
+		div
+			border-color: #fff
+			animation: 0
+			opacity: 0.3
+	&--unchecked
+		top: 0.75rem
+		left: 1.75rem
+		width: 1.5rem
+		height: 1.5rem
+		border-width: 2px
+		transform: none
+	&--loading
+		div
+			animation: closedloading 0.3s ease infinite alternate
+
+@keyframes closedloading
+	0%
+		opacity: 0.3
+	100%
+		opacity: 1
 
 // LINKS /////////////////////////////////////
 
@@ -460,18 +584,179 @@ $vr_ac_h: 4rem
 // EDIT //////////////////////////////////////
 
 .edit
+	position: absolute
+	right: 6rem
+	top: 1rem
+	width: 7rem
 	height: 2rem
+	text-align: right
+	img
+		height: 100%
+		display: inline
+	&-save
+		margin-right: 2rem
+
+	&-input
+		background: none
+		color: $color_gold
+		border-bottom: 1px solid $color_gold
+		padding: 0.5rem 0
+		&--mw
+			max-width: 8rem
+
+.lng
 	position: absolute
 	right: 2rem
 	top: 1rem
-	img
-		height: 100%
-
-	&-lng
-		text-transform: uppercase
+	text-transform: uppercase
 
 	&-input
 		max-width: 7rem
 		background: none
 		color: #fff
 		border-bottom: 1px solid $color_gold
+
+
+.hebrew
+	.upper-id
+		direction: rtl
+	.lng
+		left: 2rem
+		right: auto
+	.edit
+		left: 6rem
+		text-align: left
+		direction: rtl
+		&-save
+			margin-left: 2rem
+			margin-right: 0
+
+	.title
+		direction: rtl
+
+	.dt-title,
+	.dt--main
+		direction: rtl
+	.dt-y
+		margin-left: 1rem
+		margin-right: 0
+	.dt--main
+		span:last-child
+			direction: ltr
+
+	.adress
+		direction: rtl
+		.adress-circle
+			margin-left: 2.5rem
+			margin-right: 0.5rem
+			&--line
+				&:after
+					right: 3.5rem
+					left: auto
+		.adress-info-text
+			p
+				&:last-child
+					margin-right: 1rem
+					margin-left: 0
+		.adress-place-item--lift
+			span
+				text-align: right
+		.adress-info-type
+			img
+				margin-right: 0
+				margin-left: 0.5rem
+
+	.agree
+		direction: rtl
+		p
+			padding: 0
+			padding-right: 5rem
+		div
+			left: auto
+			right: 3rem
+		.closed--unchecked
+			right: 2.75rem
+
+	.carton
+		direction: rtl
+		&-carton
+			img
+				margin-right: 0
+				margin-left: 2rem
+		&-wrap
+			padding: 0
+			padding-right: 5rem
+		&-packing,
+		&-packing-block
+			.dt
+				span
+					&:last-child
+						direction: ltr
+						display: inline-block
+			div
+				.dtpicker:last-child
+					direction: ltr
+					display: inline-block
+
+	.price
+		direction: rtl
+		&-line
+			padding-left: 1.5rem
+			padding-right: 7rem
+		&-vat
+			padding-left: 0
+			padding-right: 7rem
+		&-transportation
+			direction: rtl
+			padding: 0
+			padding-right: 7rem
+
+	.responsible
+		direction: rtl
+		padding-left: 0
+		padding-right: 7rem
+		&--packing
+			padding-right: 0
+
+	.distance
+		direction: rtl
+		&-value
+			margin-left: 0 !important
+			margin-right: 2rem
+		&-time
+			&-icon
+				margin: 0
+				margin-right: 2rem
+		&-icon--lock
+			margin-left: 0 !important
+			margin-right: 1rem
+
+	.comment
+		direction: rtl
+		padding: auto
+		padding-right: 7rem
+
+	.customer
+		direction: rtl
+		&-line
+			img
+				margin: 0
+				margin-left: 2rem
+			&--phone
+				direction: ltr
+
+	.access
+		div
+			direction: rtl
+
+	.room
+		direction: rtl
+		&-img
+			direction: ltr !important
+		&-title--count
+			float: left
+		
+		&-item
+			&-number
+				margin: 0
+				margin-left: 0.5rem

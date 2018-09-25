@@ -1,10 +1,4 @@
-import {
-	Component,
-	OnInit,
-	Output,
-	EventEmitter,
-	Input
-} from '@angular/core'
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
 
 import { LNG_PACK } from '../../models/LOCALIZATION'
 
@@ -23,15 +17,21 @@ export class TimePickerComponent implements OnInit {
 
 	@Output() outOnTimePicked = new EventEmitter()
 
-	select_H = undefined
-	select_M = undefined
+	select = {
+		H: undefined,
+		M: undefined
+	}
 
-	show_time = false
-	show_H = false
-	show_M = false
+	show = {
+		time: false,
+		H: false,
+		M: false
+	}
 
-	first_run_H = false
-	first_run_M = false
+	first_run = {
+		H: false,
+		M: false
+	}
 
 	variant = undefined
 
@@ -41,92 +41,75 @@ export class TimePickerComponent implements OnInit {
 		this.initTime()
 	}
 
-	// Создаем диапазон выбора часов и минут
-	initTime() {
-		const
-			h_start = 0,
-			h_end = 23,
+	initTime() {    // Создаем диапазон выбора часов и минут
+		let H_start = 0
+			, H_end = 23
+			, M_start = 0
+			, M_end = 60
+			, M_step = 10
 
-			m_start = 0,
-			m_end = 60,
-			m_step = 10
-
-		for (let i = h_start; i <= h_end; i++) this.hours.push(`${i > 9 ? i : '0' + i}`)
-		for (let i = m_start; i < m_end; i += m_step) this.minutes.push(`${i > 9 ? i : '0' + i}`)
+		for (let i = H_start; i <= H_end; i++) this.hours.push(`${i > 9 ? i : '0' + i}`)
+		for (let i = M_start; i < M_end; i += M_step) this.minutes.push(`${i > 9 ? i : '0' + i}`)
 	}
 
 
-	// Вывод в ячейку parent
-	getTimeValue(T) {
-		if (this['select_' + T] != undefined) {
-			return this['select_' + T]
-		}
-		return T + T
+	getTimeValue(T) {    // Вывод в ячейку parent
+		if (this.select[T] != undefined) return this.select[T]
+
+		let X = this.LNG[this.lng].date['nt' + T.toLowerCase()]
+		return X
 	}
 
-	// Клик по ячейке
-	cellClick(e, T) {
+	cellClick(e, T) {    // Клик по ячейке
 		const num = e.target.innerText
 
-		this['select_' + T] = num
+		this.select[T] = num
 		setTimeout(() => {
 			this.showElement(T)
 			this.closeAfterSelect()
 		}, 200)
 	}
 
-	// Закрываем автоматически после выбора
-	closeAfterSelect() {
-		// если выбраны и часы и минуты
-		if (this.timeValid()) {
-			// и если изменены оба поля
-			if (!this.first_run_H && !this.first_run_M) {
+	closeAfterSelect() {    // Закрываем автоматически после выбора
+		if (this.timeValid())    // если выбраны и часы и минуты
+			if (!this.first_run.H && !this.first_run.M)    // и если изменены оба поля
 				this.showWIDGET(null)
-			}
-		}
 	}
 
 	showWIDGET(X) {
 		if (X !== null) {
 			this.variant = X.flag
-			this.select_H = X.data.h
-			this.select_M = X.data.m
+			this.select.H = X.data.h
+			this.select.M = X.data.m
 		}
 
-		this.show_time = !this.show_time
+		this.show.time = !this.show.time
 		// Открываем после закрытия
-		if (this.show_time) {
-			this.first_run_H = true
-			this.first_run_M = true
+		if (this.show.time) {
+			this.first_run.H = true
+			this.first_run.M = true
 		}
 		// При закрытии
-		else {
-			// если выбраны и часы и минуты
-			if (this.timeValid()) {
-				// Отдаем НАВЕРХ (strings)
-				const __send = {
-					data: {
-						h: this.select_H,
-						m: this.select_M
-					},
-					flag: this.variant
-				}
-				this.outOnTimePicked.emit(__send)
-				return
+		else if (this.timeValid()) {    // если выбраны и часы и минуты
+			const __send = {
+				data: {
+					h: this.select.H,
+					m: this.select.M
+				},
+				flag: this.variant
 			}
+			return this.outOnTimePicked.emit(__send)    // Отдаем НАВЕРХ (strings)
 		}
 	}
 
-	//  Открытие окна выбора часов или минут
-	showElement(T) {
-		this['show_' + T] = !this['show_' + T]
-		// Окно открывалось? -> при закрытии меняем флаг
-		if (!this['show_' + T]) this['first_run_' + T] = false
+	showElement(T) {    //  Открытие окна выбора часов или минут
+		this.show[T] = !this.show[T]
+
+		if (!this.show[T]) this.first_run[T] = false    // Окно открывалось? -> при закрытии меняем флаг
 	}
 
-	// Клик по черному фону
-	modalClick(e, cl_name, toclose) {
-		e.stopPropagation();
+	modalClick(e, cl_name, toclose) {    // Клик по черному фону
+		e.stopPropagation()
 		if (e.target.classList.contains(cl_name)) {
 			if (toclose === 'B') this.showWIDGET(null)
 			if (toclose === 'H') this.showElement('H')
@@ -135,7 +118,7 @@ export class TimePickerComponent implements OnInit {
 	}
 
 	timeValid() {
-		return this.select_H != undefined && this.select_M != undefined
+		return this.select.H != undefined && this.select.M != undefined
 	}
 
 }

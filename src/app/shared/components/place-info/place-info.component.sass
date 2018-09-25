@@ -1,4 +1,4 @@
-@import '../../../../styles.sass'
+@import '~src/styles.sass'
 
 $pi_h: 3rem
 $pi_wrap_w: 15rem
@@ -7,15 +7,16 @@ $pi_wrap_w: 15rem
 	width: 100%
 	height: $pi_h
 	border: 2px solid $color_gold
-	background-color: $color_gold
+	// background-color: $color_gold
 	border-radius: 0.5rem
 	display: flex
-	margin-bottom: $BR
+	margin-bottom: 1rem // $BR
 	&-icon
 		width: 4rem
 		height: 100%
 		padding: 0.4rem
 		text-align: center
+		background-color: $color_gold
 		img
 			height: 100%
 	&-info
@@ -23,19 +24,23 @@ $pi_wrap_w: 15rem
 		line-height: 2.6rem
 		text-align: center
 		text-transform: uppercase
+		&--null
+			background-color: $color_gold
 		&--edited
 			background-color: $color_bg_BL
 			display: flex
 			justify-content: space-between
 		&__item
 			display: flex
+			align-items: center
 			// width: 33%
 			width: 25%
 			border-right: 1px solid $color_gold
 			&:last-child
 				border-right: none
 			img
-				width: 4rem
+				// width: 4rem
+				height: 2.5rem
 				padding: 0.5rem
 			span
 				flex-grow: 2
@@ -106,6 +111,8 @@ $pi_wrap_w: 15rem
 		text-align: center
 		.close
 			+buttonok
+			height: 4rem
+			line-height: 3.6rem
 
 	// TYPES
 
@@ -163,3 +170,14 @@ $rd_radius: 0.8rem
 			background-color: $color_green
 			// color: $color_bg_TR
 			font-weight: 500
+
+
+.hebrew
+	.null-info__item
+		border-right: none
+		border-left: 1px solid $color_gold
+		&:last-child
+			border: none
+		span
+			margin-right: -1rem
+			margin-left: 0

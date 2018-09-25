@@ -1,94 +1,90 @@
-<div class="req-dayview" *ngIf="day_modal">
+<div class="req-dayview"  *ngIf="day_modal"  [class.hebrew]="lng === 'he'">
 	<span class="req-daytitle">{{day_modal}}</span>
 
-	<div>
+	<div class="req-dayview--wrap">
+
 
 		<div class="req-one" *ngFor="let r of prepareDay()"  [class.req-one--pack]="isMode(r, 'P')"  [class.req-one--box]="isMode(r, 'B')">
 
 			<div class="req-one-leftline"  [class.req-one-leftline--p]="isMode(r, 'P')"  [class.req-one-leftline--b]="isMode(r, 'B')"  [class.req-one-leftline--sameday]="r.packing.pack && r.packing.sameday"></div>
 
 			<div class="req-one-right">
-				<a class="req-one-link" target="_blank" [href]="'https://tmctestx.firebaseapp.com/en/db/' + r.requestID">
-					<img src="assets/i/tv_view.svg">
+				<a class="req-one-link" target="_blank" [href]="'https://app.hamovil-sheli.co.il/' + lng + '/db/' + r.requestID">
+					<img [src]="'assets/i/tv_view_' + (r.closed ? 'c' : 'o') + '.svg'">
 				</a>
 
-				<div style="float: left; margin-right: 1rem">
-					<p style="margin-bottom: 0.9rem">{{showTime(r)}}</p>
+				<div class="req-one-price">
+					<p>{{showTime(r)}}</p>
 
-					<span *ngIf="isMode(r, 'P') || isMode(r, 'B') || (r.packing.pack && r.packing.sameday)"  [class.c_purple]="isMode(r, 'P') || (r.packing.pack && r.packing.sameday)"  [class.c_grey]="isMode(r, 'B')">{{r.boxes.carton}}</span>
+					<span class="req-one-price--boxes"  *ngIf="isMode(r, 'P') || isMode(r, 'B') || (r.packing.pack && r.packing.sameday)"  [class.c_purple]="isMode(r, 'P') || (r.packing.pack && r.packing.sameday)"  [class.c_grey]="isMode(r, 'B')">{{r.boxes.carton}}</span>
 
-					<span class="ttu"  style="margin-left: 0.5rem"  [class.none]="isMode(r, 'B')">₪ 
-						{{
-							isMode(r, 'P') ?
-							getPrice(r, 'P') :
-							( r.packing.sameday ? getPrice(r, 'TOTAL') : getPrice(r, 'T'))
-						}}
-					</span>
+					<span class="req-one-price--value"  [class.none]="isMode(r, 'B')">₪ {{getReqPrice(r, 'DayV')}}</span>
 				</div>
 
 			</div>
 
-			<!-- <div class="req-one-box"  *ngIf="!isMode(r, 'P') && r.packing.pack">
-				<img src="assets/i/box.svg" *ngIf="r.packing.sameday">
-			</div> -->
 
-			<!-- ///////////////////////////////////////////////////////// O -->
-			<div class="req-one-adress">
-				<div class="req-one-line">
-					<div class="req-one-line--circle"  [class.req-one-line--circle-pack]="isMode(r, 'P')"  [class.req-one-line--circle-box]="isMode(r, 'B')"  [class.req-one-line--circle-sameday]="r.packing.pack && r.packing.sameday"></div>
-					<span>{{r.adress.o.city}}</span>
+
+			<!-- ///////////////////////////////////////////////////////////////////////////////  ADRESSES  -->
+			<div class="req-one-adress"  *ngFor="let a of ASRESSES"
+				[class.none]="a === 'd' && (isMode(r, 'P')  ||  isMode(r, 'B'))"
+				[class.req-one-adress--mb]="a === 'o'"
+				>
+				<div class="req-one-line    flex  aic">
+					<div class="req-one-line--circle"  
+						[ngClass]="{
+							'req-one-line--circle-white': a === 'd',
+							'req-one-line--circle-pack':  isMode(r, 'P'),
+							'req-one-line--circle-box':   isMode(r, 'B'),
+							'req-one-line--circle-sameday': r.packing.pack && r.packing.sameday && a === 'o'
+						}">
+					</div>
+					<span>{{r.adress[a].city}}</span>
 				</div>
 
-				<p class="req-one-type">
-					<img src="assets/i/pi_o_t.svg">
-					<span>{{LNG[lng].r1.loc.t[r.adress.o.info.t[0]]}}</span>
-				</p>
-			</div>
-				
-			<!-- ///////////////////////////////////////////////////////// D -->
-			<div class="req-one-adress"  [class.none]="isMode(r, 'P')  ||  isMode(r, 'B')">
-				<div class="req-one-line">
-					<div class="req-one-line--circle" style="border-color: #fff"></div>
-					<span>{{r.adress.d.city}}</span>
-				</div>
-
-				<p class="req-one-type"  style="margin-bottom: 0">
-					<img src="assets/i/pi_o_t.svg">
-					<span>{{LNG[lng].r1.loc.t[r.adress.o.info.t[0]]}}</span>
+				<p class="req-one-type    flex  aic">
+					<img [src]="'assets/i/pi_o_t' + r.adress[a].info.t[0] + '.svg'">
+					<span>{{LNG[lng].r1.loc.t[r.adress[a].info.t[0]]}}</span>
 				</p>
 			</div>
 
-			<!-- ///////////////////////////////////////////////////////// i -->
+
+			<!-- ///////////////////////////////////////////////////////// DISTANCE -->
 			<div class="req-one-distance"  [class.none]="isMode(r, 'P')  ||  isMode(r, 'B')">
-				<span class="req-one-distance-t">{{timeTransform(r.route.time)}}</span>
+				<span class="req-one-distance-t">{{timeTransform(r.route.time)}} {{LNG[lng].c.m}}</span>
 				<span class="req-one-distance-d">{{r.route.distance}}</span>
 				<span>{{LNG[lng].c.km}}</span>
 			</div>
 
-		</div>
+			<p class="req-one-responsible"  *ngIf="r.responsible.transportation && !isMode(r, 'P') && !isMode(r, 'B')">{{r.responsible.transportation}}</p>
+			<p class="req-one-responsible  req-one-responsible--packing"  *ngIf="r.responsible.packing && isMode(r, 'P')">{{r.responsible.packing}}</p>
+
+		</div><!-- ///////////////////////////////////////////////////////// REQ-ONE -->
+
 
 	</div>
 
 	<div class="calendar-btns  jcc" style="position: absolute; bottom: 1rem">
-		<div class="close" (click)="day_modal = 0">✕</div>
+		<div class="close" (click)="day_modal = undefined">✕</div>
 		<div class="req-dayprice">₪ {{day_modal_price}}</div>
 	</div>
 </div>
 
 
-<div class="calendar">
+<div class="calendar"  [class.hebrew]="lng === 'he'">
 
 	<div class="calendar-wrap">
 
-		<p class="calendar-month">{{date.locale(lng).format('MMMM')}} 
-			<span style="position: absolute; right: 2rem">{{date.format('YYYY')}} 
+		<p class="calendar-month">{{showDate('M')}}
+			<span  class="calendar-month--ylng">
+				<span>{{showDate('Y')}}</span>
 				<span class="language"  (click)="nextLNG()">{{lng}}</span> 
 			</span>
 		</p>
 
 		<div class="calendar-table" [class.calendar--loading]="!requests_render">
 			<div class='calendar-days  calendar-days--week'>
-				<div *ngFor="let day of dayNames" 
+				<div *ngFor="let day of dayNames[lng]" 
 					class='calendar-day  calendar-day--name'>{{day}}</div>
 			</div>
 
@@ -98,12 +94,10 @@
 					class='calendar-day' 
 					[ngClass]="{
 						'inactive ': !day, 
-						'today': todayCheck(day),
-						'beforetoday': isBeforeToday(day)
+						'beforetoday': isBeforeToday(day),
+						'today': todayCheck(day)
 					}"
-					(click)="viewDay(day?.date())"
-					>
-					<!-- 'selected': isSelected(day), -->
+					(click)="viewDay(day?.date())">
 
 					<p style="margin-bottom: 0.5rem">{{day?.date()}}</p>
 
@@ -111,7 +105,7 @@
 					<div class="req-group" *ngIf="isGroup(day?.date())">
 						<div *ngFor="let r of prepareDay(day?.date())"
 							class="req-dot" 
-							[class.req-dot--under3000]="(day.date() == r.date.date.d) && getPrice(r, 'TOTAL') < 3000"
+							[ngClass]="reqLength(r, day)"
 							[class.req-dot--notsameday]="r.date.date.d !== day?.date()"
 							[class.req-dot--pack]="r.packing.pack"
 							[class.req-dot--sameday]="r.packing.pack && r.packing.sameday"
@@ -126,9 +120,9 @@
 		</div>
 
 		<div class="calendar-btns  p2" style="position: absolute; bottom: 1rem">
-			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">BACK</div>
-			<a class="new" *ngIf="!day_modal" target="_blank" [href]="'https://tmctestx.firebaseapp.com/' + lng + '/request'"><img src="assets/i/new.svg"></a>
-			<div class="btn" (click)="monthPager('next')">NEXT</div>
+			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">{{LNG[lng].c.back}}</div>
+			<a class="new" *ngIf="!day_modal" target="_blank" [href]="'https://app.hamovil-sheli.co.il/' + lng + '/request'"><img src="assets/i/new.svg"></a>
+			<div class="btn" (click)="monthPager('next')">{{LNG[lng].c.next}}</div>
 		</div>
 
 	</div>
@@ -137,8 +131,11 @@
 
 <div>
 	<img style="height: 0px" src="assets/i/new.svg">
-	<img style="height: 0px" src="assets/i/tv_view.svg">
-	<img style="height: 0px" src="assets/i/pi_o_t.svg">
+	<img style="height: 0px" src="assets/i/tv_view_o.svg">
+	<img style="height: 0px" src="assets/i/tv_view_c.svg">
 	<img style="height: 0px" src="assets/i/box.svg">
-	<!-- <img style="height: 0px" src="assets/i/box_b.svg"> -->
+	<img style="height: 0px" src="assets/i/pi_o_ta.svg">
+	<img style="height: 0px" src="assets/i/pi_o_to.svg">
+	<img style="height: 0px" src="assets/i/pi_o_th.svg">
+	<img style="height: 0px" src="assets/i/pi_o_ts.svg">
 </div>

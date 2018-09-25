@@ -10,7 +10,7 @@ export const LNG_PACK = {
 			no: 'No',
 			distance: 'Distance',
 			km: 'km',
-			m: 'm',
+			m: 'min',
 			close: 'Close',
 			repack: 'Packing',
 			remove: 'Moving',
@@ -18,17 +18,25 @@ export const LNG_PACK = {
 		},
 		date: {
 			date: 'Date',
-			datenull: 'DD . MM . YY',
+			datenull: {
+				d: 'DD',
+				m: '. MM .',
+				y: 'YY'
+			},
 			time: 'Time',
 			timenull: 'HH : MM',
 			th: 'Hours',
-			tm: 'Minutes'
+			tm: 'Minutes',
+			nth: 'HH',
+			ntm: 'MM'
 		},
 		r1: {
 			loc: {
 				o: 'Start location',
 				d: 'Finish location',
 				sph: 'Search for location',
+				sph2: 'City, Street & Building number',
+				drset: 'Set this address',
 				i: 'Location information',
 				t: {
 					t: 'Location type',
@@ -70,7 +78,11 @@ export const LNG_PACK = {
 				tr1: 'Throw',
 				tr2: 'away',
 				da1: 'Disassembly',
-				da2: 'Assembly'
+				da2: '+ Assembly',
+				uw1: 'Unmount from',
+				uw2: 'the wall',
+				uc1: 'Unmount from',
+				uc2: 'the ceiling'
 			},
 			cam: {
 				takep: 'Take a picture of this room',
@@ -80,43 +92,43 @@ export const LNG_PACK = {
 		},
 		r3: {
 			c: {
-				t: 'Cartons',
+				t: 'Boxes',
 				rec: 'Recommended',
-				need: 'Cartons needed',
-				cneed: 'Customer needs boxes:',
-				bringb: 'Bring boxes on:',
+				need: 'Boxes needed',
+				cneed: 'Customer needs boxes',
+				bringb: 'Bring boxes on',
 				pack: 'Packing needed',
 				sameday: 'Packing at the same time as moving',
 				samedays: 'Packing at the same day',
 				choosedate: 'Choose packing date:',
 				i: {
-					t: 'Information about cartons',
-					1: 'Means Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dicta, voluptatibus?',
-					2: 'Means Consectetur doloribus ipsum iusto ad earum saepe tempora veniam officia<',
-					3: 'Means voluptates maxime suscipit labore minus tempore at excepturi placeat quam eos?'
+					t: 'Information about Boxes',
+					1: 'Spare things: (crockery, books, clothes, etc.) are packed in boxes. You can see the quantity recommended for your premises next to enter Column',
+					2: 'Carrier will bring you carton boxes in the amount stated by you above',
+					3: 'The carrier will come to you at the stated time and will pack all your items'
 				}
 			},
 			p: {
-				car: 'Ordering a car:',
-				trn: 'Transportation:',
-				pck: 'Packing:',
-				total: 'Total price:',
+				car: 'Ordering a car',
+				trn: 'Transportation',
+				pck: 'Packing',
+				total: 'Total price',
 				vat: 'VAT',
-				pckvr: 'Packing price:'
+				pckvr: 'Packing price'
 			},
 			v: {
-				t: 'Please select:',
+				t: 'Please select',
 				R1_SL_o: 'start location',
 				R1_PI_o: 'start place information',
 				R1_SL_d: 'destination location',
 				R1_PI_d: 'destination place information',
 				R1_DAY: 'date',
 				R3_PSD_DT: 'packing date and time',
-				R3_BOX: 'cartons not defined',
+				R3_BOX: 'boxes not defined',
 				R1_DIST: 'distance not defined'
 			},
 			customer: {
-				agree: 'I agree that items not specified in this request are paid separately',
+				agree: 'I agree that items that were not specified in the request are paid separately',
 				nameph: 'Name'
 			}
 		},
@@ -126,6 +138,19 @@ export const LNG_PACK = {
 				2: 'enter the code'
 			},
 			full: 'Full'
+		},
+		misc: {
+			srotate: 'Please turn your phone in vertical position',
+			opened: 'opened',
+			closed: 'closed',
+			responsible: 'responsible'
+		},
+		send: {
+			sending: 'Sending request',
+			suc: 'Success',
+			sucmsg: 'Your mover will contact you as soon as posible',
+			err: 'Error',
+			errmsg: 'Something went wrong, please retry'
 		}
 	},
 	ru: {
@@ -139,7 +164,7 @@ export const LNG_PACK = {
 			no: 'Нет',
 			distance: 'Расстояние',
 			km: 'км',
-			m: 'м',
+			m: 'мин',
 			close: 'Закрыть',
 			repack: 'Упаковка',
 			remove: 'Перевозка',
@@ -147,17 +172,25 @@ export const LNG_PACK = {
 		},
 		date: {
 			date: 'Дата',
-			datenull: 'ДД . ММ . ГГ',
+			datenull: {
+				d: 'ДД',
+				m: '. ММ .',
+				y: 'ГГ'
+			},
 			time: 'Время',
 			timenull: 'ЧЧ : ММ',
 			th: 'Часы',
-			tm: 'Минуты'
+			tm: 'Минуты',
+			nth: 'ЧЧ',
+			ntm: 'ММ'
 		},
 		r1: {
 			loc: {
 				o: 'Адрес начальный',
 				d: 'Адрес конечный',
 				sph: 'Поиск адреса',
+				sph2: 'Город, Улица и Номер дома',
+				drset: 'Указать этот адрес',
 				i: 'Информация об адресе',
 				t: {
 					t: 'Тип адреса',
@@ -175,7 +208,7 @@ export const LNG_PACK = {
 			lift: {
 				t: 'Лифт',
 				0: 'Нет',
-				1: 'Пассажирский',
+				1: 'Обычный',
 				2: 'Грузовой'
 			}
 		},
@@ -199,7 +232,11 @@ export const LNG_PACK = {
 				tr1: 'Вещь',
 				tr2: 'на выброс',
 				da1: 'Разборка',
-				da2: 'сборка'
+				da2: '+ сборка',
+				uw1: 'Снять',
+				uw2: 'со стены',
+				uc1: 'Снять',
+				uc2: 'с потолка'
 			},
 			cam: {
 				takep: 'Сделайте фото этой комнаты',
@@ -220,9 +257,9 @@ export const LNG_PACK = {
 				choosedate: 'Выберите дату упаковки:',
 				i: {
 					t: 'Информация о коробках',
-					1: 'Означает что Ожегов был не прав и погорячился',
-					2: 'Означает что Красный Октябрь, хоть и немного, но вкуснее если употреблять с медом',
-					3: 'Означает что как ни крути а у круга все углы равны их количество бесконечно'
+					1: 'Мелкие вещи (посуда, книги, одежда и т.д.) укладываются в коробки. Для Ваших помещений рекомендуемое количество коробок отображается рядом с полем ввода',
+					2: 'Перевозчик привезет Вам картонные коробки, в количестве указанном Вами выше',
+					3: 'Перевозчик приедет к Вам в указанное время и упакует все Ваши вещи в коробки'
 				}
 			},
 			p: {
@@ -245,7 +282,7 @@ export const LNG_PACK = {
 				R1_DIST: 'Дистанция не определена'
 			},
 			customer: {
-				agree: 'Я соглашаюсь с тем, что вещи не указанные в заявке оплачиваются отдельно',
+				agree: 'Я соглашаюсь с тем, что вещи, которые не были указаны в заявке, оплачиваются отдельно',
 				nameph: 'Имя'
 			}
 		},
@@ -255,135 +292,173 @@ export const LNG_PACK = {
 				2: 'введите код'
 			},
 			full: 'Полный'
+		},
+		misc: {
+			srotate: 'Пожалуйста, поверните Ваш телефон в вертикальное положение',
+			opened: 'открыта',
+			closed: 'закрыта',
+			responsible: 'ответственный'
+		},
+		send: {
+			sending: 'Отправка заявки',
+			suc: 'Успешно',
+			sucmsg: 'Ваш перевозчик свяжется с Вами в ближайшее время',
+			err: 'Ошибка',
+			errmsg: 'Что-то пошло не так, пожалуйста повторите отправку заявки'
 		}
 	},
 	he: {
 		c: {
-			back: 'zczv',
-			next: 'qweq',
-			confirm: 'asdasd',
-			request: 'mmnmnv',
-			required: 'qweqweqw',
-			yes: 'eww',
-			no: 'vc',
-			distance: 'vxwwdw',
-			km: 'km',
-			m: 'm',
-			close: 'sadSa',
-			repack: 'fdfsd',
-			remove: 'uytnf',
-			comment: 'vdswwerw'
+			back: 'אחורה',
+			next: 'הבא',
+			confirm: 'שלח',
+			request: 'בקשה',
+			required: 'נדרש',
+			yes: 'כן',
+			no: 'לא',
+			distance: 'מרחק',
+			km: 'ק׳׳מ',
+			m: 'מ',
+			close: 'סגור',
+			repack: 'אריזה',
+			remove: 'הובלה',
+			comment: 'תגובה'
 		},
 		date: {
-			date: 'qwe',
-			datenull: 'we . cv . qwe',
-			time: 'sdf',
-			timenull: 'ew : eq',
-			th: 'cvxcv',
-			tm: 'sdfsdf'
+			date: 'תאריך',
+			datenull: {
+				d: 'יום',
+				m: '. חודש .',
+				y: 'שנה'
+			},
+			time: 'שעה',
+			timenull: 'דק : ש׳',
+			th: 'שעות',
+			tm: 'דקות',
+			nth: 'ש׳',
+			ntm: 'דק'
 		},
 		r1: {
 			loc: {
-				o: 'asdasdasd',
-				d: 'asdasdasd',
-				sph: 'sdfsdfqwe',
-				i: 'werwerwer',
+				o: 'מאיפה',
+				d: 'לאן',
+				sph: 'חיפוש כתובת',
+				sph2: 'רחוב, בית ועיר',
+				drset: 'ccwqqw dsa qw',
+				i: 'מידע על מיקום',
 				t: {
-					t: 'xvxcvxv',
-					a: 'tyutu',
-					o: 'ertert',
-					h: 'ghjghj',
-					s: 'vbnvbn'
+					t: 'סוג כתובת',
+					a: 'דירה',
+					o: 'משרד',
+					h: 'בית',
+					s: 'מחסן'
 				},
 				b: {
-					e: 'werwr',
-					f: 'tewere',
-					n: 'gdfg'
+					e: 'כניסה',
+					f: 'קומה',
+					n: 'מספר'
 				}
 			},
 			lift: {
-				t: 'ertw',
-				0: 'bc',
-				1: 'dfgdfg',
-				2: 'dfgdfgfg'
+				t: 'מעלית',
+				0: 'אין',
+				1: 'רגיל',
+				2: 'משא'
 			}
 		},
 		r2: {
 			rt: {
-				b: 'zxc',
-				s: 'fsdf',
-				k: 'rwerw',
-				r: 'xcvx'
+				b: 'אמבטיה',
+				s: 'סלון',
+				k: 'מטבח',
+				r: 'חדר'
 			},
 			rm: {
-				room: 'xcvxcv',
-				reset: 'xwerw',
-				resetmsg: 'xcvxcvxcvxcv',
-				delete: 'werwerw',
-				deletemsg: 'xcvsdfwqq',
-				items: 'fssdf',
-				total: 'qwwe'
+				room: 'חדר',
+				reset: 'מחק',
+				resetmsg: '? מחק את החדר',
+				delete: 'הסר',
+				deletemsg: '? הסר את החדר',
+				items: 'דברים',
+				total: 'סך הכל'
 			},
 			ie: {
-				tr1: 'dasd',
-				tr2: 'feww',
-				da1: 'vxswe',
-				da2: 'erwrw'
+				tr1: 'פריט',
+				tr2: 'לזרוק',
+				da1: 'פירוק',
+				da2: '+ הרכבה',
+				uw1: 'להוריד',
+				uw2: 'מהקיר',
+				uc1: 'להוריד',
+				uc2: 'מהתקרה'
 			},
 			cam: {
-				takep: 'asd  asdas da sd as dasdasdasdasd',
-				touch: 'asdasd qwe qweqwdasd asdasdasd  asdasd',
-				pressi: 'fdgdfg df rtry rtyrty bv'
+				takep: 'צלם תמונה של החדר',
+				touch: 'גע בפריט שתמונה כדי להוסיף את התג שלו',
+				pressi: 'לחץ על הפריט לעריכה'
 			}
 		},
 		r3: {
 			c: {
-				t: 'vxcv',
-				rec: 'werwe',
-				need: 'sdf sdf',
-				cneed: 'xcvwe wefsdf sd:',
-				bringb: 'vdcx qw qdqq:',
-				pack: 'bcvbcv sdf',
-				sameday: 'werw erw erw  q q',
-				samedays: 'few wfwklwkew wewk',
-				choosedate: ':xcvxcvxcv',
+				t: 'ארגזים',
+				rec: 'מומלץ',
+				need: 'צריך ארגזים',
+				cneed: 'הלקוח צריך ארגזים',
+				bringb: 'להביא ארגזים',
+				pack: 'צריך אריזה',
+				sameday: 'אריזה נעשת במהלך ההובלה',
+				samedays: 'אריזה באותו יום',
+				choosedate: 'לבחור את יום האריזה',
 				i: {
-					t: 'sdf sdff sdfsdfsdfsf',
-					1: 'asdas asd asd asd qwe q weq we qw eq weqweqwe ',
-					2: 'uiouo uioukhgngr tyr tyr tbfd vvwderwe e vf dvd fg d fgdfgdfg',
-					3: 'vwew dfghdfgh  rtyrtyr erwerw bvnvbn mghfg  werwerwe  werwe'
+					t: 'מידע על הארגזים',
+					1: 'דברים קטנים (כלי מטבח, ספרים, בגדים, וכו) ארוזים בארגזים, לפי מקום המגורים שלכם,המבוסס על נסיון,המספר המומלץ של הארגזים יהיה מוצג ליד שדה הקלט',
+					2: 'המוביל יביא לכם ארגזי קרטון בכמות שצוינה מעל',
+					3: 'בבחירת פעולה זאת ,המוביל יגיע בזמן הנקבע ,לארוז את הדברים שלכם בארגזים'
 				}
 			},
 			p: {
-				car: 'qwe qwsdasd:',
-				trn: 'czxczcz:',
-				pck: 'ariza:',
-				total: 'wqw nqm:',
-				vat: 'ree',
-				pckvr: 'dfsd sdfwewr fwe:'
+				car: 'הגעת רכב',
+				trn: 'הובלה',
+				pck: 'אריזה',
+				total: 'סה"כ מחיר',
+				vat: 'מע"מ',
+				pckvr: 'מחיר האריזה'
 			},
 			v: {
-				t: 'dasa czxcz:',
-				R1_SL_o: 'cwer w werwe',
-				R1_PI_o: 'vcvx wer  werwer',
-				R1_SL_d: 'dfsdf sdfsdfsd',
-				R1_PI_d: 'xcv werwer wwer',
-				R1_DAY: 'vcx',
-				R3_PSD_DT: 'werw w erwerw wer',
-				R3_BOX: 'vcxxc wer   qweqweqwe',
-				R1_DIST: 'wre werwer'
+				t: 'אנא ציין',
+				R1_SL_o: 'כתובת התחלתית',
+				R1_PI_o: 'מידע על כתובת התחלתית',
+				R1_SL_d: 'כתובת סופית',
+				R1_PI_d: 'מידע על כתובת סופית',
+				R1_DAY: 'תאריך',
+				R3_PSD_DT: 'תאריך ושעת האריזה',
+				R3_BOX: 'כמות הארגזים',
+				R1_DIST: 'המרחק אינו מוגדר'
 			},
 			customer: {
-				agree: 'werw dfgdfg rtyrty dgdfg sd asdas',
-				nameph: 'vcvw'
+				agree: 'אני מסכים שדברים שלא צויינו בבקשה משולמים בנפרד',
+				nameph: 'שם'
 			}
 		},
 		acc: {
 			lock: {
-				1: 'zxc  qw',
-				2: 'qwe qwd ss'
+				1: 'לפתיחה',
+				2: 'הזן את הקוד'
 			},
-			full: 'vwwq'
+			full: 'מלא'
+		},
+		misc: {
+			srotate: 'בבקשה סובבו את הטלפון שלכם למצב מאונך',
+			opened: 'פתוח',
+			closed: 'סגור',
+			responsible: 'אחראי'
+		},
+		send: {
+			sending: 'הבקשה נשלחת',
+			suc: 'בהצלחה',
+			sucmsg: 'המוביל שלכם יצור איתכם קשר בזמן הקרוב',
+			err: 'טעות',
+			errmsg: 'תקלה ,אנא נסה שוב'
 		}
 	}
 }

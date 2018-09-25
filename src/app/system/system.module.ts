@@ -7,8 +7,9 @@ import { SystemComponent } from './system.component'
 import { RequestComponent } from './request/request.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { ViewRequestComponent } from './view-request/view-request.component'
-import { TransporterviewComponent } from './dashboard/transporterview/transporterview.component';
+import { TransporterviewComponent } from './dashboard/transporterview/transporterview.component'
 import { AdminoneComponent } from './dashboard/adminone/adminone.component'
+import { AdminFurnitureComponent } from './dashboard/adminone/admin-furniture/admin-furniture.component'
 
 // import { RequestDeactivateGuard } from './request/request.deactivate-guard'
 
@@ -28,6 +29,7 @@ import { AdminoneComponent } from './dashboard/adminone/adminone.component'
 		ViewRequestComponent,
 		TransporterviewComponent,
 		AdminoneComponent,
+		AdminFurnitureComponent,
 	]
 })
 export class SystemModule { }

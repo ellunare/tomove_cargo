@@ -17,12 +17,18 @@ export class TransporterviewComponent implements OnInit {
 
 	requests: any
 	requests_render = false
-	day_modal = 0
+	day_modal = undefined
 	day_modal_price = 0
 
 	/////////////////////////////////////////////////////////////////////////////// RENDER
 
-	dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+	dayNames = {
+		en: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+		ru: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+		he: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'],
+	}
+
+	ASRESSES = ['o', 'd']
 
 	date
 	prevMonthDate
@@ -43,7 +49,7 @@ export class TransporterviewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this._AR.params    // Получаем язык
+		this._AR.parent.params    // Получаем язык
 			.subscribe(e => {
 				let lng = e.lng
 				this.lng = this.LNG[lng] ? lng : 'en'
@@ -122,7 +128,7 @@ export class TransporterviewComponent implements OnInit {
 			, D = __day || this.day_modal
 			, R = this.requests
 
-		for (let O of this.OBJ) for (let _RX of R[O][M][D] || []) __arr.push(_RX)
+		for (let O of this.OBJ) if (R[O][M]) for (let _RX of R[O][M][D] || []) __arr.push(_RX)
 
 		// Подсчитываем суммарную цену
 		let TP = 0 // Total Price
@@ -166,8 +172,8 @@ export class TransporterviewComponent implements OnInit {
 			B: 'box'
 		}
 			, _M = +this.date.format('MM') // MONTH
-			, _D = this.day_modal
-			, _RMX = this.requests[MODE[T]][_M]
+			, _D = this.day_modal || R.date.date.d
+			, _RMX = this.requests[MODE[T]][_M] || []
 
 		for (let _R of _RMX[_D] || []) if (_R.requestID == R.requestID) return true
 	}
@@ -229,12 +235,18 @@ export class TransporterviewComponent implements OnInit {
 
 	/////////////////////////////////////////////////////////////////////////////// CALENDAR
 
+	showDate(F) {
+		let D = this.date.clone()
+		if (F === 'M') return D.locale(this.lng).format('MMMM ')
+		if (F === 'Y') return D.format('YYYY ')
+	}
+
 	timeTransform(x) {
 		let sec_num = parseInt(x, 10) // don't forget the second param
 			, H: any = Math.floor(sec_num / 60)
 			, M: any = Math.floor((sec_num - (H * 60)))
 
-		if (H < 1) return M + this.LNG[this.lng].c.m
+		if (H < 1) return M
 		if (M < 10) { M = "0" + M }
 		return H + ':' + M
 	}
@@ -257,6 +269,29 @@ export class TransporterviewComponent implements OnInit {
 		if (F === 'P') return PR.packing + PR.boxes
 		if (F === 'T') return PR.transportation
 		if (F === 'TOTAL') return PR.transportation + PR.packing + PR.boxes
+	}
+
+	getReqPrice(R, F) {  // Просчет цены заявки относительно наличия упаковки
+		let CONDITION
+		if (F === 'DayV') CONDITION = this.isMode(R, 'P') // Просмотр дня
+		if (F === 'MonV') CONDITION = R.packing.pack && R.packing.date.d // Просмотр месяца
+
+		return CONDITION ? this.getPrice(R, 'P') : (R.packing.sameday ? this.getPrice(R, 'TOTAL') : this.getPrice(R, 'T'))
+	}
+
+	reqLength(R, day?) {
+		let P = this.getReqPrice(R, 'MonV')
+			, C = 'req-dot--under'
+			, A = ''
+			, B = R.boxes.date.d === day.date()
+
+		if (B) return '' // Коробки
+		if (P < 1000) A = '1'
+		if (P >= 1000 && P < 2000) A = '2'
+		if (P >= 2000 && P < 3000) A = '3'
+		if (P >= 3000) A = '4'
+
+		return C + A
 	}
 
 	nextLNG() {

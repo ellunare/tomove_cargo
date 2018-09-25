@@ -23,9 +23,7 @@ export class AdminoneComponent implements OnInit {
 		localStorage.setItem('_xad', '1')
 		this.success = true
 
-		setTimeout(() => {
-			this._router.navigate(['/en', 'me'])
-		}, 500)
+		setTimeout(() => this._router.navigate(['/en', 'me']), 500)
 	}
 
 	checkAccess(e) {
@@ -33,12 +31,8 @@ export class AdminoneComponent implements OnInit {
 		this.temp_correct_code = true
 
 		if (V.length == 4) {
-			if (V === this._xad) {
-				this.setAdmin()
-			}
-			else {
-				this.temp_correct_code = false
-			}
+			if (V === this._xad) this.setAdmin()
+			else this.temp_correct_code = false
 		}
 	}
 

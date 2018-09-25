@@ -1,0 +1,95 @@
+@import '~src/styles.sass'
+
+.fur
+	width: 100%
+	position: absolute
+	left: 0
+	padding: 2rem
+
+	&-group
+		margin-bottom: 2rem
+		&-title
+			margin-bottom: 2rem
+			span:first-child
+				text-align: right
+				width: 2rem
+				display: inline-block
+				margin-right: 1rem
+		&-wrap
+			display: flex
+			flex-wrap: wrap
+			justify-content: space-between
+
+.item
+	display: flex
+	align-items: center
+	width: 48%
+	margin-bottom: 2rem
+	border: 1px solid $color_gold
+	padding: 1rem
+	@media #{$_uxs}
+		width: 100%
+		align-items: flex-start
+		flex-wrap: wrap
+		position: relative
+
+	> img
+		height: 5rem
+		margin: 0 1rem
+		@media #{$_uxs}
+			margin: 1rem
+			position: absolute
+			top: 0
+			right: 0
+
+	&-id
+		align-self: flex-start
+		background-color: $color_gold
+		width: 2rem
+		height: 2rem
+		text-align: center
+		line-height: 2rem
+		font-size: 1.2rem
+	&-wrap
+		font-size: 1.2rem
+		flex-grow: 2
+		@media #{$_uxs}
+			margin-bottom: 1rem
+			padding-left: 1rem
+
+	&-price
+		font-size: 1.2rem
+		align-self: flex-start
+		@media #{$_uxs}
+			width: 100%
+		&-item
+			display: flex
+			align-items: center
+			span
+				width: 4rem
+				margin-right: 0.5rem
+			img
+				height: 1.5rem
+				cursor: pointer
+			input
+				background: none
+				width: 4rem
+				padding: 0.5rem 0
+				border-bottom: 1px solid $color_gold
+				color: #fff
+
+.coef
+	display: flex
+	height: 2.5rem
+	align-items: center
+	&--saved
+		select
+			background-color: $color_green
+	img
+		height: 100%
+		margin-left: 2rem
+	select
+		height: 100%
+		margin: 0 1rem
+	span
+		text-transform: uppercase

@@ -1,16 +1,16 @@
-<div class="null"  (click)="showEdit('show')">
+<div class="null"  [class.hebrew]="lng === 'he'">  <!-- (click)="showEdit('show')"  -->
 
 	<div class="null-icon">
 		<img [src]="'assets/i/pi_' + (isEdited() ? 'edit' : 'plus') + '.svg'">
 	</div>
 
-	<div class="null-info" *ngIf="!isEdited()">
+	<div class="null-info  null-info--null" *ngIf="!isEdited()">
 		<p>{{LNG[lng].r1.loc.i}}</p>
 	</div>
 
 	<div class="null-info  null-info--edited" *ngIf="isEdited()">
 		<div class="null-info__item">
-			<img src="{{'assets/i/pi_o_t.svg'}}">
+			<img [src]="'assets/i/pi_o_t' + info.t[0] + '.svg'">
 			<span>{{LNG[lng].r1.loc.t[info.t[0]][0]}}</span>
 		</div>
 
@@ -24,50 +24,53 @@
 
 
 
-<div class="pi" *ngIf="show_modal">
+<div class="pi"  *ngIf="show_modal">
 
 	<div class="pi-type">
 
 		<p>{{LNG[lng].r1.loc.t.t}}</p>
-
 		<div class="types">
+
 			<div class="type"  *ngFor="let p of _render.types">
 				<input type="radio" class="typetoggle"
 					name="placetype"
 					[id]='p.t'
 					[value]='p.t'
 					[(ngModel)]="info.t" 
-					(change)="onTypeChange()"
-					>
+					(change)="onTypeChange()">
 
 				<label class="radio" [for]='p.t'>{{LNG[lng].r1.loc.t[p.t[0]]}}</label>
 			</div>
+
 		</div>
 
 	</div>
 
+
 	<div class="pi-wrap">
+
 		<div class="pi-item" *ngFor="let o of _render.params" 
-			[class.pi-item--disabled]="disabled('inputs')" 
+			[class.pi-item--disabled]="disabled('INPUT', o)" 
 			[class.pi-item--required]="required(o.t)">
 
 			<p>{{LNG[lng].r1.loc.b[o.t[0]]}}</p>
-
 			<div class="pi-item-wrap">
 
 				<div class="pi-item-wrap__icon"><img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}"></div>
 
 				<div class="pi-item-wrap__input">
-					<input [type]="o.t === 'entrance' ? 'text' : 'number'" 
-						[(ngModel)]="info[o.t[0]]" 
-						[disabled]="disabled('inputs')"
+					<input 
+						[type]="o.t === 'entrance' ? 'text' : 'number'" 
+						pattern=[0-9]
+						[(ngModel)]="info[o.t[0]]"
+						[disabled]="disabled('INPUT', o)"
 						[placeholder]="required(o.t) ? LNG[lng].c.required : ''">
 				</div>
 			</div>
 		</div>
 
 		<div class="pi-btns  p2" style="margin-top: 5rem">
-			<button class="close" (click)="showEdit('close')">OK</button>
+			<button class="close" (click)="showEdit(false)">OK</button>
 		</div>
 
 	</div>

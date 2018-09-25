@@ -1,66 +1,58 @@
-<div class="time-block" *ngIf="show_time" (click)="modalClick($event, 'time-block', 'B')">
+<div class="time-block" *ngIf="show.time" (click)="modalClick($event, 'time-block', 'B')"  [class.hebrew]="lng === 'he'">
 
-	<div class="time-wrap" *ngIf="!show_H && !show_M">
-		
-		<div class="time-select">
+	<div class="time-wrap" *ngIf="!show.H && !show.M">
 
-			<div class="cell-parent" (click)="showElement('H')">
-				<p>{{getTimeValue('H')}}</p>
-			</div>
-			
-			<div class="spacer"></div>
-			
-			<div class="cell-parent" (click)="showElement('M')">
-				<p>{{getTimeValue('M')}}</p>
-			</div>
-			
+		<div class="time-select  time--mb">
+			<div class="cell-parent" (click)="showElement('H')"><p>{{getTimeValue('H')}}</p></div>
+			<div class="cell-spacer"></div>
+			<div class="cell-parent" (click)="showElement('M')"><p>{{getTimeValue('M')}}</p></div>
+		</div>
+
+		<div class="time-btns">
+			<button class="close" (click)="showWIDGET(null)">OK</button>
+		</div>
+
 	</div>
 
-	<br>
-
-	<div class="time-btns">
-		<button class="close" (click)="showWIDGET(null)">OK</button>
-	</div>
-		
-	</div>
-
-	<div class="element" *ngIf="show_H" (click)="modalClick($event, 'element', 'H')">
+	<div class="element" *ngIf="show.H" (click)="modalClick($event, 'element', 'H')">
 		<div class="element-wrap">
-			<p class="ttu">{{LNG[lng].date.th}}</p>
-			<br>
-			<div class="hours">
+			<p class="element-title">{{LNG[lng].date.th}}</p>
+
+			<div class="hours  time--mb">
 				<ul class="box">
-					<li class="cell"
-					*ngFor="let h of hours"
-					(click)="cellClick($event, 'H')"
-					[class.actual]="h >= 8 && h <= 15"
-					[class.selected]="h == select_H">{{h}}</li>
+					<li class="cell"  *ngFor="let h of hours"
+						(click)="cellClick($event, 'H')"
+						[class.actual]="h >= 8 && h <= 15"
+						[class.selected]="h == select.H">
+						{{h}}
+					</li>
 				</ul>
 			</div>
-			<br>
+
 			<div class="time-btns">
 				<button class="close" (click)="showElement('H')">OK</button>
 			</div>
 		</div>
 	</div>
-	
-	<div class="element" *ngIf="show_M" (click)="modalClick($event, 'element', 'M')">
+
+	<div class="element" *ngIf="show.M" (click)="modalClick($event, 'element', 'M')">
 		<div class="element-wrap">
-			<p class="ttu">{{LNG[lng].date.tm}}</p>
-			<br>
-			<div class="minutes">
+			<p class="element-title">{{LNG[lng].date.tm}}</p>
+
+			<div class="minutes  time--mb">
 				<ul class="box">
-					<li class="cell"
-					*ngFor="let m of minutes"
-					(click)="cellClick($event, 'M')"
-					[class.selected]="m == select_M">{{m}}</li>
+					<li class="cell"  *ngFor="let m of minutes"
+						(click)="cellClick($event, 'M')"
+						[class.selected]="m == select.M">
+						{{m}}
+					</li>
 				</ul>
 			</div>
-			<br>
+
 			<div class="time-btns">
 				<button class="close" (click)="showElement('M')">OK</button>
 			</div>
 		</div>
 	</div>
-	
+
 </div>

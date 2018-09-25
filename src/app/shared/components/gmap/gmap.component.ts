@@ -17,8 +17,12 @@ export class GmapComponent implements OnInit {
 	@ViewChild('map') map: ElementRef
 
 	showMode = {
-		map: false
+		map: false,
+		drag: false,
+		dragLoading: false
 	}
+
+	address: any = {}
 
 	constructor(
 		private _maps: MapsGoogleService
@@ -26,21 +30,41 @@ export class GmapComponent implements OnInit {
 
 	ngOnInit() { }
 
+	// window.navigator.geolocation.getCurrentPosition(function(e){console.log(e)})
+
 	initMap(type, COORDS) {
 		this._maps.showOnMap(this.map.nativeElement, type, COORDS)
+			.subscribe(data => {
+				if (data == 'cansearch') return this.showMode.dragLoading = true
+
+				this.showMode.drag = true
+				this.address = data
+				this.showMode.dragLoading = false
+			})
 	}
 
 	modalClick() {
 		this.showMode.map = false
+		this.showMode.drag = false
+		this.address = {}
 	}
 
 	showMap(type, COORDS) {
 		this.showMode.map = true
-		setTimeout(() => { if (this.map) this.initMap(type, COORDS) }, 1000)
+		if (this.map) this.initMap(type, COORDS)
+		// setTimeout(() => { if (this.map) this.initMap(type, COORDS) }, 2000)
 	}
 
 	// showMe() {
 	// 	this._maps.showOnMap(this.map.nativeElement, 'ME');
 	// }
+
+	getValue(F) {
+		return this.address[F] || ''
+	}
+
+	addressValid() {
+		if (this.address.city && this.address.street && this.address.number) return true
+	}
 
 }

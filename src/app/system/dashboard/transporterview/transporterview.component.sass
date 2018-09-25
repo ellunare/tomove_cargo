@@ -1,4 +1,4 @@
-@import '../../../../styles.sass'
+@import '~src/styles.sass'
 
 $tw_accent: $color_purple
 
@@ -18,6 +18,7 @@ $day_h: 8rem
 		border-top: 6px solid red
 	&-wrap
 		width: $c_w
+		height: 100%
 		text-align: center
 	&-month
 		width: 100%
@@ -25,8 +26,12 @@ $day_h: 8rem
 		line-height: 4rem
 		color: #fff
 		text-transform: uppercase
+		&--ylng
+			position: absolute
+			right: 2rem
 	&-table
 		width: 100%
+		height: 100%
 	&-days
 		display: flex
 		flex-wrap: wrap
@@ -36,11 +41,11 @@ $day_h: 8rem
 			background-color: $color_gold
 			height: 3rem
 		&--month
-			height: calc(100vh - 20rem)
+			height: calc(100% - 12rem)
 	&-day
 		width: $day_w
 		height: calc(100% / 6)
-		background-color: #171717//0f0f0f
+		background-color: #171717 //0f0f0f
 		color: #fff
 		text-align: center
 		cursor: pointer
@@ -56,6 +61,7 @@ $day_h: 8rem
 		width: 100%
 		display: flex
 		justify-content: space-between
+		text-transform: uppercase
 		.btn
 			display: inline-block
 			height: 3rem
@@ -73,6 +79,9 @@ $day_h: 8rem
 			line-height: 2.5rem
 		.new
 			height: 3rem
+			position: absolute
+			left: 50%
+			transform: translateX(-50%)
 			img
 				height: 100%
 				padding: 0.2rem
@@ -86,7 +95,6 @@ $day_h: 8rem
 	padding-top: 0.5rem
 	border-top: 0.5rem solid $color_gold
 	font-weight: 700
-	// background-color: #1d1d1d
 
 .beforetoday
 	cursor: default
@@ -111,6 +119,10 @@ $day_h: 8rem
 
 
 .req
+	&-dayview
+		&--wrap
+			height: calc(100% - 5rem)
+			overflow-y: auto
 	&-daytitle
 		position: absolute
 		top: -2.8rem
@@ -119,30 +131,36 @@ $day_h: 8rem
 		color: $color_green
 	&-group
 		width: 100%
-		border-radius: 1rem
 		padding: 0 0.3rem
+		height: calc(100% - 2.5rem)
+		overflow: hidden
 	&-dot
 		background-color: $color_green
 		width: 100%
 		height: 4px
 		margin-bottom: 0.5rem
-		&--under3000
-			width: 50%
 		&--notsameday
 			background-color: $tw_accent
-			// width: 1rem
 		&--pack
 			&:after
 				content: ''
 				display: block
 				width: 6px
 				height: 100%
-				// background-color: $tw_accent
 		&--sameday
 			&:after
 				background-color: $tw_accent
 		&--box
 			background-color: grey
+
+		&--under1
+			width: 25%
+		&--under2
+			width: 50%
+		&--under3
+			width: 75%
+		&--under4
+			width: 100%
 
 	&-dayview
 		position: fixed
@@ -157,7 +175,8 @@ $day_h: 8rem
 		width: 100%
 		background-color: $color_dark_gold
 		margin-bottom: 1rem
-		padding: 1rem 2rem
+		padding: 0.7rem 2rem
+		font-size: 1.4rem
 
 		position: relative
 		&--pack
@@ -178,7 +197,6 @@ $day_h: 8rem
 			&--sameday
 				&::after
 					content: ''
-					// display: block
 					position: absolute
 					width: 100%
 					height: 4.3rem
@@ -186,6 +204,8 @@ $day_h: 8rem
 
 		&-adress
 			width: calc(100% - 11rem)
+			&--mb
+				margin-bottom: 1rem
 
 		&-line
 			margin-bottom: 0.5rem
@@ -196,7 +216,6 @@ $day_h: 8rem
 				white-space: nowrap
 				max-width: calc(100% - 2rem)
 				display: inline-block
-				// background-color: green
 			&--circle
 				width: 1rem
 				height: 1rem
@@ -204,7 +223,6 @@ $day_h: 8rem
 				border: 0.2rem solid $color_green
 				display: inline-block
 				margin-right: 0.5rem
-				margin-bottom: 0.5rem
 				&-pack
 					background-color: $tw_accent
 					border: none
@@ -213,32 +231,45 @@ $day_h: 8rem
 					border: none
 				&-sameday
 					border-color: $tw_accent
+				&-white
+					border-color: #fff
 		&-type
 			text-transform: uppercase
 			padding-left: 2rem
-			font-size: 1.2rem
-			margin-bottom: 1rem
+			font-size: 0.9em
 			img
 				height: 1rem
+				margin-right: 0.7rem
 		
 		&-right
 			float: right
 			text-align: right
 		&-link
 			img
-				height: 4.1rem
+				height: 3.6rem
 
-		&-box
-			position: absolute
-			right: 2rem
-			bottom: 1.5rem
-			img
-				height: 3rem
+		&-price
+			float: left
+			margin-right: 1rem
+			text-transform: uppercase
+			p
+				margin-bottom: 0.9rem
+			&--value
+				white-space: nowrap
+			&--boxes
+				margin: 0 0.5rem
+
+		// &-box
+		// 	position: absolute
+		// 	right: 2rem
+		// 	bottom: 1.5rem
+		// 	img
+		// 		height: 3rem
 
 		&-distance
 			position: absolute
 			right: 2rem
-			bottom: 1rem
+			bottom: 0.7rem
 			&-d
 				font-weight: 500
 			&-t
@@ -246,7 +277,61 @@ $day_h: 8rem
 				color: #a58f43
 				margin: 0 1rem
 
+		&-responsible
+			padding-top: 1rem
+			font-size: 1.4rem
+			color: $color_gold
+			&--packing
+				color: $color_purple
+				padding-top: 0
+
 	&-dayprice
 		position: absolute
 		right: 2rem
 		bottom: 0.5rem
+
+
+.hebrew
+	.calendar-days--month,
+	.calendar-days--week,
+	.calendar-btns
+		direction: rtl
+	.calendar-month--ylng
+		left: 2rem
+		right: auto
+		direction: rtl
+		.language
+			margin-right: 1rem
+			margin-left: auto
+	.req-daytitle
+		right: 2rem
+		left: auto
+	.req-one
+		direction: rtl
+		.req-one-leftline
+			left: auto
+			right: 0
+		.req-one-right
+			float: left
+			.req-one-price
+				float: right
+				margin-left: 1rem
+				margin-right: auto
+				text-align: left
+				p
+					direction: ltr
+		.req-one-line--circle
+			margin-left: 0.5rem
+			margin-right: 0
+		.req-one-type
+			img
+				margin-left: 0.7rem
+				margin-right: 0
+		.req-one-distance
+			left: 2rem
+			right: auto
+			.req-one-distance-t
+				// margin-left: 0
+	.req-dayprice
+		left: 2rem
+		right: auto

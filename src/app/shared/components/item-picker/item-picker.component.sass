@@ -1,4 +1,4 @@
-@import '../../../../styles.sass'
+@import '~src/styles.sass'
 
 .wrap
 	position: fixed
@@ -8,8 +8,8 @@
 	top: 0
 	left: 0
 	background-color: $color_bg_BL
-	
 	overflow: auto
+	// touch-action: none
 
 .f_item
 	width: 33.3%
@@ -20,16 +20,35 @@
 
 	img
 		width: 100%
+	&--type
+		padding: 1rem // 2rem
+		// p
+		// 	text-align: center
+		// 	text-transform: uppercase
+		// 	font-size: 1.4rem
+		// 	color: $color_gold
+		img
+			// border: 1px solid $color_gold
+			border-radius: 2rem
+			padding: 0.5rem
+
+
+.item
+	p
+		text-align: center
+		font-size: 1.4rem // 1.1rem
+		color: $color_gold
+		// padding-top: 0.5rem
+		text-transform: uppercase
+		letter-spacing: -0.5px
 
 .furniture
 	width: 100%
 	display: flex
 	flex-wrap: wrap
 	justify-content: center
-	// &-select
-	// 	width: 100%
-	// 	display: flex
-	// 	flex-wrap: wrap
+	margin-bottom: 2 * $BR
+
 
 .modal-bg
 	position: fixed

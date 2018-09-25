@@ -1,9 +1,4 @@
-import {
-	Component,
-	Input,
-	Output,
-	EventEmitter,
-} from '@angular/core'
+import { Component, Input, Output, EventEmitter } from '@angular/core'
 
 import { LNG_PACK } from '../../models/LOCALIZATION'
 
@@ -16,6 +11,8 @@ export class PlaceInfoComponent {
 
 	@Input() lng = undefined
 	LNG = LNG_PACK
+
+	@Input() ADDRESS_TYPE: string = undefined
 
 	_render = {
 		types: [
@@ -45,31 +42,39 @@ export class PlaceInfoComponent {
 
 	constructor() { }
 
-	showEdit(flag) {
-		if (flag === 'show') {
+	showEdit(F) {
+		if (F) this.show_modal = true
+
+		else setTimeout(() => {
 			this.first_open = false
-			this.show_modal = true
-		}
-		if (flag === 'close') {
-			this.onPlaceEdited()
 			this.show_modal = false
-		}
+			this.onPlaceEdited()
+		}, 1)
 	}
 
-	disabled(flag) {
-		if (flag === 'inputs') if (this.info.t === 'house' || this.info.t === 'store') return true
+	disabled(F, o) {
+		let I = this.info
+			, T = o.t
+
+		if (F === 'INPUT') if (
+			I.t === 'house' && (T === 'entrance' || T === 'number') ||
+			I.t === 'store'
+		) return true
 	}
 
-	required(O) {
-		if ((this.info.t === 'apartment' && ((O === 'floor' && !this.info.f) || (O === 'number' && !this.info.n))) || (this.info.t === 'office' && O === 'floor' && !this.info.f)) return true
+	required(T) {
+		let I = this.info
+		if (
+			(I.t === 'apartment' && ((T === 'floor' && !I.f) || (T === 'number' && !I.n))) ||
+			(I.t === 'office' && T === 'floor' && !I.f) ||
+			(I.t === 'house' && T === 'floor' && !I.f)
+		) return true
 	}
 
 	onTypeChange() {
-		if (this.disabled('inputs')) {
-			this.info.e = undefined
-			this.info.f = undefined
-			this.info.n = undefined
-		}
+		this.info.e = undefined
+		this.info.f = undefined
+		this.info.n = undefined
 	}
 
 	isEdited() {
@@ -77,7 +82,12 @@ export class PlaceInfoComponent {
 	}
 
 	onPlaceEdited() {
-		this.outPlaceEdited.emit(this.info)
+		let I = this.info
+		for (let T in I)
+			if (!I[T]) I[T] = undefined
+		// else if (T === 'f' || T === 'n') I[T] = +I[T]
+
+		this.outPlaceEdited.emit(I)
 	}
 
 }

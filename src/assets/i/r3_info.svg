@@ -6,14 +6,19 @@
 	<style>
 		.c {
 			fill: #24bc68;
-			animation: info 1s ease infinite alternate;
+			animation: info 1s infinite alternate linear;
 		}
 		@keyframes info {
 			0% {
-				fill: #fff;
+				<!-- fill: #1e1c16 -->
+				opacity: 0
+			}
+			<!-- 70% {
+				fill: #24bc68 -->
 			}
 			100% {
-				fill: #24bc68;
+				<!-- fill: #fff -->
+				opacity: 1
 			}
 		}
 	</style>

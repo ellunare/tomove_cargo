@@ -1,0 +1,62 @@
+<div class="fur">
+
+	<div class="fur-wrap">
+
+		<div class="fur-group"  *ngFor="let FG of FUR | slice:1">
+			<p class="fur-group-title"  (click)="open_group[FG.id] = !open_group[FG.id]">
+				<span>{{FG.id % 100}}</span>
+				<span>{{FG.name}}</span>
+			</p>
+
+			<div class="fur-group-wrap"  [class.none]="!open_group[FG.id]">
+
+				<div class="item"  *ngFor="let F of FG.types | slice:1">
+					<span class="item-id">{{F.id}}</span>
+					<!-- <img src="assets/f/{{FG.id}}/i/{{F.id}}.png"> -->
+					<img src="assets/f/e.png"
+						[style.background]="'url(https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/' + FG.id + '.png)'"
+						[style.background-size]="'cover'"
+						[style.background-position-x]="(F.id * 11.11) + '%'"
+						alt=""
+					>
+					<div class="item-wrap">
+						<p>{{F.name[2]}}</p>
+						<p>{{F.name[1]}}</p>
+						<p>{{F.name[3]}}</p>
+					</div>
+
+					<div class="item-price">
+						<div class="item-price-item">
+							<span>Price</span>
+							<input type="text"  value="{{F.price}}">
+							<img src="assets/i/save.svg">
+						</div>
+
+						<div class="item-price-item"  *ngIf="F.dap">
+							<span>D/A</span>
+							<input type="text"  value="{{F.dap}}">
+							<img src="assets/i/save.svg">
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+	</div>
+
+
+
+	<div class="coef"  [class.coef--saved]="coefficient_saved">
+		<span>Coefficient</span>
+	
+		<select  [(ngModel)]="coefficient">
+			<option  *ngFor="let C of coefficient_values"  value="{{C}}">{{renderCoefOption(C)}}</option>
+		</select>
+
+		<img src="assets/i/save.svg"  (click)="saveNewCoefficient()">
+	</div>
+
+</div>

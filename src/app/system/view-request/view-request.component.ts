@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { RequestService } from '../../shared/services/request.service'
+
 import { ActivatedRoute, Router } from '@angular/router'
+import { Location } from '@angular/common'
 
 import { LNG_PACK } from '../../shared/models/LOCALIZATION'
-import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
+// import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
 import { DomSanitizer } from '@angular/platform-browser'
+
 
 @Component({
 	selector: 'view-request',
@@ -25,6 +28,8 @@ export class ViewRequestComponent implements OnInit {
 
 	temp_access: string = undefined
 	temp_correct_code: boolean = true
+
+	temp_closed = false
 
 	ADRESSES = ['o', 'd']
 
@@ -48,13 +53,15 @@ export class ViewRequestComponent implements OnInit {
 	@ViewChild('datePicker') private datePicker
 	@ViewChild('timePicker') private timePicker
 
-	FUR = FURNITURE_LIST
+	FUR = undefined // = FURNITURE_LIST
 
 	constructor(
 		private _request: RequestService,
 		private _AR: ActivatedRoute,
 		private _router: Router,
-		private sanitizer: DomSanitizer
+		private sanitizer: DomSanitizer,
+
+		private location: Location
 	) { }
 
 	ngOnInit() {
@@ -72,15 +79,17 @@ export class ViewRequestComponent implements OnInit {
 				if (e.m) this.remove = true
 			})
 
-		this._AR.parent.url    // Получаем язык
+		this._AR.pathFromRoot[1].params    // Получаем язык
 			.subscribe(e => {
-				let lng = e[0].path
-					, qp = this.getQP()
+				let lng = e.lng
+					, qp = this.getQP('O')
 
 				this.lng = this.LNG[lng] ? lng : 'en'
 
 				this._router.navigate([this.lng, 'db', this.request.requestID], { queryParams: qp })
 			})
+
+		this.getFurniture(null)
 
 		this.initAccess()
 
@@ -88,6 +97,14 @@ export class ViewRequestComponent implements OnInit {
 			this.admin = true
 			if (this.repack || this.remove) this.admin = false
 		}
+
+	}
+
+	getFurniture(flag) {
+		this._request.getFurniture(flag)
+			.subscribe((res: any) => {
+				if (res.success) this.FUR = res.data.furniture
+			})
 	}
 
 	initAccess() {
@@ -163,13 +180,33 @@ export class ViewRequestComponent implements OnInit {
 				nullBoxesDate: this.nullBoxesDateFlag,
 
 				comment: this.request.comment,
+
+				responsible: {
+					transportation: this.request.responsible.transportation,
+					packing: this.request.responsible.packing
+				}
 			}
 
-			// console.log(body)
 			this._request.updateRequest(this.request.requestID, body)
 				.subscribe((res: any) => {
 					alert(res.msg)
 					if (res.success) this._edit()
+				})
+		}
+	}
+
+	closeRequest() {
+		let TC = this.temp_closed
+			, action = !this.request.closed
+
+		if (!TC) {
+			this.temp_closed = true
+			let body = { action: action }
+
+			this._request.closeRequest(this.request.requestID, body)
+				.subscribe((res: any) => {
+					if (res.success) this.request.closed = res.data.action
+					this.temp_closed = false
 				})
 		}
 	}
@@ -198,8 +235,12 @@ export class ViewRequestComponent implements OnInit {
 		if (F === 'value') if (!this.getAccess() && (X === 'e' || X === 'n' || (X === 'f' && !AI['f']))) return true
 
 		// Не виден если дом или склад
-		if (F === 'hs') if (this.request.adress[T].info.t === 'house' || this.request.adress[T].info.t === 'store') return true
+		if (F === 'store') if (this.request.adress[T].info.t === 'store') return true
 	}
+
+	// showSwipe(roomimg) {
+	// 	console.log(roomimg)
+	// }
 
 	lift(T, F) {
 		let LIFT = this.request.adress[T].lift
@@ -286,6 +327,12 @@ export class ViewRequestComponent implements OnInit {
 		return NAME[n] + add
 	}
 
+	getRoomItemsCount(R) {
+		let S = 0
+		for (let i of R.tags) S += i.count
+		return S
+	}
+
 	showOnMap() {
 		const COORDS = {
 			OLAT: this.request.adress.o.lat,
@@ -322,52 +369,43 @@ export class ViewRequestComponent implements OnInit {
 		return P.split(/[+\s-]/).join('')
 	}
 
-	// classCarton(T) {
-	// 	let X
-	// 		, R = this.request
-	// 		, set = {
-	// 			i: {
-	// 				1: 'box',
-	// 				2: 'box_p',
-	// 				3: 'box_g'
-	// 			},
-	// 			t: {
-	// 				1: 'title--no',
-	// 				2: 'title--pack',
-	// 				3: 'title--box'
-	// 			}
-	// 		}
+	getTimeStamp() {
+		let TS = this.request.timestamp
 
-	// 	if (!R.packing.pack) X = 1
-	// 	if (R.packing.pack) X = 2
-	// 	if (R.boxes.boxes && !R.packing.pack) X = 3
+		if (!TS) return ''
+		let D = new Date(TS)
+			, H: any = D.getHours()
+			, M: any = D.getMinutes()
 
-	// 	if (this.repack || this.remove) X = 1
+		M = (M < 10 ? '0' : '') + M
 
-	// 	return set[T][X]
-	// }
+		return H + ':' + M
+	}
 
 	// show(e) {
 	// 	console.log(e.target.value)
 	// }
 
-	getQP() {
+	getQP(F) {
 		let qp: any = {}
 		if (this.repack) qp.p = 1
 		if (this.remove) qp.m = 1
-		return qp
+
+		if (F === 'O') return qp
+		if (F === 'S') for (let k in qp) return '?' + k + '=1'
 	}
 
 	nextLNG() {
 		let L = this.lng
-			, qp = this.getQP()
+			, qp = this.getQP('S') || ''
 
 		switch (L) {
 			case 'en': L = 'ru'; break
 			case 'ru': L = 'he'; break
 			case 'he': L = 'en'; break
 		}
-		this._router.navigate([L, 'db', this.request.requestID], { queryParams: qp })
+		this.lng = L
+		this.location.go(this.lng + '/db/' + this.request.requestID + qp)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////// LINK

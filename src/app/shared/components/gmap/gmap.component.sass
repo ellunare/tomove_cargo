@@ -1,4 +1,4 @@
-@import '../../../../styles.sass'
+@import '~src/styles.sass'
 
 .wrap
 	position: fixed
@@ -40,3 +40,62 @@
 		line-height: 5rem
 		cursor: pointer
 		z-index: 20
+	&-aim
+		position: absolute
+		width: 0.5rem
+		height: 0.5rem
+		background: white
+		z-index: 9999999
+		top: 50%
+		left: 50%
+		transform: translateX(-50%) translateY(-50%)
+		border-radius: 10rem
+	&-info
+		position: absolute
+		z-index: 999
+		width: 100%
+		left: 0
+		bottom: 5rem
+		height: 5rem
+		background-color: #1d1d1d
+		display: flex
+		&-ok
+			height: 100%
+			background-color: #62572e
+			color: #fff
+			width: 11rem
+			text-align: center
+			text-transform: uppercase
+			font-size: 1.2rem
+			padding: 0 0.5rem
+			padding-top: 1rem
+		&-address
+			// flex-grow: 2
+			width: calc(100% - 11rem)
+			height: 100%
+			padding: 1rem
+			span
+				vertical-align: middle
+			&--street
+				text-overflow: ellipsis
+				overflow: hidden
+				max-width: calc(100% - 4rem)
+				white-space: nowrap
+				display: inline-block
+	&-drag-loading
+		position: absolute
+		z-index: 9999
+		top: 3rem
+		left: calc(50% - 1.5rem)
+		width: 3rem
+		height: 3rem
+		border: 0.3rem solid $color_gold
+		border-top-color: #fff
+		border-radius: 100%
+		animation: animdragcircle infinite 0.5s linear
+
+@keyframes animdragcircle
+	0%
+		transform: rotateZ(0)
+	100%
+		transform: rotateZ(360deg)
