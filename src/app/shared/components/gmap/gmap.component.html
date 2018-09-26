@@ -1,7 +1,15 @@
 <div class="wrap"  [class.none]="!showMode.map">   <!-- *ngIf="showMode.map" -->
 
 	<div class="gmap">
-		<div class="gmap_map"  #map></div>
+		<div class="gmap_map"  #gmap></div>
+		<!-- <agm-map class="gmap_map"  #gmap
+			[latitude]="address.lat || 32.086"
+			[longitude]="address.lng || 34.758"
+			>
+			<!-- (mapReady)="mapReady($event)" -->
+		<!-- (dragend)="evDragEnd($event)" -->
+
+		<!-- </agm-map> --> -->
 
 		<div class="gmap-acinput">
 			<input type="text"  #acinput
@@ -20,6 +28,10 @@
 		</div>
 
 		<div class="gmap-drag-loading"  *ngIf="showMode.dragLoading"></div>
+
+		<div class="gmap-me"  (click)="myLocation()">
+			ME
+		</div>
 
 		<div class="gmap_close" (click)="close()">{{LNG[lng].c.close}}</div>
 		<!-- <div class="gmap_me" (click)="showMe()">ME</div> -->

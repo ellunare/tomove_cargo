@@ -23,6 +23,20 @@ export class MapsGoogleService {
 		private _ngZone: NgZone
 	) { }
 
+	initMap(MAP, PARAMS) {
+		let options = {
+			center: { lat: 32.832, lng: 34.983 },
+			zoom: 16,
+			disableDefaultUI: true,
+			styles: this.agm.style
+		}
+
+		return new Promise((resolve, reject) => {
+			this._mapsAPILoader
+				.load()
+				.then(() => resolve(new google.maps.Map(MAP, options)))
+		})
+	}
 
 	_prepareAdress(place) {
 		// console.log(place)
