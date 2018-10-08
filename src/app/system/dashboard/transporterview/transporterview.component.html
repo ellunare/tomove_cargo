@@ -26,9 +26,9 @@
 
 
 			<!-- ///////////////////////////////////////////////////////////////////////////////  ADRESSES  -->
-			<div class="req-one-adress"  *ngFor="let a of ASRESSES"
+			<div class="req-one-address"  *ngFor="let a of ASRESSES"
 				[class.none]="a === 'd' && (isMode(r, 'P')  ||  isMode(r, 'B'))"
-				[class.req-one-adress--mb]="a === 'o'"
+				[class.req-one-address--mb]="a === 'o'"
 				>
 				<div class="req-one-line    flex  aic">
 					<div class="req-one-line--circle"  
@@ -39,12 +39,12 @@
 							'req-one-line--circle-sameday': r.packing.pack && r.packing.sameday && a === 'o'
 						}">
 					</div>
-					<span>{{r.adress[a].city}}</span>
+					<span>{{r.address[a].city}}</span>
 				</div>
 
 				<p class="req-one-type    flex  aic">
-					<img [src]="'assets/i/pi_o_t' + r.adress[a].info.t[0] + '.svg'">
-					<span>{{LNG[lng].r1.loc.t[r.adress[a].info.t[0]]}}</span>
+					<img [src]="'assets/i/pi_o_t' + r.address[a].info.t[0] + '.svg'">
+					<span>{{LNG[lng].r1.loc.t[r.address[a].info.t[0]]}}</span>
 				</p>
 			</div>
 

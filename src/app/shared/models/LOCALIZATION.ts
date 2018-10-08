@@ -34,7 +34,7 @@ export const LNG_PACK = {
 			loc: {
 				o: 'Start location',
 				d: 'Finish location',
-				sph: 'Search for location',
+				sph: 'Search for address',
 				sph2: 'City, Street & Building number',
 				drset: 'Set this address',
 				i: 'Location information',
@@ -129,7 +129,8 @@ export const LNG_PACK = {
 			},
 			customer: {
 				agree: 'I agree that items that were not specified in the request are paid separately',
-				nameph: 'Name'
+				nameph: 'Name',
+				comment: 'Add comment'
 			}
 		},
 		acc: {
@@ -283,7 +284,8 @@ export const LNG_PACK = {
 			},
 			customer: {
 				agree: 'Я соглашаюсь с тем, что вещи, которые не были указаны в заявке, оплачиваются отдельно',
-				nameph: 'Имя'
+				nameph: 'Имя',
+				comment: 'Добавить комментарий'
 			}
 		},
 		acc: {
@@ -343,8 +345,8 @@ export const LNG_PACK = {
 				o: 'מאיפה',
 				d: 'לאן',
 				sph: 'חיפוש כתובת',
-				sph2: 'רחוב, בית ועיר',
-				drset: 'ccwqqw dsa qw',
+				sph2: 'עיר, רחוב ומספר בית',
+				drset: 'הגדר כתובת זו',
 				i: 'מידע על מיקום',
 				t: {
 					t: 'סוג כתובת',
@@ -437,7 +439,8 @@ export const LNG_PACK = {
 			},
 			customer: {
 				agree: 'אני מסכים שדברים שלא צויינו בבקשה משולמים בנפרד',
-				nameph: 'שם'
+				nameph: 'שם',
+				comment: 'הוסף תגובה'
 			}
 		},
 		acc: {

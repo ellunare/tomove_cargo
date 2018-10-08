@@ -2,7 +2,10 @@
 
 .root
 	width: 100%
-	// height: 100%
+	@media #{$uxs}
+		height: 100%
+		overflow-x: hidden
+		position: relative
 	&--edit
 		background-color: #000 !important
 
@@ -75,7 +78,7 @@
 	&-y
 		margin-right: 1rem
 
-.adress
+.address
 	display: flex
 	margin-bottom: 2rem
 	position: relative
@@ -183,27 +186,6 @@
 	&--two
 		color: $color_orange
 
-// .date
-// 	display: flex
-// 	align-items: center
-// 	justify-content: space-between
-
-// .day
-// 	height: 3rem
-// 	text-align: center
-// 	background: none
-// 	color: #fff
-// 	border: 2px solid $color_gold
-
-// .time
-// 	height: 3rem
-// 	background: none
-// 	color: #fff
-// 	border: 2px solid $color_gold
-// 	padding: 0
-// 	width: 9rem
-// 	text-align: center
-
 
 .distance
 	display: flex
@@ -239,9 +221,10 @@
 	&-img
 		width: 100%
 		height: 30rem
-		overflow-x: auto
+		// overflow-x: auto
 		overflow-y: hidden
 		position: relative
+		-webkit-overflow-scrolling: touch
 		img
 			height: 100%
 		&-swipe
@@ -334,7 +317,15 @@ $rtag_bgm: 0
 	&-icon
 		width: 3rem
 		margin-right: 2rem
-
+	&-comment
+		height: auto
+		color: $color_gold
+		img:nth-child(1)
+			padding: 0.4rem
+			align-self: flex-start
+		p
+			font-size: 1.6rem
+			white-space: pre-line
 
 $vr_ac_h: 4rem
 .access
@@ -479,6 +470,7 @@ $vr_ac_h: 4rem
 		color: $color_gold
 	&-text
 		margin-bottom: 1rem
+		white-space: pre-line
 	textarea
 		width: 100%
 		padding: 0 1rem
@@ -644,24 +636,24 @@ $vr_ac_h: 4rem
 		span:last-child
 			direction: ltr
 
-	.adress
+	.address
 		direction: rtl
-		.adress-circle
+		.address-circle
 			margin-left: 2.5rem
 			margin-right: 0.5rem
 			&--line
 				&:after
 					right: 3.5rem
 					left: auto
-		.adress-info-text
+		.address-info-text
 			p
 				&:last-child
 					margin-right: 1rem
 					margin-left: 0
-		.adress-place-item--lift
+		.address-place-item--lift
 			span
 				text-align: right
-		.adress-info-type
+		.address-info-type
 			img
 				margin-right: 0
 				margin-left: 0.5rem

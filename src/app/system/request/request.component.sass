@@ -4,6 +4,9 @@
 	width: 100% !important
 	height: 100% !important
 
+.root
+	width: 100% !important
+	height: 100% !important
 
 .navigation
 	position: absolute
@@ -18,7 +21,7 @@
 
 .req-step
 	width: 100%
-	height: 100% // calc(100% - 4rem)
+	height: 100%
 	display: none
 
 .show-page
@@ -79,7 +82,7 @@
 	text-transform: uppercase
 	font-weight: 500
 	padding: 1rem
-	margin-bottom: 2rem
+	margin-bottom: 1rem
 	// background-color: #09284b
 	color: $color_gold
 
@@ -115,16 +118,27 @@
 			border-color: #fff !important
 
 .location
-	flex-grow: 2
+	// flex-grow: 2
+	width: calc(100% - 3rem)
 	&-title
 		font-size: 1.2rem
 		margin-bottom: 5px
 		text-transform: uppercase
-	&-adress
+	&-address
 		display: flex
 		border: 0.2rem solid $color_gold
 		border-radius: 0.5rem
 		margin-bottom: 1rem // $BR
+		&-name
+			display: block
+			height: 100%
+			line-height: 4rem
+			width: calc(100% - 4rem)
+			padding: 0 1rem
+
+			overflow: hidden
+			text-overflow: ellipsis
+			white-space: nowrap
 	&-place-info
 		margin-bottom: $BR
 
@@ -136,7 +150,7 @@ $al_gap: 1.5rem
 $al_bor_rad: 0.5rem
 
 .place-type
-	background-color: $color_gold
+	// background-color: $color_gold
 	width: $al_h
 	height: $al_h
 	line-height: $al_h - 2 * $al_bor
@@ -148,11 +162,13 @@ $al_bor_rad: 0.5rem
 	padding: 0.3rem
 	img
 		width: 100%
-		padding: 0.2rem
+		padding: 0.5rem
+		// padding: 0.2rem
 
-.adress
+.address
 	display: flex
 	position: relative
+	width: 100%
 	&--origin
 		padding-bottom: 3rem
 	&-line
@@ -322,7 +338,7 @@ $swl_marg: $swl_gap + $swl_bord - $swl_bord
 			box-sizing: border-box
 			width: 33.33%
 			height: 100%
-			z-index: 1000
+			z-index: 190
 			transition: background 0.4s
 
 		.swlift__bg
@@ -460,12 +476,12 @@ $r_btn_bor: 0.2rem
 			// line-height: 2.8rem
 
 	&-modal
-		position: fixed
+		position: absolute
 		top: 0
 		left: 0
 		width: 100%
 		height: 100%
-		background: transparentize(#000, 0.1)
+		background: transparentize(#000, 0.05)
 		z-index: 1000
 		display: flex
 		justify-content: center
@@ -521,13 +537,14 @@ $r_btn_bor: 0.2rem
 		border-color: #fff
 
 // $r2il_h: calc((100% - 8rem)*0.2)
-$r2il_h: calc((100% - 12rem)*0.2)
+$r2il_h: calc((100% - 12rem)*0.22)
 .item
 	&-list
 		height: $r2il_h
 		ul
 			height: 100%
-			overflow-x: auto
+			// overflow-x: auto
+			overflow-y: hidden
 			display: flex
 			flex-direction: column
 			flex-wrap: wrap
@@ -560,7 +577,7 @@ $r2il_h: calc((100% - 12rem)*0.2)
 
 
 // $cam_h: calc((100% - 8rem)*0.8)
-$cam_h: calc((100% - 12rem)*0.8)
+$cam_h: calc((100% - 12rem)*0.78)
 .cam
 	&-wrap
 		text-align: center
@@ -571,8 +588,9 @@ $cam_h: calc((100% - 12rem)*0.8)
 		height: calc(100% - 6rem)
 	&-frame
 		width: auto
-		height: 100%
-		overflow-x: auto
+		height: calc(100% - 1rem)
+		// height: 100%
+		// overflow-x: auto
 		overflow-y: hidden
 		position: relative
 
@@ -581,7 +599,8 @@ $cam_h: calc((100% - 12rem)*0.8)
 	position: relative
 	display: flex
 	img
-		height: calc(100% - 1rem)
+		// height: calc(100% - 1rem)
+		height: 100%
 
 .tags
 	position: relative
@@ -772,15 +791,17 @@ $rtag_bgm: 0 // 0.4
 	width: 26rem
 	margin: 0 auto
 	text-transform: uppercase
-	margin-bottom: $BR
+	margin-bottom: 1rem
 
 	&-part
 		color: $color_gold
-		margin-bottom: 0.5rem
+		font-size: 1.4rem
+		margin-bottom: 0.3rem
 	&-total
 		margin: 0 auto
 		font-size: 2.8rem
 		text-align: right
+		margin-bottom: -0.5rem
 		&--title
 			float: left
 			font-size: 1.6rem
@@ -794,7 +815,8 @@ $rtag_bgm: 0 // 0.4
 	&-divider
 		width: 100%
 		height: 2px
-		margin: 1.4rem 0
+		margin: 1rem 0
+		margin-top: 0.7rem
 		border-bottom: 1px dashed $color_gold
 
 .agree
@@ -803,6 +825,8 @@ $rtag_bgm: 0 // 0.4
 		margin-bottom: $BR
 	p
 		padding-left: 2rem
+	&--p
+		font-size: 1.4rem
 
 .swcheck
 	input[type=checkbox]
@@ -834,12 +858,38 @@ $rtag_bgm: 0 // 0.4
 .customer
 	&-line
 		display: flex
-		border: 2px solid $color_gold
+		border: 0.2rem solid $color_gold
 		border-radius: 0.5rem
+		margin-bottom: 1rem
 		img
 			padding: 0.4rem
-		&:first-child
-			margin-bottom: $BR
+		
+		&--message
+			align-items: center
+			height: 3.5rem
+			img
+				width: 4rem
+				height: 3rem
+			span
+				padding-left: 1rem
+				font-weight: 300
+				white-space: nowrap
+				text-overflow: ellipsis
+				overflow: hidden
+		&--empty
+			opacity: 0.5
+	&-comment
+		&--wrap
+			width: auto
+	&-textarea
+		background: no-repeat
+		color: #fff
+		border: 0.2rem solid $color_gold
+		padding: 1rem
+		border-radius: 0.5rem
+		margin-bottom: 2rem
+
+		// &:first-child
 	// &-message
 	// 	width: 100%
 	// 	height: 8vh
@@ -945,10 +995,10 @@ $rtag_bgm: 0 // 0.4
 				&:nth-child(3)
 					width: 80%
 					margin: 0 auto
-					margin-bottom: 7rem
+					margin-bottom: 3rem
 					font-size: 1.2em
 			div
-				border: 2px solid #fff
+				border: 0.2rem solid #fff
 				padding: 1rem
 				width: 9rem
 				margin: 0 auto
@@ -956,6 +1006,13 @@ $rtag_bgm: 0 // 0.4
 			&--done
 				opacity: 1
 				transition: opacity 1s 1s
+		&-link
+			margin-bottom: 3rem
+			display: inline-block
+			border: 0.2rem solid #fff
+			padding: 1.2rem
+			border-radius: 1rem
+			text-transform: uppercase
 
 @keyframes animsendcar
 	0%
@@ -989,14 +1046,14 @@ $rtag_bgm: 0 // 0.4
 		::ng-deep 
 			.null
 				border-color: $color
-				&-icon,
-				&-info--null
-					background-color: $color
+				background: none
+				// &-icon,
+				// &-info--null
+					// background-color: $color
 	&-loc
 		border-color: $color
 		div 
-			background-color: $color
-		// input 
+			// background-color: $color
 
 .valid
 	&--Y
@@ -1041,8 +1098,9 @@ $rtag_bgm: 0 // 0.4
 
 .debugprice
 	width: 100%
-	position: fixed
+	position: absolute
 	top: 13rem
+	left: 0
 	background-color: $color_bg_BL
 	padding: 1rem 2rem
 	bottom: 5rem
@@ -1113,12 +1171,16 @@ $rtag_bgm: 0 // 0.4
 
 	.hamovil
 		background: none
-	.adress
+	.address
 		direction: rtl
-		.location-adress
+		.location-address
 			input
 				padding-left: 0
 				padding-right: 1rem
+			.location-address-name
+				// direction: ltr
+				// padding-left: 0
+				// padding-right: 1rem
 		.circle--line
 			&:after
 				right: 2.8rem
@@ -1247,8 +1309,9 @@ $rtag_bgm: 0 // 0.4
 		input
 			padding: 0
 			padding-right: 1rem
-		&-line
-			&:last-child
-				input
-					direction: ltr
-					text-align: right
+			direction: ltr
+			text-align: right
+		&-line--message
+			span
+				padding: 0
+				padding-right: 1rem

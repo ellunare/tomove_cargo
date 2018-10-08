@@ -16,7 +16,7 @@ import { LNG_PACK } from '../../shared/models/LOCALIZATION'
 	templateUrl: './request.component.html',
 	styleUrls: ['./request.component.sass']
 })
-export class RequestComponent implements OnInit, AfterViewInit {
+export class RequestComponent implements OnInit /*, AfterViewInit */ {
 
 	lng = undefined
 	LNG = LNG_PACK
@@ -47,12 +47,14 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// @ViewChildren('aci') acinputs: QueryList<ElementRef>  //  Autocomplete Inputs
 	@ViewChildren('plie') plies  //  Place Info Edits
 
+	first_page_valid = true
+
 	// ---------------------------------------------------------------------- 2
 
 	request: any = {
 		requestID: undefined,
 		xx: undefined,
-		adress: {
+		address: {
 			o: {
 				info: {
 					e: undefined,
@@ -136,14 +138,15 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		},
 		customer: {
 			name: undefined,
-			phone: undefined
+			phone: undefined,
+			comment: undefined
 		},
 		price: {
 			transportation: undefined,
 			packing: undefined,
 			boxes: undefined
 		},
-		comment: '0',
+		comment: undefined,
 		timestamp: undefined,
 		closed: false,
 		responsible: {
@@ -190,7 +193,10 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	coef_refresh = false
 
 	agree_valid = false
-	first_page_valid = true
+
+	modal = {
+		comment: false
+	}
 
 	@ViewChild('canvasSS') public canvaSS: ElementRef
 	xx_canvas_msg: string = ''
@@ -218,6 +224,8 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	prevent = false
 
+	device
+
 	// ---------------------------------------------------------------------- MISC
 
 	constructor(
@@ -235,16 +243,23 @@ export class RequestComponent implements OnInit, AfterViewInit {
 		this.getFurniture(null)
 
 		this.__initAdmin()
+
+		let detectDeviceType = () =>
+			/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+				? 'M'
+				: 'D'
+
+		this.device = detectDeviceType()
 	}
 
-	ngAfterViewInit() {
-		// let inputs = this.acinputs['_results']
-		// for (let i of inputs) {
-		// 	let el = i.nativeElement
-		// 		, t = el.dataset.atype
-		// 	this.mapFormLoader(t, el)
-		// }
-	}
+	// ngAfterViewInit() {
+	// let inputs = this.acinputs['_results']
+	// for (let i of inputs) {
+	// 	let el = i.nativeElement
+	// 		, t = el.dataset.atype
+	// 	this.mapFormLoader(t, el)
+	// }
+	// }
 
 	getLNG() {
 		this._AR.parent.params.subscribe(params => {
@@ -284,7 +299,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 
 	getLift(T, F) {
-		let L = this.request.adress[T].lift
+		let L = this.request.address[T].lift
 			, C = {
 				0: '',
 				1: 'swlift--one',
@@ -300,7 +315,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	// 	this._maps.autocomplete(el, T)
 	// 		.subscribe(data => {
-	// 			Object.assign(this.request.adress[t], data)
+	// 			Object.assign(this.request.address[t], data)
 	// 			this.map_render_search[T] = true
 
 	// 			this.getDistance()
@@ -310,16 +325,15 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	COORDS() {
 		return {
-			OLAT: this.request.adress.o.lat,
-			OLNG: this.request.adress.o.lng,
-			DLAT: this.request.adress.d.lat,
-			DLNG: this.request.adress.d.lng
+			OLAT: this.request.address.o.lat,
+			OLNG: this.request.address.o.lng,
+			DLAT: this.request.address.d.lat,
+			DLNG: this.request.address.d.lng
 		}
 	}
 
 	getDistance() {
 		if (this.map_render_search.O && this.map_render_search.D)
-
 			this._maps.distanceMatrix(this.COORDS())   // Get distance from MapService
 				.then((data: any) => {
 					if (data.status === 'ZR') return this.request.route.distance = -999
@@ -352,9 +366,9 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	evPlaceEdited(e, T) {
-		this.request.adress[T].info = e
+		this.request.address[T].info = e
 
-		if (e.t === 'store') this.request.adress[T].lift = 0   // Блокируем лифт
+		if (e.t === 'store') this.request.address[T].lift = 0   // Блокируем лифт
 	}
 
 	showOnMap(T) {
@@ -362,7 +376,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	selectLocation(T) {
-		let INFO = JSON.parse(JSON.stringify(this.request.adress[T]))
+		let INFO = JSON.parse(JSON.stringify(this.request.address[T]))
 		delete INFO.info
 		delete INFO.lift
 
@@ -370,7 +384,11 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	evLocationSelected(e) {
-		Object.assign(this.request.adress[e.T], e.info)
+		Object.assign(this.request.address[e.T], e.info)
+
+		this.map_render_search[(e.T.toUpperCase())] = true
+		this.getDistance()
+		setTimeout(() => { if (this.valert('R1_SL', e.T) && !this.valert('R1_PI', e.T)) this.editPlaceInfo(e.T) }, 500)
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
@@ -716,9 +734,9 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	///////////////////////////////////////////////////////////////////////////////////////////////////// PRICING
 
 	_getFloorM(T) {
-		let isLift = this.request.adress[T].lift
+		let isLift = this.request.address[T].lift
 
-			, count = Math.abs(+this.request.adress[T].info.f) || 0
+			, count = Math.abs(+this.request.address[T].info.f) || 0
 			, multiplier = isLift ? 0.005 : 0.025
 			, max = isLift ? 0.05 : 0.2
 
@@ -841,7 +859,7 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	valert(x, place) {
 		let R = this.request
-			, PL = R.adress[place]  // PLACE
+			, PL = R.address[place]  // PLACE
 
 		// LOCATION
 		if (x === 'R1_SL') if (PL.city && PL.street && PL.number) return true
@@ -900,27 +918,34 @@ export class RequestComponent implements OnInit, AfterViewInit {
 	}
 
 	confirm() {
-		// this.xx_loader = true
 		// this.xx_result = 'suc'
-		// setTimeout(() => this.xx_done = true, 3000)
 		// console.log(this.request)
+
+		this.xx_loader = true
+		setTimeout(() => this.xx_done = true, 3000)
 		if (this.validation('confirm')) this.canvasDraw()
 	}
 
 	sendOK() {
-		if (this.xx_result == 'err') window.location.assign('https://tomove.co/')
+		if (this.xx_result == 'err') window.location.assign('https://hamovil-sheli.co.il/')
 
 		if (this.xx_done && this.xx_result != 'err') {
 			// this.xx_loader = false
 			// this.xx_done = false
 			// this.xx_result = 'err'
-			window.location.assign('https://tomove.co/')
+			window.location.assign('https://hamovil-sheli.co.il/')
 		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////
 	// MISC - -----------------------------------------------------------------------------------//
 	// ////////////////////////////////////////////////////////////////////////////////////////////
+
+	openModal(key, F) {
+		this.modal[key] = F
+
+		if (key == 'comment') if (!this.request.customer.comment) this.request.customer.comment = undefined
+	}
 
 	generateRequestID() {
 		let D = new Date()
@@ -978,6 +1003,13 @@ export class RequestComponent implements OnInit, AfterViewInit {
 
 	// 	return this.LNG[this.lng].date.datenull
 	// }
+
+	getLocationAdress(T) {
+		let A = this.request.address[T]
+
+		if (A.city) return A.street + ' ' + A.number + ', ' + A.city
+		else false
+	}
 
 	showDatePart(T, X) {
 		return this.request[T].date[X] || this.LNG[this.lng].date.datenull[X]

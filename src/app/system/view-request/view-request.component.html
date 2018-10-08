@@ -53,47 +53,47 @@
 
 
 	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS  -->
-	<div class="p2  adress"  *ngFor="let a of ADRESSES"  [class.none]="repack && a === 'd'">
-		<div class="adress-circle"  [class.adress-circle--green]="a === 'o'"  [class.adress-circle--line]="!repack && a === 'o'"></div>
+	<div class="p2  address"  *ngFor="let a of ADRESSES"  [class.none]="repack && a === 'd'">
+		<div class="address-circle"  [class.address-circle--green]="a === 'o'"  [class.address-circle--line]="!repack && a === 'o'"></div>
 
-		<div class="adress-info">
+		<div class="address-info">
 
-			<div class="adress-info-up">
-				<div class="adress-info-text">
-					<p>{{request.adress[a].city}}</p>
+			<div class="address-info-up">
+				<div class="address-info-text">
+					<p>{{request.address[a].city}}</p>
 					<div class="flex">
-						<p>{{request.adress[a].street}}</p>
+						<p>{{request.address[a].street}}</p>
 						<p>
-							<span [class.adress-info--zerotext]="!getAccess()">{{request.adress[a].number}}</span>
+							<span [class.address-info--zerotext]="!getAccess()">{{request.address[a].number}}</span>
 							<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
 						</p>
 					</div>
 				</div>
 
-				<a class="adress-info-navigate" 
+				<a class="address-info-navigate" 
 					[class.none]="!getAccess()"
 					target="_blank" [href]="wazeLink(a)">
 					<img src="assets/i/finish.svg">
 				</a>
 			</div>
 
-			<p class="adress-info-type"><img [src]="'assets/i/pi_o_t' + request.adress[a].info.t[0] + '.svg'">{{LNG[lng].r1.loc.t[request.adress[a].info.t[0]]}}</p>
+			<p class="address-info-type"><img [src]="'assets/i/pi_o_t' + request.address[a].info.t[0] + '.svg'">{{LNG[lng].r1.loc.t[request.address[a].info.t[0]]}}</p>
 
-			<div class="adress-place"  [class.adress-place--hidden]="render('store', a, X)">
+			<div class="address-place"  [class.address-place--hidden]="render('store', a, X)">
 
-				<div class="adress-place-item"  *ngFor="let X of placeItems"
-					[class.adress-place-item--translucent]="!render('items', a, X)">
+				<div class="address-place-item"  *ngFor="let X of placeItems"
+					[class.address-place-item--translucent]="!render('items', a, X)">
 
 					<img src="{{'assets/i/pi_o_' + X + '.svg'}}">
 					<p>
-						<span [class.none]="render('value', a, X)">{{request.adress[a].info[X]}}</span>
+						<span [class.none]="render('value', a, X)">{{request.address[a].info[X]}}</span>
 						<img class="lock" src="assets/i/lock.svg" *ngIf="render('value', a, X)">
 					</p>
 
 				</div>
 
-				<div class="adress-place-item">
-					<p class="adress-place-item--lift">
+				<div class="address-place-item">
+					<p class="address-place-item--lift">
 						<span>{{LNG[lng].r1.lift.t}}</span>
 						<span class="lift" [ngClass]="lift(a, 'C')">{{lift(a, 'T')}}</span>
 					</p>
@@ -219,8 +219,8 @@
 	<br>
 
 	<div class="p2  comment"  [class.none]="repack || remove || !getAccess()">
-		<p class="comment-title" *ngIf="request.comment != 0 || edit">{{LNG[lng].c.comment}}</p>
-		<p class="comment-text" *ngIf="request.comment != 0"  [class.none]="edit">{{request.comment}}</p>
+		<p class="comment-title" *ngIf="request.comment || edit">{{LNG[lng].c.comment}}</p>
+		<p class="comment-text" *ngIf="request.comment"  [class.none]="edit">{{request.comment}}</p>
 		<textarea *ngIf="edit"  [(ngModel)]="request.comment"  rows="5"></textarea>
 	</div>
 
@@ -243,6 +243,12 @@
 			<img class="customer-icon" src="assets/i/phone.svg"> 
 			<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
 			<a class="customer-line--phone" href="{{'tel:+' + phonePrepare()}}" *ngIf="getAccess()">{{request.customer.phone}}</a>
+		</div>
+
+		<div class="customer-line  customer-comment"  *ngIf="request.customer.comment">
+			<img class="customer-icon" src="assets/i/chat.svg"> 
+			<img class="lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
+			<p *ngIf="getAccess()">{{request.customer.comment}}</p>
 		</div>
 	</div>
 

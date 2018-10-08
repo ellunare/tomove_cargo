@@ -40,27 +40,27 @@ export class MapsGoogleService {
 
 	_prepareAdress(place) {
 		// console.log(place)
-		let adress: any = {}
+		let address: any = {}
 
 		for (let _adr of place) {
 			for (let _type of _adr.types) {
 
 				if (_type === 'locality') {
-					adress.city = _adr.long_name
+					address.city = _adr.long_name
 					break
 				}
 				if (_type === 'route') {
-					adress.street = _adr.long_name
+					address.street = _adr.long_name
 					break
 				}
 				if (_type === 'street_number') {
-					adress.number = _adr.long_name
+					address.number = _adr.long_name
 					break
 				}
 			}
 		}
 
-		return adress
+		return address
 	}
 
 
@@ -68,15 +68,14 @@ export class MapsGoogleService {
 		return Observable.create(observer => {
 			this._mapsAPILoader
 				.load()
-				.then(() => {
-					//////////////////////////////////////////////////////////////////////////////////////////////////////
-					let input__ = new google.maps.places.Autocomplete(input_element)
+				.then(() => { ////////////////////////////////////////////////////////////////////////////////////////////
+					let INPUT = new google.maps.places.Autocomplete(input_element)
 
-					input__.addListener("place_changed", () => {
+					INPUT.addListener("place_changed", () => {
 						this._ngZone.run(() => {
-							let place__: google.maps.places.PlaceResult = input__.getPlace()
+							let place__: google.maps.places.PlaceResult = INPUT.getPlace()
 
-							if (place__.geometry === undefined || place__.geometry === null) { return }
+							if (place__.geometry === undefined || place__.geometry === null) return
 
 							const ADRESS: any = this._prepareAdress(place__.address_components)
 
@@ -92,8 +91,7 @@ export class MapsGoogleService {
 							// observer.complete()
 						})
 					})
-					//////////////////////////////////////////////////////////////////////////////////////////////////////
-				})
+				})  //////////////////////////////////////////////////////////////////////////////////////////////////////
 		})
 	}
 
@@ -197,111 +195,111 @@ export class MapsGoogleService {
 	}
 
 	showOnMap(map_element, mode, COORDS) {
-		return Observable.create(observer => {
+		// return Observable.create(observer => {
 
-			this.gpsGetCenter(mode, COORDS).then((center: any) => {    // Получаем центр
+		this.gpsGetCenter(mode, COORDS).then((center: any) => {    // Получаем центр
 
-				this._mapsAPILoader
-					.load()
-					.then(() => {    // После этого рисуем его на карте
+			this._mapsAPILoader
+				.load()
+				.then(() => {    // После этого рисуем его на карте
 
-						let _map_options = {
-							center: center,
-							zoom: 16,
-							disableDefaultUI: true,
-							styles: this.agm.style
-							// mapTypeId: 'roadmap'
-						}
+					let _map_options = {
+						center: center,
+						zoom: 16,
+						disableDefaultUI: true,
+						styles: this.agm.style
+						// mapTypeId: 'roadmap'
+					}
 
-						let _MAP = new google.maps.Map(map_element, _map_options)
+					let _MAP = new google.maps.Map(map_element, _map_options)
 
-						if (mode === 'R') {    // ОПЦИИ для маршрута
-							let bounds = new google.maps.LatLngBounds()
-								, loc = new google.maps.LatLng(center.lat, center.lng)
+					if (mode === 'R') {    // ОПЦИИ для маршрута
+						let bounds = new google.maps.LatLngBounds()
+							, loc = new google.maps.LatLng(center.lat, center.lng)
 
-							bounds.extend(loc)
-							_MAP.panToBounds(bounds)
-							_MAP.fitBounds(bounds)
-						}
+						bounds.extend(loc)
+						_MAP.panToBounds(bounds)
+						_MAP.fitBounds(bounds)
+					}
 
-						if (mode !== 'R') {    // МАРКЕР для одиночной карты
-							let marker = new google.maps.Marker({
-								position: center,
-								map: _MAP,
-								icon: {
-									url: 'assets/i/marker41.png',
-									size: new google.maps.Size(50, 50),
-									origin: new google.maps.Point(0, 0),
-									anchor: new google.maps.Point(25, 50)
-								},
-								animation: google.maps.Animation.DROP
-							})
-						}
+					if (mode !== 'R') {    // МАРКЕР для одиночной карты
+						let marker = new google.maps.Marker({
+							position: center,
+							map: _MAP,
+							icon: {
+								url: 'assets/i/marker41.png',
+								size: new google.maps.Size(50, 50),
+								origin: new google.maps.Point(0, 0),
+								anchor: new google.maps.Point(25, 50)
+							},
+							animation: google.maps.Animation.DROP
+						})
+					}
 
-						if (mode !== 'R') {  //////////////////////////////////////////////////////////////// DRAG
-							let self = this
-								, _MARKERS = []
-								, _canSearchFlag = false
-								, _idle = false
+					// if (mode !== 'R') {  //////////////////////////////////////////////////////////////// DRAG
+					// 	let self = this
+					// 		, _MARKERS = []
+					// 		, _canSearchFlag = false
+					// 		, _idle = false
 
-							_MAP.addListener("dragstart", () => _idle = false)
+					// 	_MAP.addListener("dragstart", () => _idle = false)
 
-							_MAP.addListener("dragend", () => {
+					// 	_MAP.addListener("dragend", () => {
 
-								this._ngZone.run(() => {
-									observer.next('cansearch')
-									_canSearchFlag = true
-									_idle = true
+					// 		this._ngZone.run(() => {
+					// 			observer.next('cansearch')
+					// 			_canSearchFlag = true
+					// 			_idle = true
 
-									setTimeout(() => {
-										if (_canSearchFlag && _idle) {
+					// 			setTimeout(() => {
+					// 				if (_canSearchFlag && _idle) {
 
-											for (let M of _MARKERS) M.setMap(null)    /// Обнуляем маркеры
-											_MARKERS = []
+					// 					for (let M of _MARKERS) M.setMap(null)    /// Обнуляем маркеры
+					// 					_MARKERS = []
 
-											let _DRAGCENTER = _MAP.getCenter()    /// Получаем центр карты
-												, _DRAGCOORDS = { lat: _DRAGCENTER.lat(), lng: _DRAGCENTER.lng() }
+					// 					let _DRAGCENTER = _MAP.getCenter()    /// Получаем центр карты
+					// 						, _DRAGCOORDS = { lat: _DRAGCENTER.lat(), lng: _DRAGCENTER.lng() }
 
-												, _dragmarker = new google.maps.Marker({
-													position: _DRAGCOORDS,
-													map: _MAP,
-													icon: {
-														url: 'assets/i/pin.png',
-														size: new google.maps.Size(32, 32),
-														origin: new google.maps.Point(0, 0),
-														anchor: new google.maps.Point(16, 32)
-													},
-												})
+					// 						, _dragmarker = new google.maps.Marker({
+					// 							position: _DRAGCOORDS,
+					// 							map: _MAP,
+					// 							icon: {
+					// 								url: 'assets/i/pin.png',
+					// 								size: new google.maps.Size(32, 32),
+					// 								origin: new google.maps.Point(0, 0),
+					// 								anchor: new google.maps.Point(16, 32)
+					// 							},
+					// 						})
 
-											_MARKERS.push(_dragmarker)
+					// 					_MARKERS.push(_dragmarker)
 
-											self.geocodeLatLng(_DRAGCOORDS).then(dragdata => {
-												_canSearchFlag = false
-												observer.next(dragdata)
-											})
+					// 					self.geocodeLatLng(_DRAGCOORDS).then(dragdata => {
+					// 						_canSearchFlag = false
+					// 						observer.next(dragdata)
+					// 					})
 
-										}
-									}, 2500)
+					// 				}
+					// 			}, 2500)
 
-								})  // zone
+					// 		})  // zone
 
-							})
-						}  ////////////////////////////////////////////////////////////////////////////////// DRAG
+					// 	})
+					// }  ////////////////////////////////////////////////////////////////////////////////// DRAG
 
 
-						// РЕНДЕР КАРТЫ
-						var directionsDisplay = new google.maps.DirectionsRenderer
-						directionsDisplay.setMap(_MAP)
+					// РЕНДЕР КАРТЫ
+					var directionsDisplay = new google.maps.DirectionsRenderer
+					directionsDisplay.setMap(_MAP)
 
-						if (mode === 'R') {    // Отображаем маршрут
-							var directionsService = new google.maps.DirectionsService
-							this.calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS)
-						}
-					})
-
-			})
+					if (mode === 'R') {    // Отображаем маршрут
+						var directionsService = new google.maps.DirectionsService
+						this.calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS)
+					}
+				})
 
 		})
+
+		// })
 	}
 
 	calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS) {

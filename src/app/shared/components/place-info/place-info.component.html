@@ -1,7 +1,7 @@
 <div class="null"  [class.hebrew]="lng === 'he'">  <!-- (click)="showEdit('show')"  -->
 
 	<div class="null-icon">
-		<img [src]="'assets/i/pi_' + (isEdited() ? 'edit' : 'plus') + '.svg'">
+		<img src="assets/i/{{isEdited() ? 'edit' : 'pi_plus'}}.svg">
 	</div>
 
 	<div class="null-info  null-info--null" *ngIf="!isEdited()">
@@ -10,12 +10,12 @@
 
 	<div class="null-info  null-info--edited" *ngIf="isEdited()">
 		<div class="null-info__item">
-			<img [src]="'assets/i/pi_o_t' + info.t[0] + '.svg'">
+			<img src="assets/i/pi_o_t{{info.t[0]}}.svg">
 			<span>{{LNG[lng].r1.loc.t[info.t[0]][0]}}</span>
 		</div>
 
 		<div class="null-info__item"  *ngFor="let o of _render.params"  [class.null-info__item--none]="!info[o.t[0]]">
-			<img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}">
+			<img src="assets/i/pi_o_{{o.t[0]}}.svg">
 			<span>{{info[o.t[0]]}}</span>
 		</div>
 	</div>
@@ -56,7 +56,7 @@
 			<p>{{LNG[lng].r1.loc.b[o.t[0]]}}</p>
 			<div class="pi-item-wrap">
 
-				<div class="pi-item-wrap__icon"><img src="{{'assets/i/pi_o_' + o.t[0] + '.svg'}}"></div>
+				<div class="pi-item-wrap__icon"><img src="assets/i/pi_o_{{o.t[0]}}.svg"></div>
 
 				<div class="pi-item-wrap__input">
 					<input 
@@ -79,4 +79,5 @@
 <div style="display: none">
 	<img height="0" src="assets/i/pi_plus.svg">
 	<img height="0" src="assets/i/pi_edit.svg">
+	<img height="0" src="assets/i/edit.svg">
 </div>

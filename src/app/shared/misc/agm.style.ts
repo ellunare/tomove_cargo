@@ -49,7 +49,8 @@ export const AGM_STYLE = [
 		elementType: "geometry.stroke",
 		stylers: [
 			{ visibility: "on" },
-			{ color: "#cccccc" }
+			{ color: "#333333" },
+			{ lightness: -20 }
 		]
 	},
 	{

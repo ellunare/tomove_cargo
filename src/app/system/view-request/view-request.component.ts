@@ -69,8 +69,8 @@ export class ViewRequestComponent implements OnInit {
 			.subscribe(data => {
 				this.request = data.request
 
-				if (this.request.comment === '0') this.request.comment = '' // Обнуляем коммент
-				console.log('----------', this.request)
+				// if (this.request.comment === '0') this.request.comment = '' // Обнуляем коммент
+				// console.log('----------', this.request)
 			})
 
 		this._AR.queryParams    // Получаем query параметры
@@ -165,7 +165,7 @@ export class ViewRequestComponent implements OnInit {
 	}
 
 	updateRequest() {
-		const _confirm = confirm('SAVE CHANGES?')
+		let _confirm = confirm('SAVE CHANGES?')
 		if (_confirm) {
 			let body = {
 				date: this.request.date.date,
@@ -227,7 +227,7 @@ export class ViewRequestComponent implements OnInit {
 	/////////////////////////////////////////////////////////////////// MISC
 
 	render(F, T, X) {
-		let AI = this.request.adress[T].info
+		let AI = this.request.address[T].info
 		// Полупрозрачный если нет значения
 		if (F === 'items') if (AI[X]) return true
 
@@ -235,7 +235,7 @@ export class ViewRequestComponent implements OnInit {
 		if (F === 'value') if (!this.getAccess() && (X === 'e' || X === 'n' || (X === 'f' && !AI['f']))) return true
 
 		// Не виден если дом или склад
-		if (F === 'store') if (this.request.adress[T].info.t === 'store') return true
+		if (F === 'store') if (this.request.address[T].info.t === 'store') return true
 	}
 
 	// showSwipe(roomimg) {
@@ -243,7 +243,7 @@ export class ViewRequestComponent implements OnInit {
 	// }
 
 	lift(T, F) {
-		let LIFT = this.request.adress[T].lift
+		let LIFT = this.request.address[T].lift
 			, L = this.LNG[this.lng].r1.lift
 			, O = {
 				T: {
@@ -328,30 +328,30 @@ export class ViewRequestComponent implements OnInit {
 	}
 
 	getRoomItemsCount(R) {
-		let S = 0
-		for (let i of R.tags) S += i.count
-		return S
+		let SUM = 0
+		for (let i of R.tags) SUM += i.count
+		return SUM
 	}
 
 	showOnMap() {
 		const COORDS = {
-			OLAT: this.request.adress.o.lat,
-			OLNG: this.request.adress.o.lng,
-			DLAT: this.request.adress.d.lat,
-			DLNG: this.request.adress.d.lng
+			OLAT: this.request.address.o.lat,
+			OLNG: this.request.address.o.lng,
+			DLAT: this.request.address.d.lat,
+			DLNG: this.request.address.d.lng
 		}
-		if (this.getAccess()) this.gmap.showMap('R', COORDS)
+		if (this.getAccess()) this.gmap.showRouteMap('R', COORDS)
 	}
 
 	wazeLink(T) {
-		const link = 'waze://?ll=' + this.request.adress[T].lat + ',' + this.request.adress[T].lng + '&navigate=yes'
+		const link = 'waze://?ll=' + this.request.address[T].lat + ',' + this.request.address[T].lng + '&navigate=yes'
 		return this.sanitizer.bypassSecurityTrustUrl(link)
 	}
 
 	_edit() {
 		this.edit = !this.edit
 
-		if (!this.edit) this.nullBoxesDateFlag = false // Флаг обнуления даты коробок
+		if (!this.edit) this.nullBoxesDateFlag = false // Флаг обнуления даты коробок при закрытии
 	}
 
 	nullBoxesDate() {
