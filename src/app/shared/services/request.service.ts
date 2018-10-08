@@ -31,8 +31,11 @@ export class RequestService {
 		return this._http.post(this.baseUrl + this.addUrl.uploadFile, data, { headers: headers })
 	}
 
-	getRequestByID(id) {
-		return this._http.get(this.baseUrl + this.addUrl.getByID + id)
+	getRequestByID(id, qp) {
+		let QP: any = {}
+		if (qp != null) QP = qp
+
+		return this._http.get(this.baseUrl + this.addUrl.getByID + id, { params: QP })
 	}
 
 	getRequestsByMY(query) {

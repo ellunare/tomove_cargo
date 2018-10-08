@@ -9,7 +9,7 @@
 			<div class="req-one-leftline"  [class.req-one-leftline--p]="isMode(r, 'P')"  [class.req-one-leftline--b]="isMode(r, 'B')"  [class.req-one-leftline--sameday]="r.packing.pack && r.packing.sameday"></div>
 
 			<div class="req-one-right">
-				<a class="req-one-link" target="_blank" [href]="'https://app.hamovil-sheli.co.il/' + lng + '/db/' + r.requestID">
+				<a class="req-one-link" target="_blank" [href]="baseURL + lng + '/db/' + r.requestID">
 					<img [src]="'assets/i/tv_view_' + (r.closed ? 'c' : 'o') + '.svg'">
 				</a>
 
@@ -121,7 +121,7 @@
 
 		<div class="calendar-btns  p2" style="position: absolute; bottom: 1rem">
 			<div class="btn" (click)="monthPager('prev')" [class.hidden]="!checkPrev()">{{LNG[lng].c.back}}</div>
-			<a class="new" *ngIf="!day_modal" target="_blank" [href]="'https://app.hamovil-sheli.co.il/' + lng + '/request'"><img src="assets/i/new.svg"></a>
+			<a class="new" *ngIf="!day_modal" target="_blank" [href]="baseURL + lng + '/request'"><img src="assets/i/new.svg"></a>
 			<div class="btn" (click)="monthPager('next')">{{LNG[lng].c.next}}</div>
 		</div>
 

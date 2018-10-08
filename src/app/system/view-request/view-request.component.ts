@@ -28,6 +28,7 @@ export class ViewRequestComponent implements OnInit {
 
 	temp_access: string = undefined
 	temp_correct_code: boolean = true
+	temp_code_cancheck: boolean = true
 
 	temp_closed = false
 
@@ -45,8 +46,8 @@ export class ViewRequestComponent implements OnInit {
 		m: false
 	}
 
-	remove = false
-	repack = false
+	// remove = false
+	// repack = false
 	nullBoxesDateFlag = false
 
 	@ViewChild('gmap') private gmap
@@ -69,24 +70,23 @@ export class ViewRequestComponent implements OnInit {
 			.subscribe(data => {
 				this.request = data.request
 
-				// if (this.request.comment === '0') this.request.comment = '' // Обнуляем коммент
-				// console.log('----------', this.request)
+				console.log('----------', this.request)
 			})
 
-		this._AR.queryParams    // Получаем query параметры
-			.subscribe(e => {
-				if (e.p) this.repack = true
-				if (e.m) this.remove = true
-			})
+		// this._AR.queryParams    // Получаем query параметры
+		// 	.subscribe(e => {
+		// 		if (e.p) this.repack = true
+		// 		if (e.m) this.remove = true
+		// 	})
 
 		this._AR.pathFromRoot[1].params    // Получаем язык
 			.subscribe(e => {
 				let lng = e.lng
-					, qp = this.getQP('O')
+				// , qp = this.getQP('O')
 
 				this.lng = this.LNG[lng] ? lng : 'en'
 
-				this._router.navigate([this.lng, 'db', this.request.requestID], { queryParams: qp })
+				this._router.navigate([this.lng, 'db', this.request.requestID]/*, { queryParams: qp }*/)
 			})
 
 		this.getFurniture(null)
@@ -95,7 +95,7 @@ export class ViewRequestComponent implements OnInit {
 
 		if (localStorage.getItem('_xad')) {
 			this.admin = true
-			if (this.repack || this.remove) this.admin = false
+			// if (this.repack || this.remove) this.admin = false
 		}
 
 	}
@@ -108,9 +108,53 @@ export class ViewRequestComponent implements OnInit {
 	}
 
 	initAccess() {
-		const A = localStorage.getItem('ac')
-		if (A === this.request.xx.toString()) this.access = true
+		// const A = localStorage.getItem('ac')
+		// if (A === this.request.xx.toString()) this.access = true
+		if (this.request.xx) this.access = true
 	}
+
+	getAccess() {
+		const access = this.access || this.admin
+		return access
+	}
+
+	setAccess(code) {
+		// localStorage.setItem('ac', this.temp_access.toString())
+		// this.temp_access = undefined
+		localStorage.setItem(this.request.requestID, code)
+		this.access = true
+	}
+
+	checkAccess(e) {
+		const code = e.target.value
+		// this.temp_correct_code = true
+
+		if (code.length < 4) this.temp_code_cancheck = true
+
+		if (code.length == 4 && this.temp_code_cancheck) {
+			this.temp_code_cancheck = false
+
+			this._request.getRequestByID(this.request.requestID, { code: code })
+				.toPromise()
+				.then((result: any) => {
+					if (result.data.xx) {
+						// console.log(result)
+						this.request = result.data
+						this.setAccess(code)
+					}
+					else this.temp_correct_code = false
+				})
+			// if (V === this.request.xx.toString()) this.setAccess()
+			// else this.temp_correct_code = false
+		}
+	}
+
+	quit() {
+		localStorage.removeItem('ac')
+		this.access = false
+	}
+
+
 
 	getPhoto(r) {
 		const baseURL = 'https://tmctestrequests.s3.amazonaws.com/requests/' + this.request.requestID + '/'
@@ -126,32 +170,6 @@ export class ViewRequestComponent implements OnInit {
 		const H = roomimg.clientHeight
 
 		return (H * tag['tag' + C]) / this.request.rawh - 10
-	}
-
-	getAccess() {
-		const access = this.access || this.admin
-		return access
-	}
-
-	setAccess() {
-		localStorage.setItem('ac', this.temp_access.toString())
-		this.temp_access = undefined
-		this.access = true
-	}
-
-	checkAccess(e) {
-		const V = e.target.value
-		this.temp_correct_code = true
-
-		if (V.length == 4) {
-			if (V === this.request.xx.toString()) this.setAccess()
-			else this.temp_correct_code = false
-		}
-	}
-
-	quit() {
-		localStorage.removeItem('ac')
-		this.access = false
 	}
 
 	deleteRequest() {
@@ -262,14 +280,14 @@ export class ViewRequestComponent implements OnInit {
 
 	showDatePart(type, X) {
 		let T = type
-		if (this.repack) T = 'packing'
+		// if (this.repack) T = 'packing'
 
 		return this.request[T].date[X]
 	}
 
 	showMonth(type) {
 		let T = type
-		if (this.repack) T = 'packing'
+		// if (this.repack) T = 'packing'
 
 		let objDate = new Date(this.request[T].date.m + '/' + this.request[T].date.d + '/' + this.request[T].date.y)
 			, locale = this.lng
@@ -310,11 +328,12 @@ export class ViewRequestComponent implements OnInit {
 	}
 
 	getPrice(F) {
-		let RP = this.request.price
+		let RP = this.request.price || {}
 		if (F === 'P') return RP.packing + RP.boxes
 		if (F === 'T') return RP.transportation
 
-		if (F === 'TOTAL') return (this.repack ? 0 : RP.transportation) + (this.remove ? 0 : RP.packing) + (this.request.boxes.boxes ? RP.boxes : 0)
+		// if (F === 'TOTAL') return (this.repack ? 0 : RP.transportation) + (this.remove ? 0 : RP.packing) + (this.request.boxes.boxes ? RP.boxes : 0)
+		if (F === 'TOTAL') return RP.transportation + RP.packing + (this.request.boxes.boxes ? RP.boxes : 0)
 
 		if (F === 'VAT') return Math.floor(0.17 * this.getPrice('TOTAL'))
 	}
@@ -386,18 +405,18 @@ export class ViewRequestComponent implements OnInit {
 	// 	console.log(e.target.value)
 	// }
 
-	getQP(F) {
-		let qp: any = {}
-		if (this.repack) qp.p = 1
-		if (this.remove) qp.m = 1
+	// getQP(F) {
+	// 	let qp: any = {}
+	// 	if (this.repack) qp.p = 1
+	// 	if (this.remove) qp.m = 1
 
-		if (F === 'O') return qp
-		if (F === 'S') for (let k in qp) return '?' + k + '=1'
-	}
+	// 	if (F === 'O') return qp
+	// 	if (F === 'S') for (let k in qp) return '?' + k + '=1'
+	// }
 
 	nextLNG() {
 		let L = this.lng
-			, qp = this.getQP('S') || ''
+		// , qp = this.getQP('S') || ''
 
 		switch (L) {
 			case 'en': L = 'ru'; break
@@ -405,20 +424,22 @@ export class ViewRequestComponent implements OnInit {
 			case 'he': L = 'en'; break
 		}
 		this.lng = L
-		this.location.go(this.lng + '/db/' + this.request.requestID + qp)
+		this.location.go(this.lng + '/db/' + this.request.requestID/* + qp*/)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////// LINK
 
 	copyToCB(flag) {
 
+		const baseURL = 'https://tmctestx.firebaseapp.com'
+
 		const add = {
 			f: '',
-			p: '?p=1',
-			m: '?m=1'
+			// p: '?p=1',
+			// m: '?m=1'
 		}
 
-		const str = 'https://tmctestx.firebaseapp.com/en/db/' + this.request.requestID + add[flag[0]]
+		const str = baseURL + '/en/db/' + this.request.requestID + add[flag[0]]
 
 		const iOS = navigator.platform.match(/ipad|ipod|iphone/i)
 

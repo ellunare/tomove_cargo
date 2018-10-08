@@ -42,6 +42,9 @@ export class TransporterviewComponent implements OnInit {
 		'box'
 	]
 
+	// baseURL = 'https://app.hamovil-sheli.co.il/'
+	baseURL = 'https://tmctestx.firebaseapp.com/'
+
 	constructor(
 		private _request: RequestService,
 		private _AR: ActivatedRoute,

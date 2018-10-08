@@ -9,19 +9,18 @@
 		<img [src]="'assets/i/' + (edit ? 'close_x2' : 'edit') + '.svg'"  (click)="_edit()">
 	</div>
 
-
 	<span class="lng"  (click)="nextLNG()">{{lng}}</span>
 
-
-	<div class="p2  upper"  [class.root--edit]="edit" [class.upper--repack]="repack" [class.upper--remove]="remove"  [class.upper--mod]="!repack && !remove">
+	<!-- [class.upper--repack]="repack" [class.upper--remove]="remove"  [class.upper--mod]="!repack && !remove" -->
+	<div class="p2  upper  upper--mod"  [class.root--edit]="edit"  >
 		<p class="upper-id"  [class.c_gold]="edit"><span>{{LNG[lng].c.request}}</span>:<span>{{request.requestID}}</span><span>{{getTimeStamp()}}</span></p>
 
 		<!-- <br *ngIf="!repack && !remove"> -->
 
-		<div class="title">
+		<!-- <div class="title">
 			<p class="title-repack"  *ngIf="repack">{{LNG[lng].c.repack}}</p>
 			<p class="title-remove"  *ngIf="remove">{{LNG[lng].c.remove}}</p>
-		</div>
+		</div> -->
 
 
 		<!-- DATE / TIME ///////////////////////////////////////////////////////////////////////////////////////// DATE / TIME -->
@@ -53,8 +52,10 @@
 
 
 	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS  -->
-	<div class="p2  address"  *ngFor="let a of ADRESSES"  [class.none]="repack && a === 'd'">
-		<div class="address-circle"  [class.address-circle--green]="a === 'o'"  [class.address-circle--line]="!repack && a === 'o'"></div>
+	<!-- [class.none]="repack && a === 'd'" -->
+	<div class="p2  address"  *ngFor="let a of ADRESSES">
+
+		<div class="address-circle"  [class.address-circle--line]="a === 'o'"  [class.address-circle--green]="a === 'o'"></div>
 
 		<div class="address-info">
 
@@ -105,8 +106,8 @@
 	</div>
 	<!-- /////////////////////////////////////////////////////////////////////////////////// ADRESS  -->
 
-
-	<div class="p2  distance"  (click)="showOnMap()"  *ngIf="!repack">
+  <!-- *ngIf="!repack" -->
+	<div class="p2  distance"  (click)="showOnMap()">
 		<img class="distance-icon"  src="assets/i/map.svg"  [class.distance-icon--disabled]="!getAccess()">
 		<img class="lock  distance-icon--lock" src="assets/i/lock.svg" *ngIf="!getAccess()">
 
@@ -116,8 +117,8 @@
 		<span class="distance-time">{{timeTransform(request.route.distance)}}</span>
 	</div>
 
-
-	<div *ngIf="!repack">
+	<!-- *ngIf="!repack" -->
+	<div>
 		<br>
 		<br>
 	</div>
@@ -131,12 +132,14 @@
 		</div>
 
 		<div class="carton-wrap">
-			<p class="carton-need" [class.none]="remove">{{LNG[lng].r3.c.cneed}}
+				<!-- [class.none]="remove" -->
+			<p class="carton-need">{{LNG[lng].r3.c.cneed}}
 				<span  [class.carton--yes]="request.boxes.boxes"  [class.carton--no]="!request.boxes.boxes">{{' ' + (request.boxes.boxes ? LNG[lng].c.yes : LNG[lng].c.no)}}</span>
 			</p>
 
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// КОРОБКИ -->
-			<div class="carton-packing"  *ngIf="request.boxes.boxes && !request.packing.pack" [class.none]="remove">
+			<!-- [class.none]="remove" -->
+			<div class="carton-packing"  *ngIf="request.boxes.boxes && !request.packing.pack">
 				<div class="carton-block  carton-boxes-title"  *ngIf="request.boxes.date.d">{{LNG[lng].r3.c.bringb}}</div>
 
 				<span class="dt"  *ngIf="request.boxes.date.d"  [class.none]="edit">
@@ -158,15 +161,16 @@
 
 
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// УПАКОВКА -->
-			<p class="carton-packing-title  carton-packing-block"  [class.none]="repack || remove">{{LNG[lng].c.repack}}:
+			<!-- [class.none]="repack || remove" -->
+			<p class="carton-packing-title  carton-packing-block">{{LNG[lng].c.repack}}:
 				<span  [class.carton--yes]="request.packing.pack"  [class.carton--no]="!request.packing.pack">{{' ' + (request.packing.pack ? LNG[lng].c.yes : LNG[lng].c.no)}}</span>
 			</p>
-
-			<div class="carton-packing"  *ngIf="request.packing.pack"  [class.none]="remove || repack">
-
-				<div class="carton-packing-block"  *ngIf="request.packing.sameday"  [class.dnone]="repack">{{LNG[lng].r3.c.samedays}}</div>
-
-				<div class="carton-packing-block"  *ngIf="!request.packing.sameday"  [class.dnone]="repack"  [class.none]="remove">
+			<!-- [class.none]="remove || repack" -->
+			<div class="carton-packing"  *ngIf="request.packing.pack">
+					<!-- [class.dnone]="repack" -->
+				<div class="carton-packing-block"  *ngIf="request.packing.sameday">{{LNG[lng].r3.c.samedays}}</div>
+				<!-- [class.dnone]="repack"  [class.none]="remove" -->
+				<div class="carton-packing-block"  *ngIf="!request.packing.sameday">
 					<span class="dt"  [class.none]="edit">
 						<span class="dt-d">{{showDatePart('packing', 'd')}}</span>
 						<span class="dt-m">{{showMonth('packing')}}</span>
@@ -185,8 +189,8 @@
 						<input type="number" *ngIf="edit" class="edit-input  edit-input--mw" [(ngModel)]="request.price.packing">
 					</p>
 				</div>
-
-				<div class="responsible  responsible--packing"  *ngIf="(request.responsible.packing || edit) && !request.packing.sameday"  [class.none]="repack || remove || !getAccess()">
+				<!-- repack || remove ||  -->
+				<div class="responsible  responsible--packing"  *ngIf="(request.responsible.packing || edit) && !request.packing.sameday"  [class.none]="!getAccess()">
 					<img src="assets/i/box.svg">
 					<span [class.none]="edit">{{request.responsible.packing}}</span>
 					<input type="text" *ngIf="edit" class="edit-input" [(ngModel)]="request.responsible.packing"  placeholder="{{LNG[lng].misc.responsible}}">
@@ -198,8 +202,8 @@
 		</div>
 
 	</div>
-
-	<p class="price-transportation"  *ngIf="!request.packing.sameday"  [class.none]="repack || remove">+ {{LNG[lng].r3.p.trn}} ₪ {{getPrice('T')}}</p>
+  <!-- [class.none]="repack || remove" -->
+	<p class="price-transportation"  *ngIf="!request.packing.sameday">+ {{LNG[lng].r3.p.trn}} ₪ {{getPrice('T')}}</p>
 
 	<div class="price">
 		<p class="price-line"  [class.root--edit]="edit">{{LNG[lng].r3.p.total}} ₪ 
@@ -208,8 +212,8 @@
 		</p>
 		<p class="price-vat"  [class.none]="!getAccess()">+ {{LNG[lng].r3.p.vat}} 17% : ₪ {{getPrice('VAT')}}</p>
 	</div>
-
-	<div class="responsible"  *ngIf="request.responsible.transportation || edit"  [class.none]="repack || remove || !getAccess()">
+	<!-- repack || remove ||  -->
+	<div class="responsible"  *ngIf="request.responsible.transportation || edit"  [class.none]="!getAccess()">
 		<img src="assets/i/truck.svg">
 		<span [class.none]="edit">{{request.responsible.transportation}}</span>
 		<input type="text" *ngIf="edit" class="edit-input" [(ngModel)]="request.responsible.transportation"  placeholder="{{LNG[lng].misc.responsible}}">
@@ -217,16 +221,16 @@
 
 
 	<br>
-
-	<div class="p2  comment"  [class.none]="repack || remove || !getAccess()">
+	<!-- repack || remove ||  -->
+	<div class="p2  comment"  [class.none]="!getAccess()">
 		<p class="comment-title" *ngIf="request.comment || edit">{{LNG[lng].c.comment}}</p>
 		<p class="comment-text" *ngIf="request.comment"  [class.none]="edit">{{request.comment}}</p>
 		<textarea *ngIf="edit"  [(ngModel)]="request.comment"  rows="5"></textarea>
 	</div>
 
 	<br>
-
-	<div class="p2 agree"  [class.none]="repack">
+  <!-- [class.none]="repack" -->
+	<div class="p2 agree">
 		<div class="agree-check"></div>
 		<p>{{LNG[lng].r3.customer.agree}}</p>
 	</div>
@@ -252,8 +256,9 @@
 		</div>
 	</div>
 
-
-	<div class="p2  agree  closed"  [class.closed--open]="!request.closed"  [class.closed--loading]="temp_closed"  (click)="closeRequest()"  [class.none]="repack || remove || !getAccess()">
+	<!-- repack || remove ||  -->
+	<!-- [class.none]="!getAccess()" -->
+	<div class="p2  agree  closed"  *ngIf="admin"  [class.closed--open]="!request.closed"  [class.closed--loading]="temp_closed"  (click)="closeRequest()">
 		<div class="agree-check"  [class.closed--unchecked]="!request.closed"></div>
 		<p>{{LNG[lng].c.request}} {{LNG[lng].misc[request.closed ? 'closed' : 'opened']}}</p>
 	</div>
@@ -279,8 +284,8 @@
 			<span>{{i + 1}}  {{getRoomName(r.name)}}</span>
 			<span class="room-title--count">{{getRoomItemsCount(r)}} {{LNG[lng].r2.rm.items}}</span>
 		</p>
-
-		<div class="p2  w100"  *ngIf="FUR  &&  !repack">
+		<!-- &&  !repack -->
+		<div class="p2  w100"  *ngIf="FUR">
 
 			<div class="room-items" *ngIf="r.tags.length">
 
@@ -300,9 +305,9 @@
 		</div>
 
 		<div class="room-img"  #roomimg  *ngIf="r._p">
+				<!-- [class.none]="repack" -->
 
 			<div class="tag"  *ngFor="let t of r.tags; let idx = index"
-				[class.none]="repack"
 				[style.left.px]="getTagCoords(t, roomimg, 'X')"
 				[style.top.px]="getTagCoords(t, roomimg, 'Y')"
 				[class.tag-trash]="t.trash">
@@ -336,23 +341,23 @@
 				<img src="assets/i/copy.svg"  (click)="copyToCB('full')"  [class.link--copied]="copy.f">
 			</div>
 
-			<div class="link"  *ngIf="!request.packing.sameday">
+			<!-- <div class="link"  *ngIf="!request.packing.sameday">
 				<img src="assets/i/box.svg">
 				<p>{{LNG[lng].c.repack}}</p>
 				<a target="_blank" href="{{'https://app.hamovil-sheli.co.il/en/db/' + request.requestID + '?p=1'}}">
 					<img src="assets/i/eye.svg">
 				</a>
 				<img src="assets/i/copy.svg"  (click)="copyToCB('pack')"  [class.link--copied]="copy.p">
-			</div>
+			</div> -->
 
-			<div class="link"  *ngIf="!request.packing.sameday">
+			<!-- <div class="link"  *ngIf="!request.packing.sameday">
 				<img src="assets/i/truck.svg">
 				<p>{{LNG[lng].c.remove}}</p>
 				<a target="_blank" href="{{'https://app.hamovil-sheli.co.il/en/db/' + request.requestID + '?m=1'}}">
 					<img src="assets/i/eye.svg">
 				</a>
 				<img src="assets/i/copy.svg"  (click)="copyToCB('move')"  [class.link--copied]="copy.m">
-			</div>
+			</div> -->
 
 		</div>
 

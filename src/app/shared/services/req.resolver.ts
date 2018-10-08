@@ -20,17 +20,19 @@ export class REQResolver implements Resolve<any | false> {
 	) { }
 
 	resolve(route: ActivatedRouteSnapshot): Observable<any | false> {
-		const id = route.params['id']
-		// const lng = route.params['lng']
-		// console.log(window.location.pathname.substring(1, 3))
-		const lng = 'en'
+		let id = route.params.id
+			, lng = 'en'
+			, qp = {}
 
-		return this._request.getRequestByID(id)
+		if (localStorage.getItem('_xad')) qp = { mode: 'full' }
+
+		let code = localStorage.getItem(id)
+		if (code) qp = { code: code }
+
+		return this._request.getRequestByID(id, qp)
 			.pipe(map((request: any) => {
-				// console.log(request)
-				if (request.data) {
-					return request.data
-				}
+				if (request.data) return request.data
+
 				else {
 					this._router.navigate(['/' + lng, 'db'])
 					return false
