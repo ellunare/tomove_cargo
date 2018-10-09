@@ -584,7 +584,11 @@
 				<p>{{LNG[lng].send[xx_result]}}</p>
 				<p>{{LNG[lng].send[xx_result + 'msg']}}</p>
 
-				<a class="send-done-link"  href="https://app.hamovil-sheli.co.il/{{lng}}/db/{{this.request.requestID}}">View your request</a>
+				<div class="send-done-id">
+					<span>{{LNG[lng].c.request}}: {{request.requestID}}</span>
+				</div>
+
+				<a class="send-done-link"  href="{{baseURL}}{{lng}}/view/{{this.request.requestID}}">View your request</a>
 
 				<div class="send-done-ok"  (click)="sendOK()">OK</div>
 			</div>

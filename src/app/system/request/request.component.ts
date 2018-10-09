@@ -1,6 +1,8 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, ElementRef, QueryList, HostListener } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 
+import { Location } from '@angular/common'
+
 import { DomSanitizer } from '@angular/platform-browser'
 
 import { CanvasService } from '../../shared/services/canvas.service'
@@ -226,6 +228,8 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 
 	device
 
+	baseURL = 'https://tmctestx.firebaseapp.com/'
+
 	// ---------------------------------------------------------------------- MISC
 
 	constructor(
@@ -235,6 +239,7 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 		private _canvas: CanvasService,
 		private _router: Router,
 		private _AR: ActivatedRoute,
+		private _location: Location
 	) { }
 
 	ngOnInit() {
@@ -244,12 +249,13 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 
 		this.__initAdmin()
 
-		let detectDeviceType = () =>
-			/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-				? 'M'
-				: 'D'
+		this.device = this.detectDeviceType()
+	}
 
-		this.device = detectDeviceType()
+	detectDeviceType() {
+		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+			? 'M'
+			: 'D'
 	}
 
 	// ngAfterViewInit() {
@@ -262,18 +268,21 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	// }
 
 	getLNG() {
-		this._AR.parent.params.subscribe(params => {
-			this.lng = params.lng
-			// Язык не существует
-			if (!this.LNG[this.lng]) setTimeout(() => this._router.navigate(['/en', 'request']), 1)
-		})
+		this._AR.data
+			.subscribe(data => {
+				this.lng = data.rootlng
+			})
+			.unsubscribe()
 	}
 
 	initPage() {
 		this._AR.queryParams.subscribe(qp => {
 			if (qp.page) this.req_page = qp.page
 
-			this._router.navigate([this.lng, 'request'], { queryParams: { page: this.req_page } })
+			// this._router.navigate([this.lng, 'request'], { queryParams: { page: this.req_page } })
+			// Новая URL без перехода
+			let URL = this._router.createUrlTree([this.lng, 'request'], { queryParams: { page: this.req_page } }).toString()
+			this._location.go(URL)
 		})
 	}
 
@@ -291,6 +300,7 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 		if (dir === 'B') if (PAGE > 1) PAGE--
 
 		this.first_page_valid = false
+
 		this._router.navigate([], { relativeTo: this._AR, queryParams: { page: PAGE } })
 	}
 
@@ -656,7 +666,7 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	}
 
 	requestUpload(files) {
-		this.xx_upload_msg = 'Отправка заявки'
+		// this.xx_upload_msg = 'Отправка заявки'
 
 		this.request.requestID = this.generateRequestID()
 		this.request.xx = this.generateXX()
@@ -689,6 +699,9 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 					// this.xx_download_msg = 'ПОСМОТРЕТЬ'
 					// this.xx_download_link = 'https://tmctestx.firebaseapp.com/' + this.lng + '/db/' + this.request.requestID
 					// alert('SUCCESS')
+
+					localStorage.setItem(this.request.requestID, this.request.xx)
+
 					this.xx_result = 'suc'
 					this.xx_done = true
 				}
@@ -1115,6 +1128,8 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 			case 'ru': L = 'he'; break
 			case 'he': L = 'en'; break
 		}
+
+		this.lng = L
 		this._router.navigate([L, 'request'], { queryParams: { page: this.req_page } })
 	}
 

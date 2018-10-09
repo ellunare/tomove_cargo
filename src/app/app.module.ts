@@ -4,24 +4,25 @@ import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module'
 
-// import { AuthModule } from './auth/auth.module'
+import { LngResolver } from './lng.resolver'
 
 import { AppComponent } from './app.component'
-// import { SystemModule } from './system/system.module'
+import { NF404Component } from './nf404/nf404.component'
 
 
 @NgModule({
 	declarations: [
 		AppComponent,
+		NF404Component
 	],
 	imports: [
 		BrowserModule,
 		HttpClientModule,
-		// AuthModule,
-		// SystemModule,
 		AppRoutingModule
 	],
-	providers: [],
+	providers: [
+		LngResolver
+	],
 	bootstrap: [AppComponent]
 })
 

@@ -151,7 +151,8 @@ export const LNG_PACK = {
 			suc: 'Success',
 			sucmsg: 'Your mover will contact you as soon as posible',
 			err: 'Error',
-			errmsg: 'Something went wrong, please retry'
+			errmsg: 'Something went wrong, please retry',
+			view: 'View your request'
 		}
 	},
 	ru: {
@@ -306,7 +307,8 @@ export const LNG_PACK = {
 			suc: 'Успешно',
 			sucmsg: 'Ваш перевозчик свяжется с Вами в ближайшее время',
 			err: 'Ошибка',
-			errmsg: 'Что-то пошло не так, пожалуйста повторите отправку заявки'
+			errmsg: 'Что-то пошло не так, пожалуйста повторите отправку заявки',
+			view: 'Посмотреть Вашу заявку'
 		}
 	},
 	he: {
@@ -461,7 +463,8 @@ export const LNG_PACK = {
 			suc: 'בהצלחה',
 			sucmsg: 'המוביל שלכם יצור איתכם קשר בזמן הקרוב',
 			err: 'טעות',
-			errmsg: 'תקלה ,אנא נסה שוב'
+			errmsg: 'תקלה ,אנא נסה שוב',
+			view: 'View your request'
 		}
 	}
 }

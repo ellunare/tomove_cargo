@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 
-import { RequestService } from '../../../../shared/services/request.service'
+// import { RequestService } from '../../../../shared/services/request.service'
+import { RequestService } from '../../shared/services/request.service'
 
 @Component({
 	selector: 'admin-furniture',

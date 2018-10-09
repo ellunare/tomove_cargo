@@ -5,9 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Location } from '@angular/common'
 
 import { LNG_PACK } from '../../shared/models/LOCALIZATION'
-// import { FURNITURE_LIST } from '../../shared/models/FURNITURE_LIST'
-import { DomSanitizer } from '@angular/platform-browser'
 
+import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
 	selector: 'view-request',
@@ -79,25 +78,23 @@ export class ViewRequestComponent implements OnInit {
 		// 		if (e.m) this.remove = true
 		// 	})
 
-		this._AR.pathFromRoot[1].params    // Получаем язык
-			.subscribe(e => {
-				let lng = e.lng
-				// , qp = this.getQP('O')
-
-				this.lng = this.LNG[lng] ? lng : 'en'
-
-				this._router.navigate([this.lng, 'db', this.request.requestID]/*, { queryParams: qp }*/)
-			})
+		this.getLNG()
 
 		this.getFurniture(null)
 
 		this.initAccess()
 
-		if (localStorage.getItem('_xad')) {
-			this.admin = true
-			// if (this.repack || this.remove) this.admin = false
-		}
+		this.initAdmin()
+	}
 
+	getLNG() {
+		this._AR.data
+			.subscribe(data => {
+				this.lng = data.rootlng
+			})
+			.unsubscribe()
+
+		// this._router.navigate([this.lng, 'view', this.request.requestID]/*, { queryParams: qp }*/)
 	}
 
 	getFurniture(flag) {
@@ -154,22 +151,13 @@ export class ViewRequestComponent implements OnInit {
 		this.access = false
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////// ADMIN
 
-
-	getPhoto(r) {
-		const baseURL = 'https://tmctestrequests.s3.amazonaws.com/requests/' + this.request.requestID + '/'
-		const N = r.name[0]
-		let rAdd = (N === 'r') ? r.name.slice(5) : ''
-
-		return baseURL + N + rAdd + '.jpg'
-	}
-
-	getTagCoords(tag, roomimg, C) {
-		// console.log(tag)
-		// const H = 400
-		const H = roomimg.clientHeight
-
-		return (H * tag['tag' + C]) / this.request.rawh - 10
+	initAdmin() {
+		if (localStorage.getItem('_xad')) {
+			this.admin = true
+			// if (this.repack || this.remove) this.admin = false
+		}
 	}
 
 	deleteRequest() {
@@ -240,6 +228,24 @@ export class ViewRequestComponent implements OnInit {
 
 	evDateTimeSelected(e, type) {
 		this.request[e.flag][type] = e.data
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////// ADMIN
+
+	getPhoto(r) {
+		const baseURL = 'https://tmctestrequests.s3.amazonaws.com/requests/' + this.request.requestID + '/'
+		const N = r.name[0]
+		let rAdd = (N === 'r') ? r.name.slice(5) : ''
+
+		return baseURL + N + rAdd + '.jpg'
+	}
+
+	getTagCoords(tag, roomimg, C) {
+		// console.log(tag)
+		// const H = 400
+		const H = roomimg.clientHeight
+
+		return (H * tag['tag' + C]) / this.request.rawh - 10
 	}
 
 	/////////////////////////////////////////////////////////////////// MISC
@@ -423,8 +429,9 @@ export class ViewRequestComponent implements OnInit {
 			case 'ru': L = 'he'; break
 			case 'he': L = 'en'; break
 		}
+
 		this.lng = L
-		this.location.go(this.lng + '/db/' + this.request.requestID/* + qp*/)
+		this.location.go(this.lng + '/view/' + this.request.requestID/* + qp*/)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////// LINK
@@ -439,7 +446,7 @@ export class ViewRequestComponent implements OnInit {
 			// m: '?m=1'
 		}
 
-		const str = baseURL + '/en/db/' + this.request.requestID + add[flag[0]]
+		const str = baseURL + '/en/view/' + this.request.requestID + add[flag[0]]
 
 		const iOS = navigator.platform.match(/ipad|ipod|iphone/i)
 

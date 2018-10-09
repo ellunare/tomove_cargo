@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { RequestService } from '../../../shared/services/request.service'
-import { LNG_PACK } from '../../../shared/models/LOCALIZATION'
+// import { RequestService } from '../../../shared/services/request.service'
+import { RequestService } from '../../shared/services/request.service'
+// import { LNG_PACK } from '../../../shared/models/LOCALIZATION'
+import { LNG_PACK } from '../../shared/models/LOCALIZATION'
 
 import * as moment from 'moment'
 
 @Component({
-	selector: 'transporterview',
-	templateUrl: './transporterview.component.html',
-	styleUrls: ['./transporterview.component.sass']
+	selector: 'mover-view',
+	templateUrl: './mover-view.component.html',
+	styleUrls: ['./mover-view.component.sass']
 })
-export class TransporterviewComponent implements OnInit {
+export class MoverViewComponent implements OnInit {
 
 	lng = undefined
 	LNG = LNG_PACK
@@ -52,12 +54,13 @@ export class TransporterviewComponent implements OnInit {
 	) { }
 
 	ngOnInit() {
-		this._AR.parent.params    // Получаем язык
-			.subscribe(e => {
-				let lng = e.lng
-				this.lng = this.LNG[lng] ? lng : 'en'
-				this._router.navigate([this.lng, 'me'])
-			})
+		// this._AR.parent.params    // Получаем язык
+		// 	.subscribe(e => {
+		// 		let lng = e.lng
+		// 		this.lng = this.LNG[lng] ? lng : 'en'
+		// 		this._router.navigate([this.lng, 'mover'])
+		// 	})
+		this.getLNG()
 
 		this.date = moment()
 
@@ -65,6 +68,14 @@ export class TransporterviewComponent implements OnInit {
 
 		this.redraw()
 		this.__getRequestsByMY()
+	}
+
+	getLNG() {
+		this._AR.data
+			.subscribe(data => {
+				this.lng = data.rootlng
+			})
+			.unsubscribe()
 	}
 
 	__getRequestsByMY() {
@@ -299,12 +310,15 @@ export class TransporterviewComponent implements OnInit {
 
 	nextLNG() {
 		let L = this.lng
+
 		switch (L) {
 			case 'en': L = 'ru'; break
 			case 'ru': L = 'he'; break
 			case 'he': L = 'en'; break
 		}
-		this._router.navigate([L, 'me'])
+
+		this.lng = L
+		this._router.navigate([L, 'mover'])
 	}
 
 }

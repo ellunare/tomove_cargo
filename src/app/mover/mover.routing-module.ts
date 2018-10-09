@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core"
 import { RouterModule, Routes } from "@angular/router"
 
-import { RequestComponent } from "./request/request.component"
+import { MoverViewComponent } from "./mover-view/mover-view.component"
 
 const routes: Routes = [
 	{
 		path: '', children: [
-			{ path: '', component: RequestComponent },
+			{ path: '', component: MoverViewComponent },
 			{ path: '**', redirectTo: '' }
 		]
 	}
@@ -16,4 +16,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule]
 })
-export class SystemRoutingModule { }
+export class MoverRoutingModule { }

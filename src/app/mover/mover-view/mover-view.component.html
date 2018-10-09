@@ -9,7 +9,7 @@
 			<div class="req-one-leftline"  [class.req-one-leftline--p]="isMode(r, 'P')"  [class.req-one-leftline--b]="isMode(r, 'B')"  [class.req-one-leftline--sameday]="r.packing.pack && r.packing.sameday"></div>
 
 			<div class="req-one-right">
-				<a class="req-one-link" target="_blank" [href]="baseURL + lng + '/db/' + r.requestID">
+				<a class="req-one-link" target="_blank" [href]="baseURL + lng + '/view/' + r.requestID">
 					<img [src]="'assets/i/tv_view_' + (r.closed ? 'c' : 'o') + '.svg'">
 				</a>
 
