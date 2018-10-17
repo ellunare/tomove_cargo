@@ -1,10 +1,10 @@
 <!-- /////////////////////////////////////////////////////////////////////////////////////// PARENT -->
 <div class="wrap"  [class.none]="!show_list.P">  <!-- (touchstart)="TS($event)"  (touchmove)="TM($event)" -->
 	<div class="furniture" (click)="selectType($event)">
-		<div 
-			class="f_item  f_item--type  type" 
-			*ngFor="let t of FUR | slice:1" 
-			attr.data-id="{{t.id}}">
+		<div  class="f_item  f_item--type  type" 
+			*ngFor="let t of FUR | slice:1; let idx = index" 
+			attr.data-gid="{{idx + 1}}"
+			attr.data-pid="{{t.id}}">
 
 			<!-- <img src="assets/f/{{t.id}}/i.png"  alt=""> -->
 			<!-- <img src="https://s3.eu-central-1.amazonaws.com/tmctestrequests/furniture/{{t.id}}/i.png"  alt=""> -->
@@ -29,10 +29,11 @@
 <!-- /////////////////////////////////////////////////////////////////////////////////////// ITEM -->
 <div class="modal-bg" *ngIf="show_list.I">  <!-- (touchstart)="TS($event)"  (touchmove)="TM($event)" -->
 	<div class="furniture" (click)="onItemSelected($event)">
-		<div 
-			class="f_item  item" 
-			*ngFor="let f of FUR[PID % 100].types | slice:1" 
-			attr.data-id="{{f.id}}">
+		<!-- *ngFor="let f of FUR[PID % 100].types | slice:1"  -->
+		<div  class="f_item  item" 
+			*ngFor="let f of FUR[groupID].types | slice:1; let idx = index" 
+			attr.data-id="{{idx + 1}}"
+			attr.data-iid="{{f.id}}">
 			
 			<!-- <img src="assets/f/{{PID}}/i/{{f.id}}.png"  alt=""> -->
 			<img src="assets/f/e.png"

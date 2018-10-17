@@ -1,3 +1,5 @@
+<div class="_blank"  *ngIf="preferred"></div>
+
 <div class="root"  (touchstart)="TS($event)"  (touchmove)="TM($event)"  [class.hebrew]="lng === 'he'">
 
 	<!-- <div class="orientation"  style="display: none">
@@ -11,7 +13,7 @@
 		(outItemSelected)="evItemSelected($event)">
 	</item-picker>
 
-	<item-editor  [lng]="lng"  [FUR]="FUR"  [admin]="adminMode"
+	<item-editor  [lng]="lng"  [FUR]="FUR_OBJ"  [admin]="adminMode"
 		#item_editor
 		(outItemEdited)="evItemEdited($event)"  (outNewPriceSaved)="evNewPriceSaved($event)">
 	</item-editor>
@@ -33,7 +35,10 @@
 	<!-- STEP 1 ---------------------------------------------------------------------------------- -->
 	<div class="req-step"  [class.show-page]="req_page == 1">
 
-		<p class="hamovil">HaMovil - Sheli {{'- ' + device}}</p>
+		<p class="hamovil">
+			<!-- <span>HaMovil - Sheli {{'- ' + device}}</span> -->
+			<img src="assets/i/hs_logo.png"  style="height: 1.8rem">
+		</p>
 
 
 		<!--  ///////////////////////////////////////////////////////////////////////////////////////////////////  ADRESS  -->
@@ -191,7 +196,8 @@
 					(click)="editItem($event)">
 
 					<span class="item-number">{{tagNumber(t) + ' ·'}}</span>
-					<span [class.item--trash]="t.trash">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}}</span>
+					<!-- <span [class.item--trash]="t.trash">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}}</span> -->
+					<span [class.item--trash]="t.trash">{{FUR_OBJ[t.PID].types[t.IID].name[FUR_OBJ[100].lng[lng]]}}</span>
 					<img class="item--icon"  *ngIf="t.da !== undefined"  src="assets/i/da_{{t.da ? 't' : 'fl'}}.svg">
 					<img class="item--icon"  *ngIf="t.trash"  src="assets/i/trash_t.svg">
 					<span class="item--count"><span *ngIf="itemCount(t) > 1">X</span>{{itemCount(t)}}</span>
@@ -417,7 +423,8 @@
 				<br>
 				<div class="debugprice-list">
 					<ul *ngFor="let r of request.rooms"  [class.none]="!r.tags.length">
-						<li *ngFor="let t of r.tags">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}} - {{FUR[t.PID % 100].types[t.IID].price}} - {{FUR[t.PID % 100].types[t.IID].dap}}</li>
+						<!-- <li *ngFor="let t of r.tags">{{FUR[t.PID % 100].types[t.IID].name[FUR[0].lng[lng]]}} - {{FUR[t.PID % 100].types[t.IID].price}} - {{FUR[t.PID % 100].types[t.IID].dap}}</li> -->
+						<li *ngFor="let t of r.tags">{{FUR_OBJ[t.PID].types[t.IID].name[FUR_OBJ[100].lng[lng]]}} - {{FUR_OBJ[t.PID].types[t.IID].price}} - {{FUR_OBJ[t.PID].types[t.IID].dap}}</li>
 					</ul>
 				</div>
 				<br>
@@ -447,7 +454,13 @@
 
 		<!-- <button (click)="show()">SHOW</button> -->
 
-		<div class="p2" *ngIf="validation('price')                ||  false">
+
+
+
+
+
+
+		<div class="p2"  *ngIf="validation('price')                ||  false">
 
 			<div class="price">
 
@@ -471,7 +484,7 @@
 					<span class="fw_eb" style="letter-spacing: -1px">{{priceTotal()}}</span>
 				</div>
 			
-				<span class="price-total--vat">+ {{LNG[lng].r3.p.vat}} 17%</span>
+				<span class="price-total--vat">+ {{LNG[lng].r3.p.vat}} 17% : ₪ {{roundPrice(priceTotal() * 1.17)}}</span>
 			</div>
 
 
@@ -588,7 +601,7 @@
 					<span>{{LNG[lng].c.request}}: {{request.requestID}}</span>
 				</div>
 
-				<a class="send-done-link"  href="{{baseURL}}{{lng}}/view/{{this.request.requestID}}">View your request</a>
+				<a class="send-done-link"  href="{{baseURL}}{{lng}}/view/{{this.request.requestID}}">{{LNG[lng].send.view}}</a>
 
 				<div class="send-done-ok"  (click)="sendOK()">OK</div>
 			</div>
@@ -628,6 +641,7 @@
 
 	<img src="assets/i/phone.svg">
 	<img src="assets/i/user.svg">
+	<img src="assets/i/chat.svg">
 	<img src="assets/i/r3_info.svg">
 	<img src="assets/i/truck.svg">
 

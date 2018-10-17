@@ -24,11 +24,11 @@ export class RequestService {
 		private _http: HttpClient
 	) { }
 
-	requestUpload(data) {
+	requestUpload(data, _lng) {
 		const headers = new HttpHeaders()
 		headers.append('Content-Type', 'multipart/form-data')
 
-		return this._http.post(this.baseUrl + this.addUrl.uploadFile, data, { headers: headers })
+		return this._http.post(this.baseUrl + this.addUrl.uploadFile, data, { headers: headers, params: { lng: _lng } })
 	}
 
 	getRequestByID(id, qp) {
@@ -62,6 +62,29 @@ export class RequestService {
 		if (FLAG !== null) query = { flag: FLAG }
 
 		return this._http.get(this.baseUrl + this.addUrl.getFurniture, { params: query })
+	}
+
+	prepareFurnitureObject(FUR) {
+		let _FUR = FUR
+
+		let OBJ = {}
+
+		for (let P of _FUR) {
+			let parent = JSON.parse(JSON.stringify(P))
+			delete parent.id
+
+			let item_types = {}
+			for (let ITEM of parent.types || []) {
+				item_types[ITEM.id] = ITEM
+				delete item_types[ITEM.id].id
+			}
+
+			delete item_types['0']
+			parent.types = item_types
+			OBJ[P.id || '100'] = parent
+		}
+
+		return OBJ
 	}
 
 	saveNewItemPrice(body) {

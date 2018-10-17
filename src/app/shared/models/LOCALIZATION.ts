@@ -128,7 +128,7 @@ export const LNG_PACK = {
 				R1_DIST: 'distance not defined'
 			},
 			customer: {
-				agree: 'I agree that items that were not specified in the request are paid separately',
+				agree: 'I agree that items that were not specified in the request are paid extra',
 				nameph: 'Name',
 				comment: 'Add comment'
 			}
@@ -265,9 +265,9 @@ export const LNG_PACK = {
 				}
 			},
 			p: {
-				car: 'Подача машины:',
-				trn: 'Перевозка:',
-				pck: 'Упаковка:',
+				car: 'Подача машины',
+				trn: 'Перевозка',
+				pck: 'Упаковка',
 				total: 'Общая цена:',
 				vat: 'НДС',
 				pckvr: 'Цена упаковки:'
@@ -284,7 +284,7 @@ export const LNG_PACK = {
 				R1_DIST: 'Дистанция не определена'
 			},
 			customer: {
-				agree: 'Я соглашаюсь с тем, что вещи, которые не были указаны в заявке, оплачиваются отдельно',
+				agree: 'Я соглашаюсь с тем, что вещи, которые не были указаны в заявке, оплачиваются дополнительно',
 				nameph: 'Имя',
 				comment: 'Добавить комментарий'
 			}
@@ -464,7 +464,7 @@ export const LNG_PACK = {
 			sucmsg: 'המוביל שלכם יצור איתכם קשר בזמן הקרוב',
 			err: 'טעות',
 			errmsg: 'תקלה ,אנא נסה שוב',
-			view: 'View your request'
+			view: 'עברו על בקשתכם'
 		}
 	}
 }

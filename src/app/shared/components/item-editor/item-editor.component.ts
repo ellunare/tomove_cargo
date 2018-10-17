@@ -52,6 +52,7 @@ export class ItemEditorComponent implements OnInit {
 	editItem(tag) {
 		this.tag = tag
 		this.showModal(true)
+		// console.log(tag)
 	}
 
 	countChange(count) {
@@ -91,9 +92,9 @@ export class ItemEditorComponent implements OnInit {
 	}
 
 	getItemInfo(F) {
-		let PID = this.tag.PID % 100
+		let PID = this.tag.PID // % 100
 			, IID = +this.tag.IID
-			, LNG = this.FUR[0].lng
+			, LNG = this.FUR[100].lng // this.FUR[0].lng
 
 		if (F === 'name') return this.FUR[PID].types[IID].name[LNG[this.lng]]
 		if (F === 'price') return this.FUR[PID].types[IID].price
@@ -106,8 +107,8 @@ export class ItemEditorComponent implements OnInit {
 		if (F === 'dap') newprice = +this.inputNew_dap.nativeElement.value
 
 		let body = {
-			PID: this.tag.PID % 100,
-			IID: +this.tag.IID,
+			PID: +this.tag.arr_PID, // this.tag.PID % 100,
+			IID: +this.tag.arr_IID, // +this.tag.IID,
 			newprice: newprice,
 			type: F
 		}

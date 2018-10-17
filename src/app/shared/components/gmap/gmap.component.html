@@ -33,7 +33,7 @@
 		<img class="gmap-gps" src="assets/i/gps.svg"  (click)="myLocation()"  [class.none]="showMode.onlyRoute"  [class.none]="!gps_access">
 
 		<div class="gmap-close" (click)="close()">{{LNG[lng].c.close}}</div>
-		<img class="gmap-aim" src="assets/i/marker.svg">
+		<img class="gmap-aim" src="assets/i/marker.svg"  [class.none]="showMode.onlyRoute">
 
 	</div>
 

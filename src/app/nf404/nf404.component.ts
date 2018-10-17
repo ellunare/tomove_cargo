@@ -14,6 +14,7 @@ export class NF404Component implements OnInit {
 
 	ngOnInit() {
 		// this._router.navigate(['/system', 'request'], { queryParams: { page: 1 } })
+		return window.location.assign('https://hamovil-sheli.co.il/404')
 	}
 
 }

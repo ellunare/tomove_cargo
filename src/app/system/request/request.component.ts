@@ -158,6 +158,7 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	}
 
 	FUR // = FURNITURE_LIST
+	FUR_OBJ
 
 	@ViewChild('item_list') public item_list: ElementRef
 
@@ -226,9 +227,9 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 
 	prevent = false
 
-	device
-
 	baseURL = 'https://tmctestx.firebaseapp.com/'
+
+	preferred = false
 
 	// ---------------------------------------------------------------------- MISC
 
@@ -243,19 +244,26 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	) { }
 
 	ngOnInit() {
+		this.__initAdmin()
+		this.device()
+
 		this.getLNG()
 		this.initPage()
 		this.getFurniture(null)
 
-		this.__initAdmin()
-
-		this.device = this.detectDeviceType()
 	}
 
 	detectDeviceType() {
 		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 			? 'M'
 			: 'D'
+	}
+
+	device() {
+		this.preferred = true
+		let device = this.detectDeviceType()
+		if (!this.adminMode) if (device == 'D') return window.location.assign('https://hamovil-sheli.co.il/preferred')
+		this.preferred = false
 	}
 
 	// ngAfterViewInit() {
@@ -289,7 +297,10 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	getFurniture(flag) {
 		this._request.getFurniture(flag)
 			.subscribe((res: any) => {
-				if (res.success) this.FUR = res.data.furniture
+				if (res.success) {
+					this.FUR = res.data.furniture
+					this.FUR_OBJ = this._request.prepareFurnitureObject(this.FUR)
+				}
 			})
 	}
 
@@ -453,6 +464,10 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 			IID: item.IID,
 			count: 1,
 			trash: false,
+
+			// Для админа для сохранения новой цены
+			arr_PID: item.arr_PID,
+			arr_IID: item.arr_IID
 		}
 
 		if (item.da !== undefined) tagParams.da = item.da
@@ -686,61 +701,49 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 		// - удаляем фото
 		for (let _r of requestToUpload.rooms) delete _r.pictures
 
+		// - удаляем arr у тегов
+		for (let _room of requestToUpload.rooms)
+			for (let _t of _room.tags) {
+				delete _t.arr_IID
+				delete _t.arr_PID
+			}
+
+		//* DEBUG
 		//// Добавляем параметры
 		formData.append('requestObject', JSON.stringify(requestToUpload))
 
 		//// Отправляем
-		this._request.requestUpload(formData)
+		this._request.requestUpload(formData, this.lng)
 			.subscribe((res: any) => {
-				// console.log(res)
-				// this.xx_loader = false
 				if (res.success) {
-					// this.xx_upload_msg = 'Успешно отправлено'
-					// this.xx_download_msg = 'ПОСМОТРЕТЬ'
-					// this.xx_download_link = 'https://tmctestx.firebaseapp.com/' + this.lng + '/db/' + this.request.requestID
-					// alert('SUCCESS')
-
 					localStorage.setItem(this.request.requestID, this.request.xx)
 
 					this.xx_result = 'suc'
 					this.xx_done = true
 				}
 				else {
-					// alert('error')
 					this.xx_result = 'err'
 				}
 			})
+		//*/
 	}
 
 	canvasDraw() {
-		// console.log(this.request)
-
 		this.xx_loader = true
-		// this.xx_canvas_msg = 'Обработка изображений'
-
-		// Передаем файлы и канвас
-		// this._canvas.prepareCanvas(
-		// 	this.request.rooms[1].pictures,
-		// 	this.canvaSS.nativeElement
-		// )
-		// 	.then(result_file => {
-		// 		console.log(result_file)
-		// 		this.xx_canvas_msg = 'Изображения обработаны'
-		// 		this.xrequestdelete(result_file)
-		// 	})
 
 		let canvas_arr = []
-		for (let _c of this.request.rooms) {
+
+		for (let _c of this.request.rooms)
 			if (_c.pictures.length) {
 				let _promise = this._canvas.prepareCanvas(_c.pictures, /*this.canvaSS.nativeElement*/null, _c.name)
 				canvas_arr.push(_promise)
 			}
-		}
 
-		Promise.all(canvas_arr).then(result_files => {
-			this.requestUpload(result_files)
-		})
-
+		Promise
+			.all(canvas_arr)
+			.then(result_files => {
+				this.requestUpload(result_files)
+			})
 	}
 
 
@@ -804,13 +807,16 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 	priceFurniture() {
 		let M = this.priceMod()
 			, furniture = 0
-			, COEF = 1 + this.FUR[0].misc.coef / 100
+			// , COEF = 1 + this.FUR[0].misc.coef / 100
+			, COEF = 1 + this.FUR_OBJ[100].misc.coef / 100
 
 		for (let _room of this.request.rooms)
 			for (let T of _room.tags) {
-				let _TP = this.FUR[T.PID % 100].types[T.IID].price // PRICE
+				// let _TP = this.FUR[T.PID % 100].types[T.IID].price // PRICE
+				let _TP = this.FUR_OBJ[T.PID].types[T.IID].price // PRICE
 					, _TDA = +T.da
-					, _TDAP = this.FUR[T.PID % 100].types[T.IID].dap
+					// , _TDAP = this.FUR[T.PID % 100].types[T.IID].dap
+					, _TDAP = this.FUR_OBJ[T.PID].types[T.IID].dap
 
 				furniture += ((_TP * (T.trash ? 0.6 : 1) * (1 + M.DS + M.LO + (T.trash ? 0 : M.LD))) + (_TDA ? _TDAP : 0)) * T.count * COEF
 			}
@@ -934,8 +940,8 @@ export class RequestComponent implements OnInit /*, AfterViewInit */ {
 		// this.xx_result = 'suc'
 		// console.log(this.request)
 
-		this.xx_loader = true
-		setTimeout(() => this.xx_done = true, 3000)
+		// this.xx_loader = true
+		// setTimeout(() => this.xx_done = true, 3000)
 		if (this.validation('confirm')) this.canvasDraw()
 	}
 

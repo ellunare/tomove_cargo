@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+// import { Component, OnInit } from '@angular/core'
+// import { Router } from '@angular/router'
 
-@Component({
-	selector: 'system',
-	templateUrl: './system.component.html',
-	styleUrls: ['./system.component.sass']
-})
-export class SystemComponent implements OnInit {
+// @Component({
+// 	selector: 'system',
+// 	templateUrl: './system.component.html',
+// 	styleUrls: ['./system.component.sass']
+// })
+// export class SystemComponent implements OnInit {
 
-	constructor(
-		// private router: Router
-	) { }
+// 	constructor(
+// 		// private router: Router
+// 	) { }
 
-	ngOnInit() {
-		// this.router.navigate(['request'])
-	}
+// 	ngOnInit() {
+// 		// this.router.navigate(['request'])
+// 	}
 
-}
+// }

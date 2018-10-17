@@ -54,6 +54,7 @@ export class ViewRequestComponent implements OnInit {
 	@ViewChild('timePicker') private timePicker
 
 	FUR = undefined // = FURNITURE_LIST
+	FUR_OBJ
 
 	constructor(
 		private _request: RequestService,
@@ -100,7 +101,10 @@ export class ViewRequestComponent implements OnInit {
 	getFurniture(flag) {
 		this._request.getFurniture(flag)
 			.subscribe((res: any) => {
-				if (res.success) this.FUR = res.data.furniture
+				if (res.success) {
+					this.FUR = res.data.furniture
+					this.FUR_OBJ = this._request.prepareFurnitureObject(this.FUR)
+				}
 			})
 	}
 
@@ -166,7 +170,7 @@ export class ViewRequestComponent implements OnInit {
 			this._request.deleteRequest(this.request.requestID)
 				.subscribe((res: any) => {
 					alert(res.msg)
-					if (res.success) this._router.navigate(['/en', 'me'])
+					if (res.success) this._router.navigate(['/en', 'mover'])
 				})
 	}
 
@@ -341,7 +345,7 @@ export class ViewRequestComponent implements OnInit {
 		// if (F === 'TOTAL') return (this.repack ? 0 : RP.transportation) + (this.remove ? 0 : RP.packing) + (this.request.boxes.boxes ? RP.boxes : 0)
 		if (F === 'TOTAL') return RP.transportation + RP.packing + (this.request.boxes.boxes ? RP.boxes : 0)
 
-		if (F === 'VAT') return Math.floor(0.17 * this.getPrice('TOTAL'))
+		if (F === 'VAT') return Math.floor(1.17 * this.getPrice('TOTAL'))
 	}
 
 	getRoomName(name) {

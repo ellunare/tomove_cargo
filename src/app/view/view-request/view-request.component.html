@@ -161,7 +161,9 @@
 
 
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// УПАКОВКА -->
+			<div class="carton-packing-wrap"  [class.carton-packing-wrap--side]="request.packing.pack">
 			<!-- [class.none]="repack || remove" -->
+			<!-- [class.carton-need--purple]="request.packing.pack" -->
 			<p class="carton-packing-title  carton-packing-block">{{LNG[lng].c.repack}}:
 				<span  [class.carton--yes]="request.packing.pack"  [class.carton--no]="!request.packing.pack">{{' ' + (request.packing.pack ? LNG[lng].c.yes : LNG[lng].c.no)}}</span>
 			</p>
@@ -183,11 +185,11 @@
 						<div class="dtpicker"  (click)="DTpicker('time', 'packing')">{{showTime('packing')}}</div>
 					</div>
 
-					<p class="carton-packing-price">
+					<!-- <p class="carton-packing-price">
 						<span style="font-weight: 100">{{LNG[lng].r3.p.pckvr}}</span> ₪ 
 						<span [class.none]="edit">{{getPrice('P')}}</span>
 						<input type="number" *ngIf="edit" class="edit-input  edit-input--mw" [(ngModel)]="request.price.packing">
-					</p>
+					</p> -->
 				</div>
 				<!-- repack || remove ||  -->
 				<div class="responsible  responsible--packing"  *ngIf="(request.responsible.packing || edit) && !request.packing.sameday"  [class.none]="!getAccess()">
@@ -197,13 +199,21 @@
 				</div>
 
 			</div>
+
+			</div>
 			<!-- ///////////////////////////////////////////////////////////////////////////////////////////// УПАКОВКА -->
 
 		</div>
 
 	</div>
   <!-- [class.none]="repack || remove" -->
-	<p class="price-transportation"  *ngIf="!request.packing.sameday">+ {{LNG[lng].r3.p.trn}} ₪ {{getPrice('T')}}</p>
+	<!-- <p class="price-transportation"  *ngIf="!request.packing.sameday">+ {{LNG[lng].r3.p.trn}} ₪ {{getPrice('T')}}</p> -->
+
+	<div class="price-parts">
+		<p>{{LNG[lng].r3.p.car}}: ₪ 100</p>
+		<p>{{LNG[lng].r3.p.trn}}: ₪ {{getPrice('T')}}</p>
+		<p>{{LNG[lng].r3.p.pck}}: ₪ {{getPrice('P')}}</p>
+	</div>
 
 	<div class="price">
 		<p class="price-line"  [class.root--edit]="edit">{{LNG[lng].r3.p.total}} ₪ 
@@ -285,7 +295,8 @@
 			<span class="room-title--count">{{getRoomItemsCount(r)}} {{LNG[lng].r2.rm.items}}</span>
 		</p>
 		<!-- &&  !repack -->
-		<div class="p2  w100"  *ngIf="FUR">
+		<!-- <div class="p2  w100"  *ngIf="FUR"> -->
+		<div class="p2  w100"  *ngIf="FUR_OBJ">
 
 			<div class="room-items" *ngIf="r.tags.length">
 
@@ -293,7 +304,8 @@
 					<div class="room-item-number">{{(i + 1) + ' ·'}}</div>
 
 					<div>
-						<span class="room-item-name"  [class.room-item--trash]="t.trash">{{FUR[t.PID % 100].types[+t.IID].name[FUR[0].lng[lng]]}}</span>
+						<!-- <span class="room-item-name"  [class.room-item--trash]="t.trash">{{FUR[t.PID % 100].types[+t.IID].name[FUR[0].lng[lng]]}}</span> -->
+						<span class="room-item-name"  [class.room-item--trash]="t.trash">{{FUR_OBJ[t.PID].types[+t.IID].name[FUR_OBJ[100].lng[lng]]}}</span>
 
 						<img class="room-item--icon"  *ngIf="t.da !== undefined"  [src]="'assets/i/da_' + (t.da ? 't' : 'fl') + '.svg'">
 						<img class="room-item--icon"  *ngIf="t.trash"  src="assets/i/trash_t.svg">
@@ -333,11 +345,11 @@
 		<div class="links">
 
 			<div class="link">
-				<img src="assets/i/tv_view_o.svg">
+				<!-- <img src="assets/i/tv_view_o.svg">
 				<p style="color: #fff">{{LNG[lng].acc.full}}</p>
 				<a class="hidden">
 					<img src="assets/i/eye.svg">
-				</a>
+				</a> -->
 				<img src="assets/i/copy.svg"  (click)="copyToCB('full')"  [class.link--copied]="copy.f">
 			</div>
 

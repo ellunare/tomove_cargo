@@ -147,52 +147,52 @@ export class MapsGoogleService {
 		return Promise.resolve(_center)
 	}
 
-	centerMap(MAP, T, COORDS) {
-		console.log(COORDS)
-		let CENTER = { lat: COORDS.lat || 32.086, lng: COORDS.lng || 34.768 }
+	// centerMap(MAP, T, COORDS) {
+	// 	console.log(COORDS)
+	// 	let CENTER = { lat: COORDS.lat || 32.086, lng: COORDS.lng || 34.768 }
 
-		this._mapsAPILoader
-			.load()
-			.then(() => {    // После этого рисуем его на карте
+	// 	this._mapsAPILoader
+	// 		.load()
+	// 		.then(() => {    // После этого рисуем его на карте
 
-				let _map_options = {
-					center: CENTER,
-					zoom: 16,
-					disableDefaultUI: true,
-					styles: this.agm.style
-					// mapTypeId: 'roadmap'
-				}
+	// 			let _map_options = {
+	// 				center: CENTER,
+	// 				zoom: 16,
+	// 				disableDefaultUI: true,
+	// 				styles: this.agm.style
+	// 				// mapTypeId: 'roadmap'
+	// 			}
 
-				let _MAP = new google.maps.Map(MAP, _map_options)
+	// 			let _MAP = new google.maps.Map(MAP, _map_options)
 
-				// if (T === 'R') {    // ОПЦИИ для маршрута
-				// 	let bounds = new google.maps.LatLngBounds()
-				// 		, loc = new google.maps.LatLng(center.lat, center.lng)
+	// 			// if (T === 'R') {    // ОПЦИИ для маршрута
+	// 			// 	let bounds = new google.maps.LatLngBounds()
+	// 			// 		, loc = new google.maps.LatLng(center.lat, center.lng)
 
-				// 	bounds.extend(loc)
-				// 	_MAP.panToBounds(bounds)
-				// 	_MAP.fitBounds(bounds)
-				// }
+	// 			// 	bounds.extend(loc)
+	// 			// 	_MAP.panToBounds(bounds)
+	// 			// 	_MAP.fitBounds(bounds)
+	// 			// }
 
-				if (T !== 'R') {    // МАРКЕР для одиночной карты
-					let marker = new google.maps.Marker({
-						position: CENTER,
-						map: _MAP,
-						icon: {
-							url: 'assets/i/marker41.png',
-							size: new google.maps.Size(50, 50),
-							origin: new google.maps.Point(0, 0),
-							anchor: new google.maps.Point(25, 50)
-						},
-						animation: google.maps.Animation.DROP
-					})
-				}
+	// 			if (T !== 'R') {    // МАРКЕР для одиночной карты
+	// 				let marker = new google.maps.Marker({
+	// 					position: CENTER,
+	// 					map: _MAP,
+	// 					icon: {
+	// 						url: 'assets/i/marker41.png',
+	// 						size: new google.maps.Size(50, 50),
+	// 						origin: new google.maps.Point(0, 0),
+	// 						anchor: new google.maps.Point(25, 50)
+	// 					},
+	// 					animation: google.maps.Animation.DROP
+	// 				})
+	// 			}
 
-				// РЕНДЕР КАРТЫ
-				var directionsDisplay = new google.maps.DirectionsRenderer
-				directionsDisplay.setMap(_MAP)
-			})
-	}
+	// 			// РЕНДЕР КАРТЫ
+	// 			var directionsDisplay = new google.maps.DirectionsRenderer
+	// 			directionsDisplay.setMap(_MAP)
+	// 		})
+	// }
 
 	showOnMap(map_element, mode, COORDS) {
 		// return Observable.create(observer => {
@@ -222,76 +222,33 @@ export class MapsGoogleService {
 						_MAP.fitBounds(bounds)
 					}
 
-					if (mode !== 'R') {    // МАРКЕР для одиночной карты
-						let marker = new google.maps.Marker({
-							position: center,
-							map: _MAP,
-							icon: {
-								url: 'assets/i/marker41.png',
-								size: new google.maps.Size(50, 50),
-								origin: new google.maps.Point(0, 0),
-								anchor: new google.maps.Point(25, 50)
-							},
-							animation: google.maps.Animation.DROP
-						})
-					}
-
-					// if (mode !== 'R') {  //////////////////////////////////////////////////////////////// DRAG
-					// 	let self = this
-					// 		, _MARKERS = []
-					// 		, _canSearchFlag = false
-					// 		, _idle = false
-
-					// 	_MAP.addListener("dragstart", () => _idle = false)
-
-					// 	_MAP.addListener("dragend", () => {
-
-					// 		this._ngZone.run(() => {
-					// 			observer.next('cansearch')
-					// 			_canSearchFlag = true
-					// 			_idle = true
-
-					// 			setTimeout(() => {
-					// 				if (_canSearchFlag && _idle) {
-
-					// 					for (let M of _MARKERS) M.setMap(null)    /// Обнуляем маркеры
-					// 					_MARKERS = []
-
-					// 					let _DRAGCENTER = _MAP.getCenter()    /// Получаем центр карты
-					// 						, _DRAGCOORDS = { lat: _DRAGCENTER.lat(), lng: _DRAGCENTER.lng() }
-
-					// 						, _dragmarker = new google.maps.Marker({
-					// 							position: _DRAGCOORDS,
-					// 							map: _MAP,
-					// 							icon: {
-					// 								url: 'assets/i/pin.png',
-					// 								size: new google.maps.Size(32, 32),
-					// 								origin: new google.maps.Point(0, 0),
-					// 								anchor: new google.maps.Point(16, 32)
-					// 							},
-					// 						})
-
-					// 					_MARKERS.push(_dragmarker)
-
-					// 					self.geocodeLatLng(_DRAGCOORDS).then(dragdata => {
-					// 						_canSearchFlag = false
-					// 						observer.next(dragdata)
-					// 					})
-
-					// 				}
-					// 			}, 2500)
-
-					// 		})  // zone
-
+					// if (mode !== 'R') {    // МАРКЕР для одиночной карты
+					// 	let marker = new google.maps.Marker({
+					// 		position: center,
+					// 		map: _MAP,
+					// 		icon: {
+					// 			url: 'assets/i/marker41.png',
+					// 			size: new google.maps.Size(50, 50),
+					// 			origin: new google.maps.Point(0, 0),
+					// 			anchor: new google.maps.Point(25, 50)
+					// 		},
+					// 		animation: google.maps.Animation.DROP
 					// 	})
-					// }  ////////////////////////////////////////////////////////////////////////////////// DRAG
-
+					// }
 
 					// РЕНДЕР КАРТЫ
 					var directionsDisplay = new google.maps.DirectionsRenderer
 					directionsDisplay.setMap(_MAP)
 
+
 					if (mode === 'R') {    // Отображаем маршрут
+
+						// MARKERS
+						directionsDisplay.setOptions({ suppressMarkers: true })
+						this.initMarker(_MAP, COORDS.OLAT, COORDS.OLNG, 'marker42.png')
+						this.initMarker(_MAP, COORDS.DLAT, COORDS.DLNG, 'marker43.png')
+						// MARKERS
+
 						var directionsService = new google.maps.DirectionsService
 						this.calculateAndDisplayRoute(directionsService, directionsDisplay, COORDS)
 					}
@@ -372,6 +329,19 @@ export class MapsGoogleService {
 				else alert('Geocoder failed due to: ' + status)
 			})
 
+		})
+	}
+
+	initMarker(map, lat, lng, icon) {
+		return new google.maps.Marker({
+			map: map,
+			icon: {
+				url: 'assets/i/' + icon,
+				size: new google.maps.Size(50, 50),
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(25, 50)
+			},
+			position: new google.maps.LatLng(lat, lng),
 		})
 	}
 

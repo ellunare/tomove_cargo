@@ -5,7 +5,6 @@ import {
 	Input
 } from '@angular/core'
 
-// import { FURNITURE_LIST } from '../../models/FURNITURE_LIST'
 import { LNG_PACK } from '../../models/LOCALIZATION'
 
 @Component({
@@ -20,6 +19,8 @@ export class ItemPickerComponent {
 
 	// FURNITURE = FURNITURE_LIST
 	@Input() FUR = undefined
+
+	groupID: number
 
 	PID: number
 	show_list = {
@@ -41,20 +42,28 @@ export class ItemPickerComponent {
 
 	selectType(e) {
 		if (e.target.parentElement.classList.contains('type')) {
-			const id = e.target.parentElement.dataset.id
-			this.PID = +id
+
+			this.groupID = +e.target.parentElement.dataset.gid
+			this.PID = +e.target.parentElement.dataset.pid
+
 			this.showList('I', true)
 		}
 	}
 
 	onItemSelected(e) {
 		if (e.target.parentElement.classList.contains('item')) {
+
 			let ID = +e.target.parentElement.dataset.id
-				, item = this.FUR[this.PID % 100].types[ID]
+				, item = this.FUR[this.groupID].types[ID]
+				// , item = this.FUR[this.PID % 100].types[ID]
+				, IID = +e.target.parentElement.dataset.iid
 
 			let data: any = {
 				PID: this.PID,  // PID
-				IID: item.id  // IID
+				IID: IID,  // item.id  // IID
+
+				arr_PID: this.groupID,
+				arr_IID: ID
 			}
 
 			if (item.dap) data.da = 0
